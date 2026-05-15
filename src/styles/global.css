@@ -1,0 +1,587 @@
+/* src/styles/global.css */
+
+/* Import Bootstrap (full classes for components like cards, tables, badges) */
+@import 'bootstrap/dist/css/bootstrap.min.css';
+
+/* ==========================================================================
+   ROOT VARIABLES - Complete Custom Theme (Navy/Gold for ArcheryShootFinder)
+   ========================================================================== */
+:root {
+  /* Primary (Navy Blue for clubs/links) */
+  --bs-primary: #003F5C;
+  --bs-primary-rgb: 0, 63, 92;
+  --bs-primary-bg-subtle: rgba(var(--bs-primary-rgb), 0.15);
+
+  /* Secondary (Target Gold) */
+  --bs-secondary: #FFB700;
+  --bs-secondary-rgb: 255, 183, 0;
+  --bs-secondary-bg-subtle: rgba(var(--bs-secondary-rgb), 0.15);
+
+  /* Success (Green for ranges) */
+  --bs-success: #28a745;
+  --bs-success-rgb: 40, 167, 69;
+  --bs-success-bg-subtle: rgba(var(--bs-success-rgb), 0.15);
+
+  /* Danger (Red for pro shops) */
+  --bs-danger: #dc3545;
+  --bs-danger-rgb: 220, 53, 69;
+  --bs-danger-bg-subtle: rgba(var(--bs-danger-rgb), 0.15);
+
+  /* Warning (Orange for organizations) */
+  --bs-warning: #fd7e14;
+  --bs-warning-rgb: 253, 126, 20;
+  --bs-warning-bg-subtle: rgba(var(--bs-warning-rgb), 0.15);
+
+  /* Info (Purple for associations) */
+  --bs-info: #6f42c1;
+  --bs-info-rgb: 111, 66, 193;
+  --bs-info-bg-subtle: rgba(var(--bs-info-rgb), 0.15);
+
+  /* Light (Gray backgrounds) */
+  --bs-light: #f8f9fa;
+  --bs-light-rgb: 248, 249, 250;
+  --bs-light-bg-subtle: rgba(var(--bs-light-rgb), 0.15);
+
+  /* Dark (Text/contrasts) */
+  --bs-dark: #212529;
+  --bs-dark-rgb: 33, 37, 41;
+
+  /* Body and general */
+  --bs-body-bg: #f8f9fa;
+  --bs-body-color: #212529;
+  --bs-link-color: #003F5C;
+  --bs-link-hover-color: #002a40;
+
+  /* App-specific transitions */
+  --app-transition: 250ms ease;
+}
+
+/* ==========================================================================
+   BASE LAYOUT - Gatsby/PWA Support (Full-width, Sticky Footer)
+   ========================================================================== */
+/* Force Gatsby wrappers to full width */
+#___gatsby,
+#gatsby-focus-wrapper {
+  width: 100% !important;
+  max-width: 100vw !important;
+  overflow-x: hidden;
+}
+
+/* Body and main for flex sticky footer */
+html,
+body {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  /* background-color: var(--bs-body-bg) !important; */
+  transition: background-color var(--app-transition);
+  overflow-y: auto !important;
+}
+
+main {
+  flex: 1 0 auto;
+  overflow-y: auto !important;
+  min-height: calc(100vh - 180px); /* Navbar + footer/peek buffer */
+  padding-bottom: 4rem; /* Extra bottom padding for peek/footer */
+}
+
+/* Footer and offcanvas positioning */
+footer.fixed-bottom,
+.offcanvas-bottom.fixed-bottom {
+  flex-shrink: 0;
+  width: 100vw !important;
+  left: 0;
+  right: 0;
+  margin: 0 !important;
+}
+
+/* Flush container for directory */
+.container-fluid.directory-flush {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+/* ==========================================================================
+   COMPONENT STYLES - Directory, Map, Search Offcanvas
+   ========================================================================== */
+/* Directory section (scrolling container) */
+.directory-section {
+  min-height: 100%;
+  overflow-y: auto;
+  padding-top: 1rem; /* Top padding to prevent cutoff */
+}
+
+/* Table responsive (for lists) */
+.table-responsive {
+  overflow-x: auto;
+  overflow-y: visible;
+}
+
+/* Ensure subtle backgrounds apply to table rows via vars */
+/* .table tbody tr.bg-success-subtle,
+.table tbody tr.bg-danger-subtle,
+.table tbody tr.bg-primary-subtle,
+.table tbody tr.bg-info-subtle,
+.table tbody tr.bg-warning-subtle,
+.table tbody tr.bg-secondary-subtle,
+.table thead tr.bg-light {
+  background-color: var(--bs-success-bg-subtle, rgba(40, 167, 69, 0.15)) !important;
+}  */
+
+/* Map view adjustments */
+main.map-view {
+  padding-top: 0 !important;
+  min-height: calc(100vh - 56px - 120px); /* Full height minus nav and bottom clearance */
+  padding-bottom: 4rem;
+}
+
+main.map-view .directory-section,
+main.map-view .list-scroll-container {
+  overflow-y: auto !important;
+  padding-top: 1rem;
+  padding-bottom: 120px; /* Consolidated clearance for peek handle + footer */
+}
+
+/* Search Offcanvas (full-height side slide with scrolling) */
+.search-offcanvas {
+  top: 0 !important;
+  height: 100vh !important;
+  width: 350px !important;
+  z-index: 1060 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  --bs-offcanvas-height: 100vh !important;
+}
+
+.search-offcanvas .offcanvas-header {
+  flex-shrink: 0 !important;
+  padding: 1rem !important;
+  border-bottom: 1px solid #dee2e6 !important;
+}
+
+.search-offcanvas .offcanvas-body {
+  flex: 1 !important;
+  overflow-y: auto !important;
+  max-height: calc(100vh - 60px) !important; /* Minus header */
+  padding: 0 !important;
+}
+
+.search-content {
+  min-height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  padding: 1rem !important;
+  gap: 0.5rem !important; /* Tight spacing */
+}
+
+/* Tighten margins in search content */
+.search-content .mb-3,
+.search-content .mb-2,
+.search-content .mb-1 {
+  margin-bottom: 0.15rem !important;
+}
+
+.search-content hr {
+  margin: 0.5rem 0 !important;
+}
+
+/* ==========================================================================
+   FORM ENHANCEMENTS - Checkboxes and Inputs for Search Offcanvas
+   ========================================================================== */
+.search-offcanvas .form-check {
+  padding-left: 1.5em !important;
+  margin-bottom: 0.5em !important;
+}
+
+.search-offcanvas .form-check-input {
+  width: 1.2em !important;
+  height: 1.2em !important;
+  border: 2px solid var(--bs-primary) !important; /* Navy border */
+  margin-top: 0.1em !important;
+}
+
+.search-offcanvas .form-check-input:checked {
+  background-color: var(--bs-secondary) !important; /* Gold check */
+  border-color: var(--bs-primary) !important;
+}
+
+.search-offcanvas .form-check-input:checked::after {
+  border-color: var(--bs-primary) !important; /* Navy checkmark */
+}
+
+.search-offcanvas .form-check-input:focus {
+  box-shadow: 0 0 0 0.2rem rgba(var(--bs-primary-rgb), 0.25) !important; /* Navy focus */
+}
+
+.search-offcanvas .form-control {
+  border: 2px solid var(--bs-primary) !important; /* Navy border */
+  color: var(--bs-body-color) !important;
+  padding: 0.75rem !important;
+  font-size: 1rem !important;
+}
+
+/* ==========================================================================
+   CONSOLIDATED RESPONSIVE MEDIA QUERIES - Mobile/Desktop for Directory/Tabs
+   ========================================================================== */
+/* Flush tabs against all directory content */
+.directory-section .nav-tabs {
+  margin-bottom: 0 !important;
+}
+
+.directory-section .list-scroll-container {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+.directory-section {
+  padding-top: 0 !important;
+}
+
+/* Mobile: Full width, horizontal tabs, no scroll, minimal padding */
+@media (max-width: 768px) {
+  main {
+    min-height: calc(100vh - 150px); /* Reduced buffer */
+    padding-bottom: 5rem; /* Increased clearance */
+  }
+
+  .directory-section {
+    padding-top: 0.5rem; /* Less top padding */
+    padding-left: 0.5rem !important; /* Minimal side padding for content */
+    padding-right: 0.5rem !important;
+  }
+
+  /* Mobile map/list clearance */
+  main.map-view .col[style*="height: 24vh"] {
+    height: 30vh !important; /* Slightly smaller map */
+  }
+
+  main.map-view .list-scroll-container,
+  main.map-view .directory-section {
+    padding-bottom: 100px; /* Adjusted clearance */
+  }
+
+  .directory-section .list-scroll-container {
+    /* background-color: #fff !important; */
+    padding-left: 0.5rem !important; /* Safe padding without overflow */
+    padding-right: 0.5rem !important;
+    width: 100% !important;
+    overflow-x: hidden !important; /* No horizontal scroll */
+  }
+
+  /* Mobile search offcanvas full-width */
+  .search-offcanvas {
+    width: 100vw !important;
+  }
+
+  /* Larger touch targets for forms */
+  .search-offcanvas .form-check-input {
+    width: 1.4em !important;
+    height: 1.4em !important;
+  }
+
+  .search-offcanvas .form-control,
+  .search-offcanvas .input-group .form-control {
+    padding: 1rem !important;
+    font-size: 1.1rem !important;
+  }
+
+  .search-offcanvas .input-group-text {
+    padding: 1rem !important;
+  }
+
+  /* Consolidated mobile table stacking for venues/shoots */
+  .venue-table, .shoot-table {
+    border: 0;
+    width: 100% !important;
+    overflow-x: hidden !important; /* No scroll */
+  }
+
+  .venue-table thead, .shoot-table thead {
+    display: none; /* Hide headers on mobile */
+  }
+
+  .venue-table tr, .shoot-table tr {
+    display: block;
+    margin-bottom: 1rem;
+    padding: 1rem 0.5rem; /* Padding with side room */
+    position: relative; /* For absolute button positioning */
+  }
+
+    /* Fix/Adjust card/row bg color here */
+  .venue-table td, .shoot-table td {
+    display: block;
+    padding: 0.5rem 0;
+    border: none;
+    position: relative;
+    background: inherit !important; /* Ensure no white override in cells */
+  }
+
+  /* Top row: Type and Name on one line */
+  .venue-table tr > :first-child,
+  .venue-table tr > :nth-child(2),
+  .shoot-table tr > :first-child,
+  .shoot-table tr > :nth-child(2) {
+    display: inline-flex;
+    align-items: center;
+    flex: 1;
+    padding: 0.25rem 0;
+    margin-bottom: 0.75rem;
+  }
+
+  /* Base Venue Header (edge-to-edge bg + underline) */
+  .venue-table .venue-header {
+    position: relative;
+    width: calc(100% + 1rem); /* Adjust for 0.5rem padding */
+    margin: 0 -0.5rem; /* Negative margin for edge-to-edge */
+    padding: 0.5rem 1rem 2rem; /* Balanced padding */
+    background-color: rgba(var(--bs-light-rgb), 0.5); /* Default muted light gray bg */
+    border-radius: 0.375rem 0.375rem 0 0; /* Top corners */
+    margin-bottom: 0.5rem;
+  }
+
+  .venue-table .venue-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: -0.5rem; /* Align with margin */
+    right: -0.5rem;
+    height: 1px; /* Thin underline */
+    background-color: var(--bs-light);  /* Default underline */
+  }
+
+  /* Type-Specific Overrides (match rowClass) */
+  .bg-success-subtle .venue-header { /* Range: Green */
+    background-color: rgba(var(--bs-success-rgb), 0.2);
+  }
+  .bg-success-subtle .venue-header::after {
+    background-color: var(--bs-success);
+  }
+
+  .bg-danger-subtle .venue-header { /* Pro Shop: Red */
+    background-color: rgba(var(--bs-danger-rgb), 0.2);
+  }
+  .bg-danger-subtle .venue-header::after {
+    background-color: var(--bs-danger);
+  }
+
+  .bg-warning-subtle .venue-header { /* Organization: Orange */
+    background-color: rgba(var(--bs-warning-rgb), 0.2);
+  }
+  .bg-warning-subtle .venue-header::after {
+    background-color: var(--bs-warning);
+  }
+
+  .bg-info-subtle .venue-header { /* Association: Purple */
+    background-color: rgba(var(--bs-info-rgb), 0.2);
+  }
+  .bg-info-subtle .venue-header::after {
+    background-color: var(--bs-info);
+  }
+
+  .bg-primary-subtle .venue-header { /* Club: Navy */
+    background-color: rgba(var(--bs-primary-rgb), 0.2);
+  }
+  .bg-primary-subtle .venue-header::after {
+    background-color: var(--bs-primary);
+  }
+
+  .bg-secondary-subtle .venue-header { /* Secondary/Other: Gold */
+    background-color: rgba(var(--bs-secondary-rgb), 0.2);
+  }
+  .bg-secondary-subtle .venue-header::after {
+    background-color: var(--bs-secondary);
+  }
+
+  .bg-light .venue-header { /* Fallback */
+    background-color: rgba(var(--bs-light-rgb), 0.3); /* Slightly darker light */
+  }
+  .bg-light .venue-header::after {
+    background-color: var(--bs-secondary); /* Gold underline as accent */
+  }
+
+  /* Ensure tds inside header don't conflict */
+  .venue-table .venue-header td[data-label="Type"],
+  .venue-table .venue-header td[data-label="Venue Name"] {
+   /*background-color: transparent !important;*/
+    padding: 0.25rem 0.5rem 0.25rem 0.75rem; /* Adjusted for padding */
+    margin: 0;
+    border: none;
+  }
+
+  .venue-table .venue-header td[data-label="Type"] {
+    margin-right: 0.75rem;
+  }
+
+  .venue-table td[data-label="Type"] {
+    flex-shrink: 0;
+    margin-right: 1rem;
+    padding-right: 0.5rem;
+    min-width: auto;
+    /*background-color: transparent !important;*/
+  }
+
+  .venue-table td[data-label="Type"]::before {
+    content: none; /* No label needed since it's visual */
+  }
+
+  .venue-table td[data-label="Venue Name"] {
+    flex: 1;
+    text-align: left;
+    font-weight: 600;
+    font-size: 1.1rem;
+    /*background-color: transparent !important;*/
+  }
+
+  .venue-table td[data-label="Venue Name"]::before {
+    content: none; /* No label needed */
+  }
+
+  /* Other fields stack below */
+  .venue-table td[data-label="Upcoming Shoots"],
+  .venue-table td[data-label="Location"] {
+    text-align: left;
+    padding-left: 0.5rem; /* Match section padding */
+    /*background-color: transparent !important;*/
+  }
+
+  .venue-table td[data-label="Upcoming Shoots"]::before,
+  .venue-table td[data-label="Location"]::before {
+    width: 100%;
+    text-align: left;
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 0.25rem;
+    padding-left: 0.5rem; /* Align with content */
+  }
+
+  .venue-table td[data-label="Upcoming Shoots"]::before {
+    width: 100%;
+  }
+
+  /* Details button at bottom right */
+  .venue-table td[data-label="Details"] {
+    position: absolute;
+    bottom: 1rem;
+    right: 0.5rem; /* Adjust for padding */
+    left: auto;
+    padding: 0;
+    margin: 0;
+    text-align: right;
+    width: auto;
+    background: inherit !important; /* No bg override */
+  }
+
+  .venue-table td[data-label="Details"]::before {
+    display: none; /* Hide label for button */
+  }
+
+  .venue-table td[data-label="Details"] a,
+  .venue-table td[data-label="Details"] button {
+    margin: 0;
+    display: inline-block;
+  }
+
+  /* Ensure ellipsis for long names/locations if needed */
+  .venue-table td[data-label="Venue Name"],
+  .venue-table td[data-label="Location"] {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    /* background-color: transparent !important; */
+  }
+
+  /* General label fallback for other tds */
+  .venue-table td::before {
+    content: attr(data-label) ": ";
+    font-weight: 600;
+    color: #6c757d;
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+
+  /* Accordion adjustments */
+  .accordion-header span {
+    font-size: 0.95rem !important; /* Bump up from small */
+  }
+
+  .accordion-body small,
+  .accordion-body .text-muted {
+    font-size: 0.9rem !important; /* Larger body text on mobile */
+  }
+
+  .accordion-header .d-flex {
+    gap: 0.25rem; /* Tighter spacing to fit larger text */
+  }
+
+  /* Mobile tabs: Full width, horizontal, no scroll */
+  .directory-section .nav-tabs {
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+    width: 100% !important;
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: hidden !important;
+  }
+
+  .directory-section .nav-tabs .nav-link {
+    font-size: 0.8rem !important;
+    padding: 0.4rem 0.6rem !important;
+    margin-right: 0.2rem !important;
+    white-space: nowrap !important;
+    min-width: auto !important;
+  }
+}
+
+/* Consolidated desktop enhancements for stacked layout and centering */
+@media (min-width: 769px) {
+  .directory-section {
+    max-width: 900px !important;
+    margin: 0 auto !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+
+  .directory-section .nav-tabs {
+    max-width: 900px !important;
+    margin: 0 auto !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+    justify-content: flex-start !important;
+    text-align: left !important;
+  }
+
+  .directory-section .list-scroll-container {
+    max-width: 900px !important;
+    margin: 0 auto !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+    width: 100% !important;
+  }
+
+  .list-scroll-container .venue-table,
+  .list-scroll-container .table-responsive,
+  .list-scroll-container .shoot-table {
+    width: 100% !important;
+  }
+
+  .venue-table tr {
+    padding: 1.5rem !important;
+    margin-bottom: 1.5rem !important;
+  }
+
+  .venue-table .venue-header {
+    padding: 0.75rem 1.5rem 2.5rem !important; /* Balanced for centering */
+  }
+
+  .venue-table td {
+    padding: 0.75rem 0 !important;
+  }
+
+  /* Optional: Show thead on desktop */
+  .venue-table thead, .shoot-table thead {
+    display: table-header-group !important;
+  }
+}

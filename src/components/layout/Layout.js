@@ -1,0 +1,107 @@
+import * as React from "react"
+import { useStaticQuery, graphql } from "gatsby"
+import { useRef } from "react" // Add this
+
+import Navbar from "./Navbar"
+import Footer from "./Footer"
+//import SearchDrawer from "../search/SearchDrawer"
+import { useSearch } from "../context/SearchContext"
+import MapComponent from "../map/map"
+//import Tabs from "../list/tabs"
+
+const Layout = ({ children, view, setView, mapProps, listProps, listViewContent }) => {
+  const data = useStaticQuery(graphql`
+    query SiteTitleQuery {
+      site {
+        siteMetadata {
+          title
+          description
+        }
+      }
+    }
+  `)
+
+  const { showSearch } = useSearch()
+  const searchDrawerRef = useRef(null)
+
+  const mainClass = showSearch
+    ? "container-fluid gx-0 p-0 flex-grow-1 pb-5"
+    : "container-fluid gx-0 p-0 flex-grow-1 pb-3"
+
+  const finalMainClass = view === "map" ? `${mainClass} map-view` : mainClass
+
+  const handleOpenSearch = () => {
+    if (searchDrawerRef.current) {
+      searchDrawerRef.current.show()
+    }
+  }
+
+  return (
+    <>
+      <Navbar
+        siteTitle={data.site.siteMetadata?.title || `Title`}
+        siteDesc={data.site.siteMetadata?.description || `Description`}
+        view={view}
+        setView={setView}
+      />
+
+      <main className={finalMainClass}>
+        {view === "map" && mapProps && listProps ? (
+          <div className="d-flex flex-column h-100">
+            <div className="row g-0 sticky-top shadow-sm" style={{ zIndex: 1020, top: '56px' }}>
+              <div
+                className="col bg-light border-bottom position-relative"
+                style={{ height: '35vh', maxHeight: '400px', minHeight: '250px' }}
+              >
+                <MapComponent {...mapProps} />
+              </div>
+            </div>
+
+            <div className="row g-0 flex-grow-1 mt-5 pt-5">
+              <div className="col /* bg-white */ overflow-auto">
+                {listViewContent}  {/* Use prop instead of direct <Tabs {...listProps} /> */}
+              </div>
+            </div>
+          </div>
+        ) : view === "list" && listViewContent ? (
+          listViewContent
+        ) : (
+          children
+        )}
+      </main>
+
+      <Footer />
+
+      {!showSearch && (
+        <div
+          className="fixed-bottom bg-light border-top d-flex align-items-center justify-content-center py-2 container-fluid gx-0 p-0"
+          style={{
+            bottom: "60px",
+            height: "60px",
+            cursor: "grab",
+            width: "100%",
+            zIndex: 1040,
+          }}
+        >
+          <button
+            className="btn btn-outline-secondary btn-sm me-2"
+            onClick={handleOpenSearch}
+          >
+            <i className="bi bi-search me-1"></i>Search
+          </button>
+          <div
+            className="bg-secondary-subtle rounded mx-auto"
+            style={{
+              width: "40px",
+              height: "4px",
+            }}
+          ></div>
+        </div>
+      )}
+
+      {/* <SearchDrawer ref={searchDrawerRef} /> */}
+    </>
+  )
+}
+
+export default Layout

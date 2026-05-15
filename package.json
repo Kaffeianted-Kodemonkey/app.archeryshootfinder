@@ -1,0 +1,53 @@
+{
+  "name": "archery-shoot-finder",
+  "private": true,
+  "description": "A PWA for finding archery shoots, tournaments, and events",
+  "version": "1.0.0",
+  "author": "Archery Shoot Finder",
+  "dependencies": {
+    "@popperjs/core": "^2.11.8",
+    "@react-google-maps/api": "^2.20.8",
+    "bootstrap": "^5.3.8",
+    "gatsby": "^5.14.6",
+    "gatsby-plugin-image": "^3.16.0",
+    "gatsby-plugin-manifest": "^5.14.0",
+    "gatsby-plugin-offline": "^6.16.0",
+    "gatsby-plugin-sharp": "^5.14.0",
+    "gatsby-source-filesystem": "^5.14.0",
+    "gatsby-transformer-json": "^5.14.0",
+    "gatsby-transformer-sharp": "^5.14.0",
+    "leaflet": "^1.9.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-leaflet": "^4.2.1"
+  },
+  "devDependencies": {
+    "gh-pages": "^6.3.0",
+    "prettier": "^2.8.8"
+  },
+  "keywords": [
+    "archery",
+    "shoots",
+    "tournaments",
+    "events",
+    "gatsby",
+    "pwa"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "build": "gatsby build",
+    "develop": "gatsby develop",
+    "deploy": "gatsby build && gh-pages -d public",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md,css}\"",
+    "start": "gatsby develop",
+    "serve": "gatsby serve",
+    "clean": "gatsby clean"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/archeryshootfinder/archery-shoot-finder"
+  },
+  "bugs": {
+    "url": "https://github.com/archeryshootfinder/archery-shoot-finder/issues"
+  }
+}
