@@ -1,4 +1,5 @@
 // src/components/list/tabs.js
+// this componande runs the tabs
 import * as React from "react";
 import PropTypes from "prop-types";
 import ShootList from "./ShootList";

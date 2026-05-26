@@ -1,956 +1,121 @@
 [
   {
     "id": "1",
-    "slug": "pine-ridge-archery-Club",
-    "name": "Pine Ridge Archery Club",
-    "description": "A premier archery facility featuring 40+ 3D targets on wooded trails, indoor range with 20 lanes, and pro shop. Open to all skill levels with programs for youth and adults.",
-     "affiliates": [
-      "ASA",
-      "USA Archery"
-    ],
+    "venueId": 1,
+    "name": "Uintah Basin Bowhunters",
     "venueType": "CLUB",
-    "tier": "freemium",
-    "icon": "bi-building",
-    "iconColor": "#007bff",
+    "slug": "uintah-basin-bowhunters",
+    "description": "Local club dedicated to 3D and field archery in the heart of Utah.",
+    "subscription": "BASIC",
     "location": {
-      "address": "1234 Forest Trail",
-      "city": "Boulder",
-      "state": "CO",
-      "zip": "80301",
-      "lat": 40.015,
-      "lng": -105.2705,
+      "address": "Black Knolls Road",
+      "city": "Vernal",
+      "state": "UT",
+      "zip": "84078",
+      "lat": 37.156092,
+      "lng": -113.5688451,
       "country": "USA"
     },
     "contact": {
-      "phone": "(303) 555-0123",
-      "email": "info@pineridgearchery.com",
-      "website": "https://pineridgearchery.com"
+      "phone": "435-555-0123",
+      "email": "contact@uintahbowhunters.org",
+      "website": "https://uintahbowhunters.org",
+      "facebook": "uintahbowhunters"
     },
-    "facilities": [
-      "3D Course",
-      "Indoor Range",
-      "Pro Shop",
-      "Lessons",
-      "Equipment Rental"
-    ],
-    "amenities": ["RESTROOMS", "PARKING"],
-    "hours": {
-      "weekday": "9:00 AM - 7:00 PM",
-      "weekend": "8:00 AM - 6:00 PM"
-    },
-    "membership": {
-      "required": false,
-      "details": "Day passes available. Annual membership includes unlimited range access and pro shop discounts.",
-      "url": "https://pineridgearchery.com/join"
-    },
-    "equipment": {
-      "rentalAvailable": true,
-      "types": ["bows", "arrows", "targets"],
-      "ranges": {
-        "minDistance": 10,
-        "maxDistance": 60,
-        "units": "yards",
-        "terrainTypes": ["wooded"]
-      },
-      "notes": "Equipment rental for 3D courses; pro shop sales and tuning available."
-    },
-    "hostedShoots": ["1", "4"],
-    "imageUrl": "/images/clubs/pine-ridge.jpg",
-    "isClaimed": false
-  },
-  {
-    "id": "2",
-    "slug": "desert-springs-sports-complex",
-    "name": "Desert Springs Sports Complex",
-    "description": "World-class target archery facility with 20+ lanes, climate-controlled indoor range, and Olympic-standard outdoor fields. Home to multiple state and regional championships.",
-     "affiliates": [
-      "ASA",
-      "USA Archery"
-    ],    
-    "venueType": "RANGE",
-    "tier": "basic",
-    "icon": "bi-crosshairs",
-    "iconColor": "#28a745",
-    "location": {
-      "address": "5678 Mesa Drive",
-      "city": "Phoenix",
-      "state": "AZ",
-      "zip": "85001",
-      "lat": 33.4484,
-      "lng": -112.074,
-      "country": "USA"
-    },
-    "contact": {
-      "phone": "(602) 555-0456",
-      "email": "info@desertspringsarchery.com",
-      "website": "https://desertspringsarchery.com"
-    },
-    "facilities": [
-      "Olympic Range",
-      "Indoor Range",
-      "Pro Shop",
-      "Lessons",
-      "Tournaments",
-      "Equipment Tuning"
-    ],
-    "amenities": ["RESTROOMS", "PARKING"],
-    "hours": {
-      "weekday": "6:00 AM - 8:00 PM",
-      "weekend": "7:00 AM - 7:00 PM"
-    },
-    "membership": {
-      "required": true,
-      "details": "Membership required for range access. Daily passes available for tournaments only.",
-      "url": "https://desertspringsarchery.com/membership"
-    },
-    "equipment": {
-      "rentalAvailable": true,
-      "types": ["arrows", "targets"],
-      "ranges": {
-        "minDistance": 18,
-        "maxDistance": 90,
-        "units": "meters",
-        "terrainTypes": ["desert", "field"]
-      },
-      "notes": "Limited rentals; full tuning and pro shop services."
-    },
-    "hostedShoots": ["2"],
-    "imageUrl": "/images/clubs/desert-springs.jpg",
-    "isClaimed": true
+    "facilities": ["THREE_D_COURSE", "OUTDOOR_RANGE", "CAMPING"],
+    "amenities": ["PARKING", "CAMPING", "RESTROOMS"],
+    "equipmentAllowed": ["COMPOUND", "RECURVE", "LONGBOW"],
+    "membership": "https://uintahbowhunters.org",
+    "hostedShoots": [1, 4],
+    "imageUrl": "https://example.com",
+    "isClaimed": true,
+    "sanctioning": ["NFAA"]
   },
   {
     "id": "3",
-    "slug": "community-center-gymnasium",
-    "name": "Denver Community Center",
-    "description": "Multi-purpose community facility with dedicated archery programs. Offers youth clinics, adult lessons, and open shoot times in a safe, family-friendly environment.",
-    "affiliates": [],
-    "venueType": "CLUB",
-    "tier": "freemium",
-    "icon": "bi-building",
-    "iconColor": "#007bff",
-    "location": {
-      "address": "789 Main Street",
-      "city": "Denver",
-      "state": "CO",
-      "zip": "80202",
-      "lat": 39.7392,
-      "lng": -104.9903,
-      "country": "USA"
-    },
-    "contact": {
-      "phone": "(720) 555-0789",
-      "email": "programs@denvergov.org",
-      "website": "https://denvergov.org/archery"
-    },
-    "facilities": [
-      "Indoor Range",
-      "Youth Programs",
-      "Lessons",
-      "Equipment Rental"
-    ],
-    "amenities": ["RESTROOMS", "PARKING"],    
-    "hours": {
-      "weekday": "3:00 PM - 8:00 PM",
-      "weekend": "10:00 AM - 4:00 PM"
-    },
-    "membership": {
-      "required": false,
-      "details": "Pay-per-session or membership options available. Youth programs require registration.",
-      "url": "https://denvergov.org/archery/membership"
-    },
-    "equipment": {
-      "rentalAvailable": true,
-      "types": ["bows", "arrows"],
-      "ranges": {
-        "minDistance": 10,
-        "maxDistance": 30,
-        "units": "yards",
-        "terrainTypes": ["indoor", "park"]
-      },
-      "notes": "Basic rentals provided for youth clinics and lessons."
-    },
-    "hostedShoots": ["3"],
-    "imageUrl": "/images/clubs/denver-community.jpg",
-    "isClaimed": true
-  },
-  {
-    "id": "4",
-    "slug": "riverside-archery-range",
-    "name": "Riverside Archery Range",
-    "description": "Scenic outdoor range along the river with 3D course, field archery trails, and night shoot capabilities. Perfect for bowhunters and recreational archers.",
-    "affiliates": [
-      "ASA",
-      "USA Archery"
-    ],
-    "venueType": "RANGE",
-    "tier": "premium",
-    "icon": "bi-geo-alt",
-    "iconColor": "#ffc107",
-    "location": {
-      "address": "321 River Road",
-      "city": "Austin",
-      "state": "TX",
-      "zip": "78701",
-      "lat": 30.2672,
-      "lng": -97.7431,
-      "country": "USA"
-    },
-    "contact": {
-      "phone": "(512) 555-0321",
-      "email": "info@riversidearchery.com",
-      "website": "https://riversidearchery.com"
-    },
-    "facilities": [
-      "3D Course",
-      "Field Archery",
-      "Night Shoots",
-      "Pro Shop",
-      "Bowhunting Practice"
-    ],
-    "amenities": ["RESTROOMS", "PARKING"],    
-    "hours": {
-      "weekday": "10:00 AM - 8:00 PM",
-      "weekend": "8:00 AM - 9:00 PM"
-    },
-    "membership": {
-      "required": false,
-      "details": "Day passes available. Season passes offer unlimited access and discounts.",
-      "url": "https://riversidearchery.com/membership"
-    },
-    "equipment": {
-      "rentalAvailable": true,
-      "types": ["bows", "arrows"],
-      "ranges": {
-        "minDistance": 20,
-        "maxDistance": 50,
-        "units": "yards",
-        "terrainTypes": ["river", "field"]
-      },
-      "notes": "Rentals for bowhunting practice; pro shop for gear."
-    },
-    "hostedShoots": [],
-    "imageUrl": "/images/clubs/riverside.jpg",
-    "isClaimed": true
-  },
-  {
-    "id": "5",
-    "slug": "mountain-view-archery-park",
-    "name": "Mountain View Archery Park",
-    "description": "Premier traditional archery facility with challenging wooded courses, primitive skills area, and traditional archery focus. No compound bows allowed.",
-     "affiliates": [
-      "ASA",
-      "USA Archery"
-    ],    
-    "venueType": "CLUB",
-    "tier": "freemium",
-    "icon": "bi-building",
-    "iconColor": "#007bff",
-    "location": {
-      "address": "456 Highland Ave",
-      "city": "Asheville",
-      "state": "NC",
-      "zip": "28801",
-      "lat": 35.5951,
-      "lng": -82.5515,
-      "country": "USA"
-    },
-    "contact": {
-      "phone": "(828) 555-0654",
-      "email": "info@traditionalarchery.org",
-      "website": "https://traditionalarchery.org"
-    },
-    "facilities": [
-      "Traditional Only",
-      "3D Course",
-      "Field Course",
-      "Primitive Skills Area",
-      "Workshops"
-    ],
-    "amenities": ["RESTROOMS", "PARKING"],    
-    "hours": {
-      "weekday": "9:00 AM - 6:00 PM",
-      "weekend": "8:00 AM - 7:00 PM"
-    },
-    "membership": {
-      "required": true,
-      "details": "Membership required. Focus on traditional archery education and conservation.",
-      "url": "https://traditionalarchery.org/join"
-    },
-    "equipment": {
-      "rentalAvailable": false,
-      "types": [],
-      "ranges": {
-        "minDistance": 15,
-        "maxDistance": 55,
-        "units": "yards",
-        "terrainTypes": ["mountain", "wooded"]
-      },
-      "notes": "BYO traditional equipment; workshops provide demo gear."
-    },
-    "hostedShoots": [],
-    "imageUrl": "/images/clubs/mountain-view.jpg",
-    "isClaimed": false
-  },
-  {
-    "id": "6",
-    "slug": "wildlife-education-center",
-    "name": "Wildlife Education Center",
-    "description": "State-run facility combining hunter education with archery practice. Features 3D animal targets, classroom facilities, and certification programs.",
-    "affiliates": [
-      "ASA",
-      "USA Archery"
-    ],
-    "venueType": "RANGE",
-    "tier": "basic",
-    "icon": "bi-crosshairs",
-    "iconColor": "#28a745",
-    "location": {
-      "address": "890 Hunter Trail",
-      "city": "Missoula",
-      "state": "MT",
-      "zip": "59801",
-      "lat": 46.8721,
-      "lng": -113.994,
-      "country": "USA"
-    },
-    "contact": {
-      "phone": "(406) 555-0987",
-      "email": "education@fwp.mt.gov",
-      "website": "https://fwp.mt.gov/archery"
-    },
-    "facilities": [
-      "Hunter Education",
-      "3D Course",
-      "Classroom",
-      "Certification Programs",
-      "Youth Programs"
-    ],
-    "amenities": ["RESTROOMS", "PARKING"],    
-    "hours": {
-      "weekday": "8:00 AM - 5:00 PM",
-      "weekend": "Closed (Open for scheduled programs)"
-    },
-    "membership": {
-      "required": false,
-      "details": "Open to public. Hunter education courses require pre-registration.",
-      "url": null
-    },
-    "equipment": {
-      "rentalAvailable": false,
-      "types": [],
-      "ranges": {
-        "minDistance": 20,
-        "maxDistance": 40,
-        "units": "yards",
-        "terrainTypes": ["field", "3d"]
-      },
-      "notes": "BYO equipment for certification; demo targets provided."
-    },
-    "hostedShoots": [],
-    "imageUrl": "/images/clubs/wildlife-center.jpg",
-    "isClaimed": false
-  },
-  {
-    "id": "7",
-    "slug": "university-sports-center",
-    "name": "University Sports Center",
-    "description": "NCAA-compliant indoor archery facility serving university teams and the local community. Features Olympic-distance ranges and modern training equipment.",
-     "affiliates": [],    
-    "venueType": "RANGE",
-    "tier": "premium",
-    "icon": "bi-geo-alt",
-    "iconColor": "#ffc107",
-    "location": {
-      "address": "100 Campus Drive",
-      "city": "Madison",
-      "state": "WI",
-      "zip": "53706",
-      "lat": 43.0731,
-      "lng": -89.4012,
-      "country": "USA"
-    },
-    "contact": {
-      "phone": "(608) 555-0111",
-      "email": "archery@wisc.edu",
-      "website": "https://wisc.edu/archery"
-    },
-    "facilities": [
-      "Olympic Range",
-      "Indoor Range",
-      "Training Equipment",
-      "Video Analysis",
-      "Team Facilities"
-    ],
-    "amenities": ["RESTROOMS", "PARKING"],    
-    "hours": {
-      "weekday": "6:00 AM - 9:00 PM",
-      "weekend": "9:00 AM - 5:00 PM"
-    },
-    "membership": {
-      "required": false,
-      "details": "Open to students, faculty, and community members. Community memberships available.",
-      "url": "https://wisc.edu/archery/membership"
-    },
-    "equipment": {
-      "rentalAvailable": true,
-      "types": ["bows", "arrows", "training gear"],
-      "ranges": {
-        "minDistance": 18,
-        "maxDistance": 70,
-        "units": "meters",
-        "terrainTypes": ["indoor"]
-      },
-      "notes": "University-provided training equipment; rentals for community use."
-    },
-    "hostedShoots": [],
-    "imageUrl": "/images/clubs/university.jpg",
-    "isClaimed": true
-  },
-  {
-    "id": "8",
-    "slug": "oakwood-nature-preserve",
-    "name": "Oakwood Nature Preserve",
-    "description": "Beautiful natural setting for field archery with challenging woodland courses. Part of international field archery ORGANIZATION with sanctioned tournaments.",
-     "affiliates": [
-      "ASA",
-      "USA Archery"
-    ],    
-    "venueType": "CLUB",
-    "tier": "freemium",
-    "icon": "bi-building",
-    "iconColor": "#007bff",
-    "location": {
-      "address": "2200 Nature Way",
-      "city": "Portland",
-      "state": "OR",
-      "zip": "97201",
-      "lat": 45.5152,
-      "lng": -122.6784,
-      "country": "USA"
-    },
-    "contact": {
-      "phone": "(503) 555-0222",
-      "email": "info@pnwfieldarchers.org",
-      "website": "https://pnwfieldarchers.org"
-    },
-    "facilities": [
-      "Field Archery",
-      "IFO Courses",
-      "Tournaments",
-      "Nature Trails",
-      "Conservation Area"
-    ],
-    "amenities": ["RESTROOMS", "PARKING"],    
-    "hours": {
-      "weekday": "Dawn to Dusk",
-      "weekend": "Dawn to Dusk"
-    },
-    "membership": {
-      "required": true,
-      "details": "Membership includes access to courses and participation in tournaments. Family memberships available.",
-      "url": "https://pnwfieldarchers.org/membership"
-    },
-    "equipment": {
-      "rentalAvailable": false,
-      "types": [],
-      "ranges": {
-        "minDistance": 25,
-        "maxDistance": 60,
-        "units": "yards",
-        "terrainTypes": ["woodland", "nature"]
-      },
-      "notes": "BYO equipment; focus on field archery trails."
-    },
-    "hostedShoots": [],
-    "imageUrl": "/images/clubs/oakwood.jpg",
-    "isClaimed": true
-  },
-  {
-    "id": "9",
-    "slug": "archery-pro-shop-denver",
-    "name": "Archery Pro Shop Denver",
-    "description": "Full-service pro shop offering bows, arrows, tuning, and repairs. Affiliated with local clubs for shoot support.",
-     "affiliates": [
-      "ASA",
-      "USA Archery"
-    ],    
+    "venueId": 3,
+    "name": "Mile High Archery Pro Shop",
     "venueType": "PRO_SHOP",
-    "tier": "premium",
-    "icon": "bi-shop",
-    "iconColor": "#dc3545",
+    "slug": "mile-high-archery",
+    "description": "Full service pro shop with expert tuning and indoor lanes.",
+    "subscription": "PREMIUM",
     "location": {
-      "address": "456 Shop St",
+      "address": "123 Main St",
       "city": "Denver",
       "state": "CO",
-      "zip": "80202",
+      "zip": "80201",
       "lat": 39.7392,
       "lng": -104.9903,
       "country": "USA"
     },
     "contact": {
-      "phone": "(303) 555-9999",
-      "email": "sales@archeryprodenver.com",
-      "website": "https://archeryprodenver.com"
+      "phone": "303-555-0987",
+      "email": "info@milehigharchery.com",
+      "website": "https://milehigharchery.com"
     },
-    "facilities": [
-      "Bow Tuning",
-      "Equipment Sales",
-      "Repairs"
-    ],
-    "amenities": ["RESTROOMS", "PARKING"],    
-    "hours": {
-      "weekday": "10:00 AM - 6:00 PM",
-      "weekend": "9:00 AM - 5:00 PM"
-    },
-    "membership": {
-      "required": false,
-      "details": "Loyalty program for repeat customers.",
-      "url": "https://archeryprodenver.com/loyalty"
-    },
-    "equipment": {
-      "rentalAvailable": true,
-      "types": ["bows", "arrows", "gear"],
-      "ranges": null,
-      "notes": "Full sales, rentals, and repairs; no on-site range."
-    },
-    "hostedShoots": [],
-    "imageUrl": "/images/venues/pro-shop.jpg",
-    "isClaimed": true
-  },
-  {
-    "id": "10",
-    "slug": "colorado-archery-association",
-    "name": "Colorado Archery Association",
-    "description": "State ASSOCIATION.promoting archery events, safety, and education. Sanctions tournaments and provides resources.",
-     "affiliates": [
-      "ASA",
-      "USA Archery"
-    ],    
-    "venueType": "ASSOCIATION",
-    "tier": "freemium",
-    "icon": "bi-people",
-    "iconColor": "#6f42c1",
-    "location": {
-      "address": "123 State Ave",
-      "city": "Denver",
-      "state": "CO",
-      "zip": "80203",
-      "lat": 39.7392,
-      "lng": -104.9903,
-      "country": "USA"
-    },
-    "contact": {
-      "phone": "(303) 555-8888",
-      "email": "info@coarchery.org",
-      "website": "https://coarchery.org"
-    },
-    "facilities": [
-      "Event Sanctioning",
-      "Education Resources"
-    ],
-    "amenities": ["RESTROOMS", "PARKING"],    
-    "hours": {
-      "weekday": "9:00 AM - 5:00 PM",
-      "weekend": "Closed"
-    },
-    "membership": {
-      "required": false,
-      "details": "Individual and Club memberships available.",
-      "url": "https://coarchery.org/join"
-    },
-    "equipment": {
-      "rentalAvailable": false,
-      "types": [],
-      "ranges": null,
-      "notes": "No equipment; resources for sanctioned events."
-    },
-    "hostedShoots": [],
-    "imageUrl": "/images/venues/association.jpg",
-    "isClaimed": true
-  },
-  {
-    "id": "11",
-    "slug": "national-archery-federation",
-    "name": "National Archery Federation",
-    "description": "National ORGANIZATION overseeing archery standards, competitions, and youth programs across the US.",
-     "affiliates": [
-      "ASA",
-      "USA Archery"
-    ],    
-    "venueType": "ORGANIZATION",
-    "tier": "freemium",
-    "icon": "bi-star",
-    "iconColor": "#fd7e14",
-    "location": {
-      "address": "456 National Blvd",
-      "city": "Washington",
-      "state": "DC",
-      "zip": "20001",
-      "lat": 38.9072,
-      "lng": -77.0369,
-      "country": "USA"
-    },
-    "contact": {
-      "phone": "(202) 555-7777",
-      "email": "contact@nationalarcheryfed.org",
-      "website": "https://nationalarcheryfed.org"
-    },
-    "facilities": [
-      "National Tournaments",
-      "Certification"
-    ],
-    "amenities": ["RESTROOMS", "PARKING"],    
-    "hours": {
-      "weekday": "8:00 AM - 6:00 PM",
-      "weekend": "Closed"
-    },
-    "membership": {
-      "required": false,
-      "details": "Affiliate memberships for clubs and individuals.",
-      "url": "https://nationalarcheryfed.org/membership"
-    },
-    "equipment": {
-      "rentalAvailable": false,
-      "types": [],
-      "ranges": null,
-      "notes": "No equipment; national certification programs."
-    },
-    "hostedShoots": [],
-    "imageUrl": "/images/venues/ORGANIZATION.jpg",
-    "isClaimed": true
-  },
-  {
-    "id": "12",
-    "slug": "lone-star-standalone-range",
-    "name": "Lone Star Standalone Range",
-    "description": "Independent outdoor range for practice and casual shoots. No affiliation, open to public.",
-    "affiliates": [
-      "NFAA",
-      "USA Archery"
-    ],
-    "venueType": "RANGE",
-    "tier": "basic",
-    "icon": "bi-geo-alt",
-    "iconColor": "#6c757d",
-    "location": {
-      "address": "789 Lone Star Rd",
-      "city": "Austin",
-      "state": "TX",
-      "zip": "78701",
-      "lat": 30.2672,
-      "lng": -97.7431,
-      "country": "USA"
-    },
-    "contact": {
-      "phone": "(512) 555-6666",
-      "email": "info@lonestarange.com",
-      "website": "https://lonestarange.com"
-    },
-    "facilities": [
-      "Outdoor Targets",
-      "Practice Area"
-    ],
-    "amenities": ["RESTROOMS", "PARKING"],    
-    "hours": {
-      "weekday": "Dawn to Dusk",
-      "weekend": "Dawn to Dusk"
-    },
-    "membership": {
-      "required": false,
-      "details": "Day use fees only.",
-      "url": null
-    },
-    "equipment": {
-      "rentalAvailable": false,
-      "types": [],
-      "ranges": {
-        "minDistance": 20,
-        "maxDistance": 50,
-        "units": "yards",
-        "terrainTypes": ["outdoor"]
-      },
-      "notes": "BYO equipment; basic targets provided."
-    },
-    "hostedShoots": [],
-    "imageUrl": "/images/venues/standalone-range.jpg",
-    "isClaimed": true
+    "facilities": ["INDOOR_RANGE", "PRO_SHOP", "KITCHEN"],
+    "amenities": ["WIFI", "FOOD", "WHEELCHAIR_ACCESSIBLE"],
+    "equipmentAllowed": ["COMPOUND", "RECURVE", "TARGET_ARROWS_ONLY"],
+    "hostedShoots": [3],
+    "isClaimed": true,
+    "sanctioning": ["USA_ARCHERY", "ASA"]
   },
   {
     "id": "13",
-    "slug": "pacific-coast-archery-range",
-    "name": "Pacific Coast Archery Range",
-    "description": "Coastal outdoor range with ocean views, specializing in target archery and beginner clinics. Wheelchair accessible paths and modern facilities.",
-     "affiliates": [
-      "ASA",
-      "USA Archery"
-    ],    
-    "venueType": "RANGE",
-    "tier": "premium",
-    "icon": "bi-geo-alt",
-    "iconColor": "#ffc107",
+    "venueId": 13,
+    "name": "Coastal Archers Association",
+    "venueType": "ASSOCIATION",
+    "slug": "coastal-archers-ca",
+    "description": "Regional association overseeing multiple public ranges in California.",
+    "subscription": "FREEMIUM",
     "location": {
-      "address": "101 Ocean Blvd",
-      "city": "San Diego",
+      "address": "La Jolla Shores",
+      "city": "La Jolla",
       "state": "CA",
-      "zip": "92101",
-      "lat": 32.7157,
-      "lng": -117.1611,
+      "zip": "92037",
+      "lat": 32.8466,
+      "lng": -117.3211,
       "country": "USA"
     },
     "contact": {
-      "phone": "(619) 555-1300",
-      "email": "info@pacificcoastarchery.com",
-      "website": "https://pacificcoastarchery.com"
+        "phone": "",
+        "email": "admin@coastalarchers.org",
+        "website": ""
     },
-    "facilities": [
-      "Target Range",
-      "Beginner Clinics",
-      "Wheelchair Access",
-      "Pro Shop",
-      "Picnic Areas"
-    ],
-    "amenities": ["RESTROOMS", "PARKING"],    
-    "hours": {
-      "weekday": "8:00 AM - 6:00 PM",
-      "weekend": "7:00 AM - 7:00 PM"
-    },
-    "membership": {
-      "required": false,
-      "details": "Monthly passes available with priority lane access.",
-      "url": "https://pacificcoastarchery.com/membership"
-    },
-    "equipment": {
-      "rentalAvailable": true,
-      "types": ["bows", "arrows", "targets"],
-      "ranges": {
-        "minDistance": 18,
-        "maxDistance": 70,
-        "units": "meters",
-        "terrainTypes": ["coastal", "flat"]
-      },
-      "notes": "Full rentals and beginner kits provided."
-    },
+    "facilities": ["OUTDOOR_RANGE"],
+    "amenities": ["PARKING", "PICNIC_AREA"],
+    "equipmentAllowed": ["COMPOUND", "RECURVE", "LONGBOW", "CROSSBOW"],
     "hostedShoots": [],
-    "imageUrl": "/images/venues/pacific-coast.jpg",
-    "isClaimed": true
+    "isClaimed": false,
+    "sanctioning": []
   },
   {
     "id": "14",
-    "slug": "midwest-youth-archery-club",
-    "name": "Midwest Youth Archery Club",
-    "description": "Dedicated indoor club for youth archers ages 8-18, with coaching, competitions, and safety-focused programs.",
-     "affiliates": [
-      "ASA",
-      "USA Archery"
-    ],    
-    "venueType": "CLUB",
-    "tier": "freemium",
-    "icon": "bi-building",
-    "iconColor": "#007bff",
+    "venueId": 14,
+    "name": "Midwest Youth Archery Center",
+    "venueType": "ORGANIZATION",
+    "slug": "midwest-youth-archery",
+    "description": "Non-profit focused on introducing youth to competitive archery.",
+    "subscription": "BASIC",
     "location": {
-      "address": "250 Youth Center Dr",
-      "city": "Chicago",
-      "state": "IL",
-      "zip": "60601",
-      "lat": 41.8781,
-      "lng": -87.6298,
+      "address": "500 Oak St",
+      "city": "Des Moines",
+      "state": "IA",
+      "zip": "50309",
+      "lat": 41.5868,
+      "lng": -93.625,
       "country": "USA"
     },
     "contact": {
-      "phone": "(312) 555-1400",
-      "email": "youth@midwestarchery.org",
-      "website": "https://midwestarchery.org"
+      "phone": "515-555-4444",
+      "email": "",
+      "website": "https://midwestyoutharchery.org"
     },
-    "facilities": [
-      "Indoor Range",
-      "Youth Coaching",
-      "Competitions",
-      "Safety Training"
-    ],
-    "amenities": ["RESTROOMS", "PARKING"],    
-    "hours": {
-      "weekday": "4:00 PM - 8:00 PM",
-      "weekend": "9:00 AM - 5:00 PM"
-    },
-    "membership": {
-      "required": true,
-      "details": "Annual youth membership includes coaching sessions.",
-      "url": "https://midwestarchery.org/join-youth"
-    },
-    "equipment": {
-      "rentalAvailable": false,
-      "types": [],
-      "ranges": {
-        "minDistance": 10,
-        "maxDistance": 30,
-        "units": "yards",
-        "terrainTypes": ["indoor"]
-      },
-      "notes": "BYO equipment; club provides targets."
-    },
+    "facilities": ["INDOOR_RANGE", "KITCHEN"],
+    "amenities": ["LESSONS", "EQUIPMENT_RENTAL", "WHEELCHAIR_ACCESSIBLE"],
+    "equipmentAllowed": ["RECURVE", "COMPOUND"],
     "hostedShoots": [],
-    "imageUrl": "/images/venues/midwest-youth.jpg",
-    "isClaimed": true
-  },
-  {
-    "id": "15",
-    "slug": "southern-bowhunters-preserve",
-    "name": "Southern Bowhunters Preserve",
-    "description": "Expansive preserve for bowhunting practice with 3D animal targets in forested terrain. Includes camping and guided hunts.",
-    "affiliates": [
-      "ASA",
-      "USA Archery"
-    ],
-    "venueType": "RANGE",
-    "tier": "basic",
-    "icon": "bi-crosshairs",
-    "iconColor": "#28a745",
-    "location": {
-      "address": "500 Hunt Trail",
-      "city": "Atlanta",
-      "state": "GA",
-      "zip": "30301",
-      "lat": 33.7490,
-      "lng": -84.3880,
-      "country": "USA"
-    },
-    "contact": {
-      "phone": "(404) 555-1500",
-      "email": "info@southernbowhunters.com",
-      "website": "https://southernbowhunters.com"
-    },
-    "facilities": [
-      "3D Hunting Course",
-      "Camping",
-      "Guided Hunts",
-      "Trail Maintenance"
-    ],
-    "amenities": ["RESTROOMS", "PARKING"],    
-    "hours": {
-      "weekday": "Dawn to Dusk",
-      "weekend": "Dawn to Dusk"
-    },
-    "membership": {
-      "required": false,
-      "details": "Day fees for access; seasonal hunting permits extra.",
-      "url": null
-    },
-    "equipment": {
-      "rentalAvailable": false,
-      "types": [],
-      "ranges": {
-        "minDistance": 20,
-        "maxDistance": 50,
-        "units": "yards",
-        "terrainTypes": ["forested", "hunting"]
-      },
-      "notes": "BYO hunting gear; no rentals on site."
-    },
-    "hostedShoots": [],
-    "imageUrl": "/images/venues/southern-preserve.jpg",
-    "isClaimed": true
-  },
-  {
-    "id": "16",
-    "slug": "urban-pro-shop-chicago",
-    "name": "Urban Pro Shop Chicago",
-    "description": "City-center pro shop with custom bow building, repairs, and urban archery classes. Partners with local ranges.",
-     "affiliates": [
-      "ASA",
-      "USA Archery"
-    ],    
-    "venueType": "PRO_SHOP",
-    "tier": "premium",
-    "icon": "bi-shop",
-    "iconColor": "#dc3545",
-    "location": {
-      "address": "300 City St",
-      "city": "Chicago",
-      "state": "IL",
-      "zip": "60602",
-      "lat": 41.8781,
-      "lng": -87.6298,
-      "country": "USA"
-    },
-    "contact": {
-      "phone": "(312) 555-1600",
-      "email": "shop@urbanarcherychicago.com",
-      "website": "https://urbanarcherychicago.com"
-    },
-    "facilities": [
-      "Custom Builds",
-      "Repairs",
-      "Urban Classes",
-      "Gear Sales"
-    ],
-    "amenities": ["RESTROOMS", "PARKING"],    
-    "hours": {
-      "weekday": "10:00 AM - 7:00 PM",
-      "weekend": "9:00 AM - 6:00 PM"
-    },
-    "membership": {
-      "required": false,
-      "details": "VIP loyalty program for discounts on services.",
-      "url": "https://urbanarcherychicago.com/vip"
-    },
-    "equipment": {
-      "rentalAvailable": true,
-      "types": ["arrows", "accessories"],
-      "ranges": null,
-      "notes": "Rentals for classes; full custom services."
-    },
-    "hostedShoots": [],
-    "imageUrl": "/images/venues/urban-pro-shop.jpg",
-    "isClaimed": true
-  },
-  {
-    "id": "17",
-    "slug": "rocky-mountain-association",
-    "name": "Rocky Mountain Archery Association",
-    "description": "Regional association promoting archery events, coaching certifications, and conservation efforts in the Rockies.",
-    "affiliates": [],    
-    "venueType": "ASSOCIATION",
-    "tier": "freemium",
-    "icon": "bi-people",
-    "iconColor": "#6f42c1",
-    "location": {
-      "address": "200 Mountain Rd",
-      "city": "Denver",
-      "state": "CO",
-      "zip": "80204",
-      "lat": 39.7392,
-      "lng": -104.9903,
-      "country": "USA"
-    },
-    "contact": {
-      "phone": "(303) 555-1700",
-      "email": "info@rockymountainarchery.org",
-      "website": "https://rockymountainarchery.org"
-    },
-    "facilities": [
-      "Event Promotion",
-      "Coaching Certs",
-      "Conservation",
-      "Resources"
-    ],
-    "amenities": ["RESTROOMS", "PARKING"],    
-    "hours": {
-      "weekday": "9:00 AM - 5:00 PM",
-      "weekend": "Closed"
-    },
-    "membership": {
-      "required": false,
-      "details": "Open memberships for individuals and affiliates.",
-      "url": "https://rockymountainarchery.org/membership"
-    },
-    "equipment": {
-      "rentalAvailable": false,
-      "types": [],
-      "ranges": null,
-      "notes": "No equipment; focuses on events and education."
-    },
-    "hostedShoots": [],
-    "imageUrl": "/images/venues/rocky-ASSOCIATION.jpg",
-    "isClaimed": false
+    "isClaimed": false,
+    "sanctioning": ["S3DA"]
   }
 ]

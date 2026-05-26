@@ -1,58 +1,49 @@
 [
   {
     "id": "1",
-    "slug": "example-shoot-1",
-    "name": "Example Shoot 1",
-    "description": "Placeholder for referenced shoot.",
-    "date": "2026-01-01T00:00:00Z",
-    "endDate": "2026-01-01T00:00:00Z",
-    "time": "9:00 AM",
-    "imageUrl": null,
-    "venueId": "1",
+    "shootId": 1,
+    "name": "Black Knolls Fun Shoot",
+    "description": "20 Rinehart 3D targets set up at different ranges thoughout the hills.",
+    "date": "2026-05-20T00:00:00Z",
+    "endDate": "2026-05-23T00:00:00Z",
+    "time": "8:00 AM",
+    "venueId": 1,
     "useVenueLocation": true,
     "shootLocation": {
-      "address": "",
-      "city": "",
-      "state": "",
-      "zip": "",
-      "lat": null,
-      "lng": null,
-      "country": ""
+      "address": "Black Knolls - South of Vernal",
+      "city": "Vernal",
+      "state": "UT",
+      "zip": "84078",
+      "lat": 37.156092,
+      "lng": -113.5688451,
+      "country": "USA"
     },
-    "unverified": false,
-    "shootFormat": ["Target"],
-    "shootClass": ["Competition"],
-    "bowTypes": ["Compound"],
-    "skillLevel": ["Beginner"],
-    "affiliations": [
-      {
-        "name": "Denver Parks & Recreation",
-        "type": "organization"
-      },
-      {
-        "name": "Cherry Creek State Park",
-        "type": "range"
-      }
-    ],
-    "registrationRequired": true,
-    "registrationUrl": "https://example.com",
+    "isVerified": false,
+    "isDestination": false,
+    "shootFormat": ["NOVELTY"],
+    "shootClass": ["YOUTH", "ADULT"],
+    "eventType": ["LEAGUE"],
+    "bowTypes": ["COMPOUND"],
+    "skillLevel": ["BEGINNER", "INTERMEDIATE"],
+    "isRegistration": false,
+    "registrationUrl": "",
     "entryFee": "$20 per participant",
-    "pricing": { "tiers": [{ "name": "Basic", "price": 10 }], "currency": "USD" },
+    "pricing": [
+      { "tier": "ADULT", "cost": 20, "currency": "USD", "note": "Per participant" }
+    ],
     "prizes": "Trophy",
-    "terrain": "Field",
-    "amenities": ["RESTROOMS"],
-    "status": "published"
+    "terrain": ["FLAT"],
+    "amenities": ["RESTROOMS"]
   },
   {
     "id": "2",
-    "slug": "example-shoot-1",
+    "shootId": 2,
     "name": "Example Shoot 1",
     "description": "Placeholder for referenced shoot.",
-    "date": "2026-01-01T00:00:00Z",
-    "endDate": "2026-01-01T00:00:00Z",
+    "date": "2026-05-31T00:00:00Z",
+    "endDate": "2026-06-01T00:00:00Z",
     "time": "9:00 AM",
-    "imageUrl": null,
-    "venueId": "10",
+    "venueId": 1,
     "useVenueLocation": false,
     "shootLocation": {
       "address": "5874 Roger Lane",
@@ -63,40 +54,32 @@
       "lng": -117.1611,
       "country": "USA"
     },
-    "unverified": false,
-    "shootFormat": ["Target"],
-    "shootClass": ["Competition"],
-    "bowTypes": ["Compound"],
-    "skillLevel": ["Beginner"],
-    "affiliations": [
-      {
-        "name": "Denver Parks & Recreation",
-        "type": "organization"
-      },
-      {
-        "name": "Cherry Creek State Park",
-        "type": "range"
-      }
-    ],
-    "registrationRequired": true,
+    "isVerified": false,
+    "isDestination": false,
+    "shootFormat": ["TARGET"],
+    "shootClass": ["YOUTH"],
+    "eventType": ["CAMP"],
+    "bowTypes": ["COMPOUND"],
+    "skillLevel": ["BEGINNER"],
+    "isRegistration": true,
     "registrationUrl": "https://example.com",
     "entryFee": "$20 per participant",
-    "pricing": { "tiers": [{ "name": "Basic", "price": 10 }], "currency": "USD" },
+    "pricing": [
+      { "tier": "YOUTH", "cost": 10, "currency": "USD", "note": "" }
+    ],
     "prizes": "Trophy",
-    "terrain": "Field",
-    "amenities": ["RESTROOMS"],
-    "status": "draft"
+    "terrain": ["FLAT"],
+    "amenities": ["RESTROOMS"]
   },
   {
     "id": "3",
-    "slug": "youth-archery-clinic",
+    "shootId": 3,
     "name": "Youth Archery Clinic",
-    "description": "Beginner-friendly archery clinic for kids ages 8-17.",
-    "date": "2026-05-15T00:00:00Z",
-    "endDate": "2026-05-15T00:00:00Z",
+    "description": "BEGINNER-friendly archery clinic for kids ages 8-17.",
+    "date": "2026-05-23T00:00:00Z",
+    "endDate": "2026-05-25T00:00:00Z",
     "time": "1:00 PM - 4:00 PM",
-    "imageUrl": null,
-    "venueId": "3",
+    "venueId": 3,
     "useVenueLocation": true,
     "shootLocation": {
       "address": "",
@@ -107,52 +90,32 @@
       "lng": null,
       "country": ""
     },
-    "unverified": true,
-    "shootFormat": ["Target"],
-    "shootClass": ["Clinic", "Educational", "Youth"],
-    "bowTypes": ["Compound"],
-    "skillLevel": ["Beginner"],
-    "affiliations": [
-      {
-        "name": "Denver Parks & Recreation",
-        "type": "organization"
-      },
-      {
-        "name": "Cherry Creek State Park",
-        "type": "range"
-      }
-    ],
-    "registrationRequired": true,
-    "registrationUrl": "https://example.com",
+    "isVerified": true,
+    "isDestination": false,
+    "shootFormat": ["TARGET", "THREE_D"],
+    "shootClass": ["ADULT", "YOUTH"],
+    "eventType": ["TOURNAMENT"],
+    "bowTypes": ["COMPOUND"],
+    "skillLevel": ["BEGINNER"],
+    "isRegistration": false,
+    "registrationUrl": "",
     "entryFee": "$20 per participant",
-    "pricing": {
-      "tiers": [
-        {
-          "name": "Family Package",
-          "price": 20,
-          "inclusions": ["shooting_days:1", "equipment:provided"],
-          "details": "Per participant; free for under 8 with adult"
-        }
-      ],
-      "discounts": "youth:free_under_8",
-      "currency": "USD",
-      "generalNotes": "All participants receive certificate."
-    },
+    "pricing": [
+      { "tier": "YOUTH", "cost": 20, "currency": "USD", "note": "Free for under 8 with Adult" }
+    ],
     "prizes": "All participants receive a certificate and participation ribbon.",
-    "terrain": "Park",
-    "amenities": ["WHEELCHAIR_ACCESSIBLE", "PET_FRIENDLY", "FOOD", "CAMPING"],
-    "status": "published"
+    "terrain": ["FLAT"],
+    "amenities": ["WHEELCHAIR_ACCESSIBLE", "PET_FRIENDLY", "FOOD", "CAMPING"]
   },
   {
     "id": "4",
-    "slug": "mountain-field-league",
+    "shootId": 4,
     "name": "Mountain Field League",
-    "description": "Field archery league with marked and unmarked distances through rugged mountain terrain.",
+    "description": "Field archery League with marked and unmarked distances through rugged mountain terrain.",
     "date": "2026-06-01T00:00:00Z",
     "endDate": "2026-06-01T00:00:00Z",
     "time": "9:00 AM - 3:00 PM",
-    "imageUrl": null,
-    "venueId": "1",
+    "venueId": 1,
     "useVenueLocation": false,
     "shootLocation": {
       "address": "Breckenridge Ski Resort",
@@ -163,52 +126,32 @@
       "lng": -106.0384,
       "country": "USA"
     },
-    "unverified": false,
-    "shootFormat": ["Field"],
-    "shootClass": ["League"],
-    "bowTypes": ["Barebow", "Traditional"],
-    "skillLevel": ["Intermediate"],
-    "affiliations": [
-      {
-        "name": "Rocky Mountain Archery Club",
-        "type": "club"
-      },
-      {
-        "name": "Boulder Bowhunters Pro-Shop",
-        "type": "pro-shop"
-      }
-    ],
-    "registrationRequired": true,
+    "isVerified": false,
+    "isDestination": false,
+    "shootFormat": ["TARGET"],
+    "shootClass": ["YOUTH"],
+    "eventType": ["LEAGUE"],
+    "bowTypes": ["TRADITIONAL"],
+    "skillLevel": ["INTERMEDIATE"],
+    "isRegistration": true,
     "registrationUrl": "https://example.com",
     "entryFee": "$30 per event",
-    "pricing": {
-      "tiers": [
-        {
-          "name": "League Event",
-          "price": 30,
-          "inclusions": ["shooting_days:1", "prizes:eligible"],
-          "details": "Points for season championship"
-        }
-      ],
-      "discounts": "family:20_percent_min_3",
-      "currency": "USD",
-      "generalNotes": "Monthly awards; season pass available."
-    },
+    "pricing": [
+      { "tier": "ADULT", "cost": 30, "currency": "USD", "note": "Points for season championship" }
+    ],
     "prizes": "Points accumulate for season championship. Monthly awards.",
-    "terrain": "Mountain",
-    "amenities": ["WHEELCHAIR_ACCESSIBLE", "PET_FRIENDLY", "FOOD", "CAMPING"],
-    "status": "published"
+    "terrain": ["MOUNTAIN"],
+    "amenities": ["WHEELCHAIR_ACCESSIBLE", "PET_FRIENDLY", "FOOD", "CAMPING"]
   },
   {
     "id": "5",
-    "slug": "coastal-target-tournament",
+    "shootId": 5,
     "name": "Coastal Target Tournament",
-    "description": "San Diego regional target archery event with ocean-side shooting lanes. Open to all bow types, wheelchair accessible.",
+    "description": "San Diego regional Target archery event with ocean-side shooting lanes.",
     "date": "2026-08-10T00:00:00Z",
     "endDate": "2026-08-11T00:00:00Z",
     "time": "8:00 AM - 5:00 PM",
-    "imageUrl": null,
-    "venueId": "13",
+    "venueId": 13,
     "useVenueLocation": false,
     "shootLocation": {
       "address": "La Jolla Shores Beach",
@@ -219,48 +162,32 @@
       "lng": -117.3211,
       "country": "USA"
     },
-    "unverified": true,
-    "shootFormat": ["Target"],
-    "shootClass": ["Competition", "Regional"],
-    "bowTypes": ["Compound", "Recurve", "Barebow"],
-    "skillLevel": ["Beginner", "Intermediate", "Expert"],
-    "affiliations": [
-      {
-        "name": "California Archery Association",
-        "type": "organization"
-      }
-    ],
-    "registrationRequired": true,
+    "isVerified": false,
+    "isDestination": false,
+    "shootFormat": ["TARGET"],
+    "shootClass": ["OPEN_FREESTYLE", "ADULT"],
+    "eventType": ["TOURNAMENT"],
+    "bowTypes": ["COMPOUND", "RECURVE", "TRADITIONAL"],
+    "skillLevel": ["BEGINNER", "INTERMEDIATE"],
+    "isRegistration": true,
     "registrationUrl": "https://pacificcoastarchery.com/register",
     "entryFee": "$35 per day",
-    "pricing": {
-      "tiers": [
-        {
-          "name": "Weekend Pass",
-          "price": 60,
-          "inclusions": ["shooting_days:2", "prizes:eligible"],
-          "details": "Save $10 with pass"
-        }
-      ],
-      "discounts": "group:10_percent_4plus",
-      "currency": "USD",
-      "generalNotes": "Includes lunch on Saturday."
-    },
+    "pricing": [
+      { "tier": "ADULT", "cost": 60, "currency": "USD", "note": "Weekend Pass" }
+    ],
     "prizes": "Trophies and gift cards for top finishers.",
-    "terrain": "Coastal",
-    "amenities": ["WHEELCHAIR_ACCESSIBLE", "CAMPING"],
-    "status": "published"
+    "terrain": ["FLAT"],
+    "amenities": ["WHEELCHAIR_ACCESSIBLE", "CAMPING"]
   },
   {
     "id": "6",
-    "slug": "youth-summer-camp",
+    "shootId": 6,
     "name": "Youth Summer Archery Camp",
-    "description": "Week-long camp for young archers with daily coaching, games, and skill-building sessions.",
+    "description": "Week-long Camp for young archers with daily coaching, games, and skill-building sessions.",
     "date": "2026-07-15T00:00:00Z",
     "endDate": "2026-07-19T00:00:00Z",
     "time": "9:00 AM - 3:00 PM",
-    "imageUrl": null,
-    "venueId": "14",
+    "venueId": 14,
     "useVenueLocation": true,
     "shootLocation": {
       "address": "",
@@ -271,48 +198,32 @@
       "lng": null,
       "country": ""
     },
-    "unverified": true,
-    "shootFormat": ["Target"],
-    "shootClass": ["Camp", "Educational", "Youth"],
-    "bowTypes": ["Compound", "Recurve"],
-    "skillLevel": ["Beginner", "Intermediate"],
-    "affiliations": [
-      {
-        "name": "Midwest Youth Archery Club",
-        "type": "club"
-      }
-    ],
-    "registrationRequired": true,
-    "registrationUrl": "https://midwestarchery.org/camp",
+    "isVerified": false,
+    "isDestination": false,
+    "shootFormat": ["TARGET"],
+    "shootClass": ["YOUTH"],
+    "eventType": ["CAMP"],
+    "bowTypes": ["COMPOUND", "RECURVE"],
+    "skillLevel": ["BEGINNER", "INTERMEDIATE"],
+    "isRegistration": true,
+    "registrationUrl": "https://midwestarchery.org/CAMP",
     "entryFee": "$150 for the week",
-    "pricing": {
-      "tiers": [
-        {
-          "name": "Full Camp",
-          "price": 150,
-          "inclusions": ["sessions:5", "equipment:provided", "lunch:daily"],
-          "details": "Ages 8-18"
-        }
-      ],
-      "discounts": "sibling:20_percent",
-      "currency": "USD",
-      "generalNotes": "Limited spots; early registration recommended."
-    },
+    "pricing": [
+      { "tier": "YOUTH", "cost": 150, "currency": "USD", "note": "Ages 8-18" }
+    ],
     "prizes": "Certificates and skill badges for all campers.",
-    "terrain": "Indoor",
-    "amenities": ["CAMPING"],
-    "status": "published"
+    "terrain": ["FLAT"],
+    "amenities": ["CAMPING"]
   },
   {
     "id": "7",
-    "slug": "southern-hunting-challenge",
+    "shootId": 7,
     "name": "Southern Hunting Challenge",
     "description": "3D bowhunting simulation event with realistic animal targets in preserve terrain.",
     "date": "2026-09-20T00:00:00Z",
     "endDate": "2026-09-20T00:00:00Z",
     "time": "7:00 AM - 4:00 PM",
-    "imageUrl": null,
-    "venueId": "15",
+    "venueId": 3,
     "useVenueLocation": false,
     "shootLocation": {
       "address": "Okefenokee Swamp Park",
@@ -323,48 +234,32 @@
       "lng": -82.3668,
       "country": "USA"
     },
-    "unverified": true,
-    "shootFormat": ["3D"],
-    "shootClass": ["Competition", "Hunting"],
-    "bowTypes": ["Compound", "Traditional"],
-    "skillLevel": ["Intermediate", "Expert"],
-    "affiliations": [
-      {
-        "name": "Southern Bowhunters Association",
-        "type": "organization"
-      }
-    ],
-    "registrationRequired": true,
-    "registrationUrl": "https://southernbowhunters.com/challenge",
+    "isVerified": true,
+    "isDestination": false,
+    "shootFormat": ["THREE_D"],
+    "shootClass": ["MASTER_60", "BOWHUNTER"],
+    "eventType": ["LEAGUE"],
+    "bowTypes": ["COMPOUND", "TRADITIONAL"],
+    "skillLevel": ["INTERMEDIATE", "EXPERT"],
+    "isRegistration": false,
+    "registrationUrl": "",
     "entryFee": "$40",
-    "pricing": {
-      "tiers": [
-        {
-          "name": "Hunter Entry",
-          "price": 40,
-          "inclusions": ["course:full", "prizes:eligible"],
-          "details": "Includes guide map"
-        }
-      ],
-      "discounts": null,
-      "currency": "USD",
-      "generalNotes": "BYO equipment required."
-    },
+    "pricing": [
+      { "tier": "ADULT", "cost": 40, "currency": "USD", "note": "Includes guide map" }
+    ],
     "prizes": "Cash prizes for accuracy leaders.",
-    "terrain": "Forested",
-    "amenities": ["FOOD", "CAMPING"],
-    "status": "published"
+    "terrain": ["WOODED"],
+    "amenities": ["FOOD", "CAMPING"]
   },
   {
     "id": "8",
-    "slug": "urban-archery-workshop",
+    "shootId": 8,
     "name": "Urban Archery Workshop",
-    "description": "Hands-on workshop on bow maintenance, tuning, and urban shooting safety at the pro shop.",
+    "description": "Hands-on workshop on bow tuning and Urban shooting safety at the pro shop.",
     "date": "2026-10-05T00:00:00Z",
     "endDate": "2026-10-05T00:00:00Z",
     "time": "6:00 PM - 9:00 PM",
-    "imageUrl": null,
-    "venueId": "16",
+    "venueId": 14,
     "useVenueLocation": false,
     "shootLocation": {
       "address": "Millennium Park Pavilion",
@@ -375,48 +270,32 @@
       "lng": -87.6298,
       "country": "USA"
     },
-    "unverified": true,
-    "shootFormat": ["Workshop"],
-    "shootClass": ["Educational", "Maintenance"],
-    "bowTypes": ["All"],
-    "skillLevel": ["Beginner", "Intermediate"],
-    "affiliations": [
-      {
-        "name": "Urban Pro Shop Chicago",
-        "type": "pro-shop"
-      }
-    ],
-    "registrationRequired": true,
+    "isVerified": false,
+    "isDestination": false,
+    "shootFormat": ["THREE_D"],
+    "shootClass": ["BOWHUNTER"],
+    "eventType": ["EDUCATIONAL"],
+    "bowTypes": ["COMPOUND", "RECURVE"],
+    "skillLevel": ["BEGINNER", "INTERMEDIATE"],
+    "isRegistration": true,
     "registrationUrl": "https://urbanarcherychicago.com/workshop",
     "entryFee": "$25",
-    "pricing": {
-      "tiers": [
-        {
-          "name": "Workshop Fee",
-          "price": 25,
-          "inclusions": ["session:3hr", "tools:provided"],
-          "details": "Bring your bow"
-        }
-      ],
-      "discounts": "loyalty:free_for_vip",
-      "currency": "USD",
-      "generalNotes": "Discount for shop customers."
-    },
+    "pricing": [
+      { "tier": "ADULT", "cost": 25, "currency": "USD", "note": "3hr session" }
+    ],
     "prizes": "Discount coupon for shop services.",
-    "terrain": "Urban",
-    "amenities": ["WHEELCHAIR_ACCESSIBLE", "PET_FRIENDLY"],
-    "status": "published"
+    "terrain": ["FLAT"],
+    "amenities": ["WHEELCHAIR_ACCESSIBLE", "PET_FRIENDLY"]
   },
   {
     "id": "9",
-    "slug": "rocky-mountain-certification",
+    "shootId": 9,
     "name": "Rocky Mountain Coaching Certification",
-    "description": "One-day certification course for archery coaches, covering safety, techniques, and event management.",
+    "description": "One-day certification course for archery coaches.",
     "date": "2026-11-12T00:00:00Z",
     "endDate": "2026-11-12T00:00:00Z",
     "time": "9:00 AM - 5:00 PM",
-    "imageUrl": null,
-    "venueId": "17",
+    "venueId": 14,
     "useVenueLocation": true,
     "shootLocation": {
       "address": "",
@@ -427,40 +306,21 @@
       "lng": null,
       "country": ""
     },
-    "unverified": true,
-    "shootFormat": ["Certification"],
-    "shootClass": ["Educational", "Professional"],
-    "bowTypes": ["All"],
-    "skillLevel": ["Expert"],
-    "affiliations": [
-      {
-        "name": "USA Archery",
-        "type": "organization"
-      },
-      {
-        "name": "Rocky Mountain Archery Association",
-        "type": "assoc"
-      }
-    ],
-    "registrationRequired": true,
+    "isVerified": false,
+    "isDestination": false,
+    "shootFormat": ["TARGET"],
+    "shootClass": ["PROFESSIONAL"],
+    "eventType": ["EDUCATIONAL"],
+    "bowTypes": ["COMPOUND", "RECURVE"],
+    "skillLevel": ["EXPERT"],
+    "isRegistration": true,
     "registrationUrl": "https://rockymountainarchery.org/cert",
     "entryFee": "$100",
-    "pricing": {
-      "tiers": [
-        {
-          "name": "Certification Course",
-          "price": 100,
-          "inclusions": ["training:full_day", "materials:provided", "cert:upon_completion"],
-          "details": "Level 1 Coach"
-        }
-      ],
-      "discounts": "member:20_percent",
-      "currency": "USD",
-      "generalNotes": "Prerequisites: Prior experience recommended."
-    },
+    "pricing": [
+      { "tier": "ADULT", "cost": 100, "currency": "USD", "note": "Level 1 Coach" }
+    ],
     "prizes": "Official USA Archery certification.",
-    "terrain": "Classroom",
-    "amenities": ["RESTROOMS"],
-    "status": "published"
+    "terrain": ["ROCKY"],
+    "amenities": ["RESTROOMS"]
   }
 ]

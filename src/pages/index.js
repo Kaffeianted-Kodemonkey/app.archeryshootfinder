@@ -1,3 +1,4 @@
+// This is the main page that runs the whole app.  
 import * as React from "react"
 import { useState, useEffect, useMemo } from "react"
 import { graphql } from "gatsby"
@@ -6,12 +7,11 @@ import Layout from "../components/layout/Layout"
 import Seo from "../components/seo"
 import Tabs from "../components/list/tabs"
 import { getDateBoundaries, filterByDateRange, filterByDistance } from "../utils/shootFilters"
-import { getDistance } from "../utils/distance"
-import venuesData from '../data/venues.json'; //Call the json file.
+//import { getDistance } from "../utils/distance"
 
 const IndexPage = ({ data }) => {
-  const rawShoots = data.allShootsJson.nodes
-  const rawVenues = data.allVenuesJson.nodes
+  const Shoots = data.allShootsJson.nodes
+  const Venues = data.allVenuesJson.nodes
   const [view, setView] = useState("map")
 
   // Local state for filtered shoots, location, tab (decoupled from SearchContext)
@@ -28,38 +28,43 @@ const IndexPage = ({ data }) => {
     if (activeTabParam) setActiveTab(activeTabParam)
   }, [])
 
-  // Join venue data to each shoot for full access in components
-  const shootsWithVenues = useMemo(() => rawShoots.map(shoot => {
-    const venue = venuesData.find(v => v.id === shoot.venueId) || null;
-    const effectiveLocation = (shoot.useVenueLocation !== false && venue?.location)
-      ? venue.location
-      : (shoot.shootLocation || venue?.location);  // Fallback to venue if no custom
-    return {
-      ...shoot,
-      venue,
-      effectiveLocation
-    };
-  }), [rawShoots, rawVenues])
+  // Just calculate the effectiveLocation
+  const shootsWithVenues = useMemo(() => {
+    return Shoots.map(shoot => {
+      // Use the venue object Gatsby already attached to the shoot
+      const venue = shoot.venue;
+
+      const effectiveLocation = (shoot.useVenueLocation !== false && venue?.location)
+        ? venue.location
+        : (shoot.shootLocation || venue?.location);
+
+      return {
+        ...shoot,
+        // No need to overwrite venue, it's already there from GraphQL!
+        effectiveLocation
+      };
+    });
+  }, [Shoots]);
 
   // Date boundaries using util
-  const { now, twentyOneDaysFromNow } = useMemo(() => getDateBoundaries(), [])
+  const { now, currentTab } = useMemo(() => getDateBoundaries(), [])
 
   // Computed current/upcoming using utils (date range filter + sort)
   const computedCurrentShoots = useMemo(() =>
-    filterByDateRange(shootsWithVenues, now, twentyOneDaysFromNow),
-    [shootsWithVenues, now, twentyOneDaysFromNow]
+    filterByDateRange(shootsWithVenues, now, currentTab),
+    [shootsWithVenues, now, currentTab]
   )
 
   const computedUpcomingShoots = useMemo(() =>
-    filterByDateRange(shootsWithVenues, twentyOneDaysFromNow, new Date('2100-01-01')),
-    [shootsWithVenues, twentyOneDaysFromNow]
+    filterByDateRange(shootsWithVenues, currentTab, new Date('2100-01-01')),
+    [shootsWithVenues, currentTab]
   )
 
-  // All published shoots (fallback)
-  const allPublishedShoots = useMemo(() =>
-    filterByDateRange(shootsWithVenues, new Date(0), new Date('2100-01-01')),
-    [shootsWithVenues]
-  )
+  /*  // All published shoots (fallback)
+   const allPublishedShoots = useMemo(() =>
+     filterByDateRange(shootsWithVenues, new Date(0), new Date('2100-01-01')),
+     [shootsWithVenues]
+   ) */
 
   // Synchronous initial fallback: Set current to upcoming if empty
   const initialCurrentShoots = useMemo(() => {
@@ -106,27 +111,30 @@ const IndexPage = ({ data }) => {
       );
     };
     getUserLocation();
-  }, [computedCurrentShoots, computedUpcomingShoots, allPublishedShoots]);
+  }, [computedCurrentShoots, computedUpcomingShoots/* , allPublishedShoots */]);
 
-  // Compute venueShootCounts using ID matching (verifies schema via venueId)
-  const venueShootCounts = useMemo(() => rawVenues.reduce((acc, venue) => {
-    const hostedIds = venue.hostedShoots || []
-    const count = rawShoots.filter(shoot => hostedIds.includes(shoot.id) && new Date(shoot.date) > now && shoot.status === "published").length
-    acc[venue.id] = count
-    return acc
-  }, {}), [rawVenues, rawShoots, now])
+  const venueShootCounts = useMemo(() => {
+    return Venues.reduce((acc, venue) => {
+      // venue.hostedShoots is now an array of objects, not strings
+      const validShoots = (venue.hostedShoots || []).filter(shoot => {
+        const shootDate = new Date(shoot.date);
+        return shootDate > now;
+      });
+
+      acc[venue.id] = validShoots.length;
+      return acc;
+    }, {});
+  }, [Venues, now]);
+
 
   // Simplified isFiltered: true if distance applied and results reduced
-  const isFiltered = useMemo(() => {
-    return !!userLocation && (filteredCurrentShoots.length < allPublishedShoots.length || filteredUpcomingShoots.length < computedUpcomingShoots.length);
-  }, [userLocation, filteredCurrentShoots, filteredUpcomingShoots, allPublishedShoots, computedUpcomingShoots]);
 
   // Map view props (dynamic based on activeTab)
   const mapProps = useMemo(() => {
     let shootsToPass = [];
     let venuesToPass = [];
     if (activeTab === 'venue') {
-      venuesToPass = rawVenues;
+      venuesToPass = Venues;
     } else if (activeTab === 'current') {
       shootsToPass = filteredCurrentShoots;
     } else if (activeTab === 'upcoming') {
@@ -141,24 +149,24 @@ const IndexPage = ({ data }) => {
       userLocation: userLocation,
       activeTab: activeTab  // New: Pass activeTab to map
     };
-  }, [activeTab, filteredCurrentShoots, filteredUpcomingShoots, rawVenues, userLocation]);
+  }, [activeTab, filteredCurrentShoots, filteredUpcomingShoots, Venues, userLocation]);
 
   // List props with local data (no SearchContext)
   const listProps = useMemo(() => {
     return {
       shoots: shootsWithVenues,
-      venues: rawVenues,
+      venues: Venues,
       currentShoots: filteredCurrentShoots,
       upcomingShoots: filteredUpcomingShoots,
       venueShootCounts,
-      isFiltered,
-      totalCount: shootsWithVenues.length + rawVenues.length,
+      /* isFiltered, */
+      totalCount: shootsWithVenues.length + Venues.length,
       resetFilters: () => { }, // Placeholder; can implement local reset if needed
       userLocation: userLocation,
       activeTab,
       setActiveTab,
     };
-  }, [shootsWithVenues, rawVenues, filteredCurrentShoots, filteredUpcomingShoots, venueShootCounts, isFiltered, userLocation, activeTab, setActiveTab])
+  }, [shootsWithVenues, Venues, filteredCurrentShoots, filteredUpcomingShoots, venueShootCounts, /* isFiltered,  */ userLocation, activeTab, setActiveTab])
 
 
   const listViewContent = <Tabs {...listProps} />
@@ -192,62 +200,109 @@ export const Head = () => <Seo title="Home" />
 export default IndexPage
 
 export const query = graphql`
-  query DirectoryQuery {
-allShootsJson(sort: { date: ASC }) {
+  query AllData {
+    # 1. Fetch the Venues
+    allVenuesJson {
       nodes {
         id
+        venueId
         slug
         name
         description
-        date
-        endDate
-        time
-        venueId
-        useVenueLocation
-        shootLocation {
+        venueType
+        subscription
+        icon
+        iconColor
+        location {
           address
           city
           state
           zip
           lat
           lng
-          country
         }
-        unverified
-        shootFormat
-        shootClass
-        bowTypes
-        skillLevel
-        terrain        
-        pricing
-        prizes
-        amenities
-        registrationRequired
-        registrationUrl
-        entryFee
-        status
-      }
-    }
-    allVenuesJson {
-      nodes {
-        id
-        slug
-        name
-        description
-        venueType
-        tier
-        icon
-        iconColor
-        location  # JSON
-        contact  # JSON
+        contact {
+          phone
+          email
+          website
+          facebook
+          instagram
+        }
         facilities
-        equipment  # JSON
-        hours  # JSON
-        membership  # JSON
-        hostedShoots  # [String] IDs
+        amenities
+        equipmentAllowed
+        customEquipmentRules
+        hours {
+          day
+          open
+          closed
+        }
+        membership
+        hostedShoots {
+          id
+          # name
+          date
+          # shootFormat
+        }
         imageUrl
         isClaimed
       }
     }
+
+    # 2. ADD THIS: Fetch the Shoots
+    allShootsJson {
+      nodes {
+        id
+        shootId
+        name
+        description
+        date
+        endDate
+        time
+        amenities
+        useVenueLocation
+        shootLocation {
+          lat
+          lng
+          city
+          state
+        }
+        shootFormat
+        shootClass
+        terrain
+        bowTypes
+        skillLevel
+        pricing {
+          cost
+          currency
+          note
+          tier
+        }
+        prizes
+        isVerified
+        isRegistration
+        
+        # Link back to venue for your "shootsWithVenues" logic
+        venueId
+        venue {
+          venueId
+          isClaimed
+          name
+          contact {
+            phone
+            email
+          }
+          location {
+            address
+            city
+            state
+            lat
+            lng
+          }
+          subscription
+        }
+      }
+    }
   }
 `
+
