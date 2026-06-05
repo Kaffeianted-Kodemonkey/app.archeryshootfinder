@@ -2,12 +2,13 @@
 import * as React from "react"
 import { useState } from "react"
 import { Link } from "gatsby"
+import InstallButton from "../InstallButton"
 
 const Navbar = ({ siteTitle, siteDesc, view, setView }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   const handleLinkClick = () => {
-    setIsMenuOpen(false) // Close menu on any link click
+    setIsMenuOpen(false)
   }
 
   return (
@@ -16,11 +17,21 @@ const Navbar = ({ siteTitle, siteDesc, view, setView }) => {
       style={{ zIndex: 1050 }}
     >
       <div className="container-fluid">
-        <Link className="navbar-brand fw-bold" to="/">
+        {/* Logo + Brand */}
+        <Link className="navbar-brand d-flex align-items-center fw-bold" to="/">
+          <img
+            src="/images/logo-sticker-pop.png"
+            alt="Archery Shoot Finder"
+            height="32"
+            className="me-2"
+          />
           {siteTitle}
         </Link>
-        <small className="text-white fs-5 pe-2">{siteDesc}</small>
-        <i class="bi bi-bullseye text-white me-3"></i>
+
+        <small className="text-white fs-5 pe-2 d-none d-md-inline">
+          {siteDesc}
+        </small>
+
         <button
           className="navbar-toggler"
           type="button"
@@ -31,6 +42,7 @@ const Navbar = ({ siteTitle, siteDesc, view, setView }) => {
         >
           <span className="navbar-toggler-icon"></span>
         </button>
+
         <div
           className={`collapse navbar-collapse ${isMenuOpen ? "show" : ""}`}
           id="navbarNav"
@@ -39,35 +51,22 @@ const Navbar = ({ siteTitle, siteDesc, view, setView }) => {
             <li className="nav-item">
               <Link
                 to="/pricing"
-                className={`nav-link ${view === "list" ? "active" : ""}`}
-                onClick={() => {
-                  setView("list")
-                  handleLinkClick()
-                }}
+                className="nav-link"
+                onClick={handleLinkClick}
               >
                 Price Tiers
               </Link>
             </li>
             <li className="nav-item">
-              <Link
-                to="/"
-                className={`nav-link ${view === "map" ? "active" : ""}`}
-                onClick={() => {
-                  setView("map")
-                  handleLinkClick()
-                }}
-              >
+              <Link to="/" className="nav-link" onClick={handleLinkClick}>
                 View Profile
               </Link>
             </li>
             <li className="nav-item">
               <Link
                 to="https://archeryshootfinder.com"
-                className={`nav-link ${view === "list" ? "active" : ""}`}
-                onClick={() => {
-                  setView("list")
-                  handleLinkClick()
-                }}
+                className="nav-link"
+                onClick={handleLinkClick}
               >
                 FAQ
               </Link>
@@ -75,26 +74,17 @@ const Navbar = ({ siteTitle, siteDesc, view, setView }) => {
             <li className="nav-item">
               <Link
                 to="https://archeryshootfinder.com/#join"
-                className={`nav-link ${view === "list" ? "active" : ""}`}
-                onClick={() => {
-                  setView("list")
-                  handleLinkClick()
-                }}
+                className="nav-link"
+                onClick={handleLinkClick}
               >
                 Feedback
               </Link>
             </li>
           </ul>
-          {/*<ul className="navbar-nav">
-            <li className="nav-item">
-              <button
-                className="btn btn-outline-light btn-sm"
-                onClick={() => setShowSearch(!showSearch)}
-              >
-                <i className="bi bi-search me-1"></i>Search
-              </button>
-            </li>
-          </ul>*/}
+
+          <div className="d-flex align-items-center gap-2">
+            <InstallButton />
+          </div>
         </div>
       </div>
     </nav>

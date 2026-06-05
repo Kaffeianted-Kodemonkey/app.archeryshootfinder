@@ -1,12 +1,12 @@
+// src/components/layout/Layout.js
 import * as React from "react"
 import { useStaticQuery, graphql } from "gatsby"
-import { useRef } from "react" // Add this
+import { useRef } from "react"
 
 import Navbar from "./Navbar"
 import MapComponent from "../map/map"
 import Footer from "./Footer"
-
-//import Tabs from "../list/tabs"
+import OfflineIndicator from "../OfflineIndicator" // ← ADD THIS
 
 const Layout = ({
   children,
@@ -30,22 +30,18 @@ const Layout = ({
   const mainClass = "container-fluid gx-0 p-0 flex-grow-1 pb-3"
   const finalMainClass = view === "map" ? `${mainClass} map-view` : mainClass
 
-  // const handleOpenSearch = () => {
-  //   if (searchDrawerRef.current) {
-  //     searchDrawerRef.current.show()
-  //   }
-  // }
-
   return (
     <>
+      <OfflineIndicator />{" "}
+      {/* ← ADD THIS (fixed-top, auto-offsets below navbar) */}
       <Navbar
         siteTitle={data.site.siteMetadata?.title || `Title`}
         siteDesc={data.site.siteMetadata?.description || `Description`}
         view={view}
         setView={setView}
       />
-
       <main className={finalMainClass}>
+        {/* ... rest of the component stays exactly the same ... */}
         {view === "map" && mapProps && listProps ? (
           <div className="d-flex flex-column h-100">
             <div
@@ -88,9 +84,7 @@ const Layout = ({
           children
         )}
       </main>
-
       <Footer />
-
       {/* {!showSearch && (
         <div
           className="fixed-bottom bg-light border-top d-flex align-items-center justify-content-center py-2 container-fluid gx-0 p-0"
@@ -117,7 +111,6 @@ const Layout = ({
           ></div>
         </div>
       )} */}
-
       {/* <SearchDrawer ref={searchDrawerRef} /> */}
     </>
   )

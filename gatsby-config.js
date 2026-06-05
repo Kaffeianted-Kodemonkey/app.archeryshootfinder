@@ -47,24 +47,36 @@ module.exports = {
       options: {
         name: `Archery Shoot Finder`,
         short_name: `ASFinder`,
+        description: `Find archery shoots, tournaments, and events near you`,
         start_url: `/`,
+        scope: `/`,
+        display: `standalone`,
+        orientation: `portrait`,
         background_color: `#ffffff`,
-        theme_color: `#C2410C`, // Terracotta
+        theme_color: `#C2410C`,
+        lang: `en`,
+        categories: [`sports`, `events`, `outdoors`],
         icons: [
           {
-            src: `src/images/gatsby-icon.png`,
+            src: `src/images/icon-192.png`,
             sizes: `192x192`,
             type: `image/png`,
           },
           {
-            src: `src/images/gatsby-icon.png`,
+            src: `src/images/icon-512.png`,
             sizes: `512x512`,
             type: `image/png`,
+          },
+          {
+            src: `src/images/icon-512.png`,
+            sizes: `512x512`,
+            type: `image/png`,
+            purpose: `maskable`,
           },
         ],
       },
     },
     `gatsby-plugin-offline`,
-    `gatsby-transformer-json`, // Parses JSON files into GraphQL nodes
+    `gatsby-transformer-json`,
   ],
 }
