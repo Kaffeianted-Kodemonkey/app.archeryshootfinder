@@ -53,12 +53,273 @@
       "email": "info@milehigharchery.com",
       "website": "https://milehigharchery.com"
     },
-    "facilities": ["INDOOR_RANGE", "PRO_SHOP", "KITCHEN"],
+    "facilities": ["INDOOR_RANGE"],
     "amenities": ["WIFI", "FOOD", "WHEELCHAIR_ACCESSIBLE"],
     "equipmentAllowed": ["COMPOUND", "RECURVE", "TARGET_ARROWS_ONLY"],
     "hostedShoots": [3],
     "isClaimed": true,
     "sanctioning": ["USA_ARCHERY", "ASA"]
+  },
+  {
+    "id": "4",
+    "venueId": 4,
+    "name": "Total Archery Challenge",
+    "venueType": "ORGANIZATION",
+    "slug": "total-archery-challenge",
+    "description": "The premier mountain 3D archery experience in the United States, hosting massive multi-day rugged outdoor shoots across the country.",
+    "subscription": "FREEMIUM",
+    "location": {
+      "address": "Flagship National Tour",
+      "city": "Salt Lake City",
+      "state": "UT",
+      "zip": "84101",
+      "lat": 40.7608,
+      "lng": -111.891,
+      "country": "USA"
+    },
+    "contact": {
+      "phone": "",
+      "email": "info@totalarcherychallenge.com",
+      "website": "https://totalarcherychallenge.com"
+    },
+    "facilities": ["OUTDOOR_RANGE"],
+    "amenities": ["PARKING", "RESTROOMS"],
+    "equipmentAllowed": ["COMPOUND", "RECURVE", "LONGBOW"],
+    "hostedShoots": [],
+    "isClaimed": false,
+    "sanctioning": []
+  },
+  {
+    "id": "5",
+    "venueId": 5,
+    "name": "Archery Shooters Association",
+    "venueType": "ORGANIZATION",
+    "slug": "archery-shooters-association-asa",
+    "description": "National governing body hosting the legendary Pro/Am 3D archery tournament trail featuring elite competition and consumer vendor villages.",
+    "subscription": "FREEMIUM",
+    "location": {
+      "address": "National Headquarters",
+      "city": "Kennesaw",
+      "state": "GA",
+      "zip": "30144",
+      "lat": 34.0234,
+      "lng": -84.6155,
+      "country": "USA"
+    },
+    "contact": {
+      "phone": "",
+      "email": "info@asaarchery.com",
+      "website": "https://asaarchery.com"
+    },
+    "facilities": ["OUTDOOR_RANGE"],
+    "amenities": ["PARKING", "RESTROOMS", "FOOD"],
+    "equipmentAllowed": ["COMPOUND", "RECURVE", "LONGBOW", "CROSSBOW"],
+    "hostedShoots": [],
+    "isClaimed": false,
+    "sanctioning": ["ASA"]
+  },
+  {
+    "id": "6",
+    "venueId": 6,
+    "name": "International Bowhunting Organization",
+    "venueType": "ORGANIZATION",
+    "slug": "international-bowhunting-organization-ibo",
+    "description": "Host of the National Triple Crown and World Championship 3D events designed to promote and protect the sport of bowhunting.",
+    "subscription": "FREEMIUM",
+    "location": {
+      "address": "National Headquarters",
+      "city": "Vermilion",
+      "state": "OH",
+      "zip": "44089",
+      "lat": 41.4223,
+      "lng": -82.3165,
+      "country": "USA"
+    },
+    "contact": {
+      "phone": "",
+      "email": "ibo@ibo.net",
+      "website": "https://ibo.net"
+    },
+    "facilities": ["OUTDOOR_RANGE"],
+    "amenities": ["PARKING", "RESTROOMS", "FOOD"],
+    "equipmentAllowed": ["COMPOUND", "RECURVE", "LONGBOW"],
+    "hostedShoots": [],
+    "isClaimed": false,
+    "sanctioning": ["IBO"]
+  },
+  {
+    "id": "7",
+    "venueId": 7,
+    "name": "Lancaster Archery Supply Center",
+    "venueType": "PRO_SHOP",
+    "slug": "lancaster-archery-supply-center",
+    "description": "The largest archery pro shop complex in the world and host of the world-famous Lancaster Archery Classic indoor tournament.",
+    "subscription": "FREEMIUM",
+    "location": {
+      "address": "2195-A Old Philadelphia Pike",
+      "city": "Lancaster",
+      "state": "PA",
+      "zip": "17602",
+      "lat": 40.0391,
+      "lng": -76.2274,
+      "country": "USA"
+    },
+    "contact": {
+      "phone": "855-922-7769",
+      "email": "info@lancasterarchery.com",
+      "website": "https://lancasterarchery.com"
+    },
+    "facilities": ["INDOOR_RANGE", "OUTDOOR_RANGE"],
+    "amenities": ["PARKING", "RESTROOMS"],
+    "equipmentAllowed": ["COMPOUND", "RECURVE", "LONGBOW"],
+    "hostedShoots": [],
+    "isClaimed": false,
+    "sanctioning": ["USA_ARCHERY"]
+  },
+  {
+    "id": "8",
+    "venueId": 8,
+    "name": "NFAA Easton Yankton Archery Center",
+    "venueType": "RANGE",
+    "slug": "nfaa-easton-yankton-archery-center",
+    "description": "The world's largest dedicated archery complex, featuring massive indoor ranges, field courses, 3D loops, and Olympic targets.",
+    "subscription": "FREEMIUM",
+    "location": {
+      "address": "4009 Whiting Dr",
+      "city": "Yankton",
+      "state": "SD",
+      "zip": "57078",
+      "lat": 42.8885,
+      "lng": -97.4398,
+      "country": "USA"
+    },
+    "contact": {
+      "phone": "605-260-9282",
+      "email": "info@yanktonarcherycenter.org",
+      "website": "https://yanktonarcherycenter.org"
+    },
+    "facilities": ["INDOOR_RANGE", "OUTDOOR_RANGE", "THREE_D_COURSE"],
+    "amenities": ["PARKING", "RESTROOMS"],
+    "equipmentAllowed": ["COMPOUND", "RECURVE", "LONGBOW", "CROSSBOW"],
+    "hostedShoots": [],
+    "isClaimed": false,
+    "sanctioning": ["NFAA", "USA_ARCHERY"]
+  },
+  {
+    "id": "9",
+    "venueId": 9,
+    "name": "The Vegas Shoot (NFAA)",
+    "venueType": "ORGANIZATION",
+    "slug": "the-vegas-shoot-nfaa",
+    "description": "The largest and most prestigious indoor archery tournament in the world, attracting thousands of global archers to Las Vegas annually.",
+    "subscription": "FREEMIUM",
+    "location": {
+      "address": "South Point Hotel & Casino",
+      "city": "Las Vegas",
+      "state": "NV",
+      "zip": "89183",
+      "lat": 36.0116,
+      "lng": -115.1755,
+      "country": "USA"
+    },
+    "contact": {
+      "phone": "",
+      "email": "info@thevegasshoot.com",
+      "website": "https://thevegasshoot.com"
+    },
+    "facilities": ["INDOOR_RANGE"],
+    "amenities": ["PARKING", "RESTROOMS"],
+    "equipmentAllowed": ["COMPOUND", "RECURVE", "LONGBOW"],
+    "hostedShoots": [],
+    "isClaimed": false,
+    "sanctioning": ["NFAA"]
+  },
+  {
+    "id": "10",
+    "venueId": 10,
+    "name": "Mountain Archery Fest",
+    "venueType": "ORGANIZATION",
+    "slug": "mountain-archery-fest",
+    "description": "A premier family-oriented mountain 3D archery festival hosting breathtaking multi-day backcountry shoots across western ski resorts.",
+    "subscription": "FREEMIUM",
+    "location": {
+      "address": "Flagship Western Tour",
+      "city": "Denver",
+      "state": "CO",
+      "zip": "80202",
+      "lat": 39.7392,
+      "lng": -104.9903,
+      "country": "USA"
+    },
+    "contact": {
+      "phone": "",
+      "email": "info@mountainarcheryfest.com",
+      "website": "https://mountainarcheryfest.com"
+    },
+    "facilities": ["OUTDOOR_RANGE"],
+    "amenities": ["PARKING", "RESTROOMS", "FOOD"],
+    "equipmentAllowed": ["COMPOUND", "RECURVE", "LONGBOW"],
+    "hostedShoots": [],
+    "isClaimed": false,
+    "sanctioning": []
+  },
+  {
+    "id": "11",
+    "venueId": 11,
+    "name": "Straight Defense / S3DA National Trails",
+    "venueType": "ORGANIZATION",
+    "slug": "s3da-national-championships",
+    "description": "Host of national-level youth championship destination tournaments across the United States, specializing in 3D, indoor, and target circuits.",
+    "subscription": "FREEMIUM",
+    "location": {
+      "address": "National Headquarters",
+      "city": "London",
+      "state": "KY",
+      "zip": "40741",
+      "lat": 37.1289,
+      "lng": -84.0833,
+      "country": "USA"
+    },
+    "contact": {
+      "phone": "",
+      "email": "info@s3da.org",
+      "website": "https://s3da.org"
+    },
+    "facilities": ["INDOOR_RANGE", "OUTDOOR_RANGE"],
+    "amenities": ["PARKING", "RESTROOMS"],
+    "equipmentAllowed": ["COMPOUND", "RECURVE", "LONGBOW"],
+    "hostedShoots": [],
+    "isClaimed": false,
+    "sanctioning": ["S3DA"]
+  },
+  {
+    "id": "12",
+    "venueId": 12,
+    "name": "KStraight Archery National Events",
+    "venueType": "ORGANIZATION",
+    "slug": "kstraight-archery-events",
+    "description": "National organization specializing in major destination pop-up 3D targets, competitive outdoor field events, and bowhunter education courses.",
+    "subscription": "FREEMIUM",
+    "location": {
+      "address": "Regional Tour Hub",
+      "city": "La Jolla",
+      "state": "CA",
+      "zip": "92037",
+      "lat": 32.8466,
+      "lng": -117.3211,
+      "country": "USA"
+    },
+    "contact": {
+      "phone": "",
+      "email": "events@kstraightarchery.org",
+      "website": ""
+    },
+    "facilities": ["OUTDOOR_RANGE"],
+    "amenities": ["PARKING", "RESTROOMS"],
+    "equipmentAllowed": ["COMPOUND", "RECURVE", "LONGBOW", "CROSSBOW"],
+    "hostedShoots": [],
+    "isClaimed": false,
+    "sanctioning": []
   },
   {
     "id": "13",
@@ -78,12 +339,12 @@
       "country": "USA"
     },
     "contact": {
-        "phone": "",
-        "email": "admin@coastalarchers.org",
-        "website": ""
+      "phone": "",
+      "email": "admin@coastalarchers.org",
+      "website": ""
     },
     "facilities": ["OUTDOOR_RANGE"],
-    "amenities": ["PARKING", "PICNIC_AREA"],
+    "amenities": ["PARKING"],
     "equipmentAllowed": ["COMPOUND", "RECURVE", "LONGBOW", "CROSSBOW"],
     "hostedShoots": [],
     "isClaimed": false,

@@ -5,16 +5,14 @@
  */
 
 import React from "react"
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.bundle.min.js'; // Add this for JS components (popper, dropdowns, offcanvas)
-import './src/styles/global.css';
-
-import { SearchProvider } from './src/components/context/SearchContext';
+import "bootstrap/dist/css/bootstrap.min.css"
+import "bootstrap/dist/js/bootstrap.bundle.min.js" // Add this for JS components (popper, dropdowns, offcanvas)
+import "./src/styles/global.css"
 
 // Wrap root element with SearchProvider
-export const wrapRootElement = ({ element }) => (
-  <SearchProvider>{element}</SearchProvider>
-);
+// export const wrapRootElement = ({ element }) => (
+//   <SearchProvider>{element}</SearchProvider>
+// );
 
 // Service Worker for PWA (uncomment if needed)
 /* if ('serviceWorker' in navigator) {

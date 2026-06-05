@@ -10,7 +10,7 @@
 module.exports = {
   siteMetadata: {
     title: `ASFinder`,
-    description: `Don't Quiver - Find a Shoot!`,
+    description: `Find your Next Target!`,
     author: `@archeryshootfinder`,
     siteUrl: `https://archeryshootfinder.com`,
   },
@@ -23,9 +23,9 @@ module.exports = {
         path: `${__dirname}/src/images`,
       },
     },
-    
+
     // Nodes: allDataJson; filter by name for specific files (e.g., {name: {eq: "shoots"}})
-   // Separate sourcing for venues and shoots to create dedicated allVenuesJson and allShootsJson types
+    // Separate sourcing for venues and shoots to create dedicated allVenuesJson and allShootsJson types
     {
       resolve: `gatsby-source-filesystem`,
       options: {

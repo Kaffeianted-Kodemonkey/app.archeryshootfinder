@@ -2,10 +2,11 @@
   {
     "id": "1",
     "shootId": 1,
+    "seriesId": null,
     "name": "Black Knolls Fun Shoot",
     "description": "20 Rinehart 3D targets set up at different ranges thoughout the hills.",
-    "date": "2026-05-20T00:00:00Z",
-    "endDate": "2026-05-23T00:00:00Z",
+    "date": "2026-05-20",
+    "endDate": "2026-05-23",
     "time": "8:00 AM",
     "venueId": 1,
     "useVenueLocation": true,
@@ -27,9 +28,13 @@
     "skillLevel": ["BEGINNER", "INTERMEDIATE"],
     "isRegistration": false,
     "registrationUrl": "",
-    "entryFee": "$20 per participant",
+    "entryFee": "$20",
     "pricing": [
-      { "tier": "ADULT", "cost": 20, "currency": "USD", "note": "Per participant" }
+      {
+        "tier": "ADULT",
+        "options": [{ "days": 1, "cost": 60, "currency": "USD" }],
+        "note": ""
+      }
     ],
     "prizes": "Trophy",
     "terrain": ["FLAT"],
@@ -38,20 +43,21 @@
   {
     "id": "2",
     "shootId": 2,
-    "name": "Example Shoot 1",
+    "seriesId": null,
+    "name": "Test Shoot",
     "description": "Placeholder for referenced shoot.",
-    "date": "2026-05-31T00:00:00Z",
-    "endDate": "2026-06-01T00:00:00Z",
+    "date": "2026-06-01",
+    "endDate": "2026-06-05",
     "time": "9:00 AM",
     "venueId": 1,
     "useVenueLocation": false,
     "shootLocation": {
-      "address": "5874 Roger Lane",
-      "city": "San Diego",
-      "state": "CA",
-      "zip": "92101",
-      "lat": 32.7157,
-      "lng": -117.1611,
+      "address": "Glade Park",
+      "city": "Grand Junction",
+      "state": "CO",
+      "zip": "81523",
+      "lat": 38.9936,
+      "lng": -108.7409,
       "country": "USA"
     },
     "isVerified": false,
@@ -63,9 +69,13 @@
     "skillLevel": ["BEGINNER"],
     "isRegistration": true,
     "registrationUrl": "https://example.com",
-    "entryFee": "$20 per participant",
+    "entryFee": "$10",
     "pricing": [
-      { "tier": "YOUTH", "cost": 10, "currency": "USD", "note": "" }
+      {
+        "tier": "ADULT",
+        "options": [{ "days": 1, "cost": 60, "currency": "USD" }],
+        "note": ""
+      }
     ],
     "prizes": "Trophy",
     "terrain": ["FLAT"],
@@ -74,10 +84,11 @@
   {
     "id": "3",
     "shootId": 3,
+    "seriesId": null,
     "name": "Youth Archery Clinic",
     "description": "BEGINNER-friendly archery clinic for kids ages 8-17.",
-    "date": "2026-05-23T00:00:00Z",
-    "endDate": "2026-05-25T00:00:00Z",
+    "date": "2026-05-23",
+    "endDate": "2026-05-25",
     "time": "1:00 PM - 4:00 PM",
     "venueId": 3,
     "useVenueLocation": true,
@@ -101,7 +112,11 @@
     "registrationUrl": "",
     "entryFee": "$20 per participant",
     "pricing": [
-      { "tier": "YOUTH", "cost": 20, "currency": "USD", "note": "Free for under 8 with Adult" }
+      {
+        "tier": "YOUTH",
+        "options": [{ "days": 1, "cost": 60, "currency": "USD" }],
+        "note": "Free for under 8 with Adult"
+      }
     ],
     "prizes": "All participants receive a certificate and participation ribbon.",
     "terrain": ["FLAT"],
@@ -110,10 +125,11 @@
   {
     "id": "4",
     "shootId": 4,
+    "seriesId": null,
     "name": "Mountain Field League",
     "description": "Field archery League with marked and unmarked distances through rugged mountain terrain.",
-    "date": "2026-06-01T00:00:00Z",
-    "endDate": "2026-06-01T00:00:00Z",
+    "date": "2026-06-01",
+    "endDate": "2026-06-01",
     "time": "9:00 AM - 3:00 PM",
     "venueId": 1,
     "useVenueLocation": false,
@@ -137,7 +153,11 @@
     "registrationUrl": "https://example.com",
     "entryFee": "$30 per event",
     "pricing": [
-      { "tier": "ADULT", "cost": 30, "currency": "USD", "note": "Points for season championship" }
+      {
+        "tier": "ADULT",
+        "options": [{ "days": 1, "cost": 60, "currency": "USD" }],
+        "note": "Points for season championship"
+      }
     ],
     "prizes": "Points accumulate for season championship. Monthly awards.",
     "terrain": ["MOUNTAIN"],
@@ -146,10 +166,11 @@
   {
     "id": "5",
     "shootId": 5,
+    "seriesId": null,
     "name": "Coastal Target Tournament",
     "description": "San Diego regional Target archery event with ocean-side shooting lanes.",
-    "date": "2026-08-10T00:00:00Z",
-    "endDate": "2026-08-11T00:00:00Z",
+    "date": "2026-08-10",
+    "endDate": "2026-08-11",
     "time": "8:00 AM - 5:00 PM",
     "venueId": 13,
     "useVenueLocation": false,
@@ -173,7 +194,11 @@
     "registrationUrl": "https://pacificcoastarchery.com/register",
     "entryFee": "$35 per day",
     "pricing": [
-      { "tier": "ADULT", "cost": 60, "currency": "USD", "note": "Weekend Pass" }
+      {
+        "tier": "ADULT",
+        "options": [{ "days": 1, "cost": 60, "currency": "USD" }],
+        "note": "Weekend Pass"
+      }
     ],
     "prizes": "Trophies and gift cards for top finishers.",
     "terrain": ["FLAT"],
@@ -182,10 +207,11 @@
   {
     "id": "6",
     "shootId": 6,
+    "seriesId": null,
     "name": "Youth Summer Archery Camp",
     "description": "Week-long Camp for young archers with daily coaching, games, and skill-building sessions.",
-    "date": "2026-07-15T00:00:00Z",
-    "endDate": "2026-07-19T00:00:00Z",
+    "date": "2026-07-15",
+    "endDate": "2026-07-19",
     "time": "9:00 AM - 3:00 PM",
     "venueId": 14,
     "useVenueLocation": true,
@@ -209,7 +235,11 @@
     "registrationUrl": "https://midwestarchery.org/CAMP",
     "entryFee": "$150 for the week",
     "pricing": [
-      { "tier": "YOUTH", "cost": 150, "currency": "USD", "note": "Ages 8-18" }
+      {
+        "tier": "YOUTH",
+        "options": [{ "days": 1, "cost": 60, "currency": "USD" }],
+        "note": "Ages 8-18"
+      }
     ],
     "prizes": "Certificates and skill badges for all campers.",
     "terrain": ["FLAT"],
@@ -218,10 +248,11 @@
   {
     "id": "7",
     "shootId": 7,
+    "seriesId": null,
     "name": "Southern Hunting Challenge",
     "description": "3D bowhunting simulation event with realistic animal targets in preserve terrain.",
-    "date": "2026-09-20T00:00:00Z",
-    "endDate": "2026-09-20T00:00:00Z",
+    "date": "2026-06-20",
+    "endDate": "2026-06-23",
     "time": "7:00 AM - 4:00 PM",
     "venueId": 3,
     "useVenueLocation": false,
@@ -245,7 +276,11 @@
     "registrationUrl": "",
     "entryFee": "$40",
     "pricing": [
-      { "tier": "ADULT", "cost": 40, "currency": "USD", "note": "Includes guide map" }
+      {
+        "tier": "ADULT",
+        "options": [{ "days": 1, "cost": 60, "currency": "USD" }],
+        "note": "Includes guide map"
+      }
     ],
     "prizes": "Cash prizes for accuracy leaders.",
     "terrain": ["WOODED"],
@@ -254,10 +289,46 @@
   {
     "id": "8",
     "shootId": 8,
+    "seriesId": null,
     "name": "Urban Archery Workshop",
     "description": "Hands-on workshop on bow tuning and Urban shooting safety at the pro shop.",
-    "date": "2026-10-05T00:00:00Z",
-    "endDate": "2026-10-05T00:00:00Z",
+    "date": "2026-10-05",
+    "endDate": "2026-10-05",
+    "time": "6:00 PM - 9:00 PM",
+    "venueId": 14,
+    "useVenueLocation": false,
+    "shootLocation": {
+      "address": "Millennium Park Pavilion",
+      "city": "Chicago",
+      "state": "IL",
+      "zip": "60602",
+      "lat": 41.8781,
+      "lng": -87.6229,
+      "country": "USA"
+    },
+    "isVerified": false,
+    "isDestination": false,
+    "shootFormat": ["TARGET"],
+    "shootClass": ["ADULT"],
+    "eventType": ["WORKSHOP"],
+    "bowTypes": ["COMPOUND", "RECURVE"],
+    "skillLevel": ["BEGINNER"],
+    "isRegistration": true,
+    "registrationUrl": "https://example.com",
+    "entryFee": "Free",
+    "pricing": [],
+    "prizes": "None",
+    "terrain": ["URBAN"],
+    "amenities": ["RESTROOMS", "WHEELCHAIR_ACCESSIBLE"]
+  },
+  {
+    "id": "8",
+    "shootId": 8,
+    "seriesId": null,
+    "name": "Urban Archery Workshop",
+    "description": "Hands-on workshop on bow tuning and Urban shooting safety at the pro shop.",
+    "date": "2026-10-05",
+    "endDate": "2026-10-05",
     "time": "6:00 PM - 9:00 PM",
     "venueId": 14,
     "useVenueLocation": false,
@@ -281,7 +352,11 @@
     "registrationUrl": "https://urbanarcherychicago.com/workshop",
     "entryFee": "$25",
     "pricing": [
-      { "tier": "ADULT", "cost": 25, "currency": "USD", "note": "3hr session" }
+      {
+        "tier": "ADULT",
+        "options": [{ "days": 1, "cost": 60, "currency": "USD" }],
+        "note": "3hr session"
+      }
     ],
     "prizes": "Discount coupon for shop services.",
     "terrain": ["FLAT"],
@@ -290,10 +365,11 @@
   {
     "id": "9",
     "shootId": 9,
+    "seriesId": null,
     "name": "Rocky Mountain Coaching Certification",
     "description": "One-day certification course for archery coaches.",
-    "date": "2026-11-12T00:00:00Z",
-    "endDate": "2026-11-12T00:00:00Z",
+    "date": "2026-11-12",
+    "endDate": "2026-11-12",
     "time": "9:00 AM - 5:00 PM",
     "venueId": 14,
     "useVenueLocation": true,
@@ -317,10 +393,1001 @@
     "registrationUrl": "https://rockymountainarchery.org/cert",
     "entryFee": "$100",
     "pricing": [
-      { "tier": "ADULT", "cost": 100, "currency": "USD", "note": "Level 1 Coach" }
+      {
+        "tier": "PROFESSIONAL",
+        "options": [{ "days": 1, "cost": 60, "currency": "USD" }],
+        "note": "Level 1 Coach"
+      }
     ],
     "prizes": "Official USA Archery certification.",
     "terrain": ["ROCKY"],
     "amenities": ["RESTROOMS"]
+  },
+  {
+    "id": "10",
+    "shootId": 10,
+    "seriesId": "tac_2026_series",
+    "name": "Total Archery Challenge - Mountain Course",
+    "description": "The ultimate 3D archery test featuring rugged mountain shots and extreme angles.",
+    "date": "2026-07-10",
+    "endDate": "2026-07-12",
+    "time": "7:00 AM - 4:00 PM",
+    "venueId": 4,
+    "useVenueLocation": true,
+    "shootLocation": {
+      "address": "",
+      "city": "",
+      "state": "",
+      "zip": "",
+      "lat": null,
+      "lng": null,
+      "country": ""
+    },
+    "isVerified": true,
+    "isDestination": true,
+    "shootFormat": ["THREE_D"],
+    "shootClass": ["BOWHUNTER", "PROFESSIONAL", "FLIGHTS"],
+    "eventType": ["TOURNAMENT"],
+    "bowTypes": ["COMPOUND", "RECURVE", "LONGBOW"],
+    "skillLevel": ["INTERMEDIATE", "EXPERT"],
+    "isRegistration": true,
+    "registrationUrl": "https://totalarcherychallenge.com",
+    "pricing": [
+      {
+        "tier": "ADULT",
+        "options": [
+          { "days": 1, "cost": 120, "currency": "USD" },
+          { "days": 2, "cost": 180, "currency": "USD" },
+          { "days": 3, "cost": 210, "currency": "USD" },
+          { "days": 4, "cost": 225, "currency": "USD" }
+        ],
+        "note": "Weekend pass available"
+      },
+      {
+        "tier": "YOUTH",
+        "options": [
+          { "days": 1, "cost": 60, "currency": "USD" },
+          { "days": 2, "cost": 90, "currency": "USD" },
+          { "days": 3, "cost": 105, "currency": "USD" },
+          { "days": 4, "cost": 120, "currency": "USD" }
+        ],
+        "note": "Youth weekend pass"
+      }
+    ],
+    "prizes": "Vendor gear packages and raffle tickets.",
+    "terrain": ["MOUNTAIN", "WOODED"],
+    "amenities": ["RESTROOMS", "FOOD"]
+  },
+  {
+    "id": "11",
+    "shootId": 11,
+    "seriesId": "asa_2026_series",
+    "name": "ASA Pro/Am National Championship",
+    "description": "The pinnacle event of the ASA Pro/Am circuit featuring intense 3D competition.",
+    "date": "2026-08-01",
+    "endDate": "2026-08-04",
+    "time": "8:00 AM - 5:00 PM",
+    "venueId": 5,
+    "useVenueLocation": true,
+    "shootLocation": {
+      "address": "",
+      "city": "",
+      "state": "",
+      "zip": "",
+      "lat": null,
+      "lng": null,
+      "country": ""
+    },
+    "isVerified": true,
+    "isDestination": true,
+    "shootFormat": ["THREE_D"],
+    "shootClass": ["PROFESSIONAL", "BOWHUNTER", "OPEN_FREESTYLE"],
+    "eventType": ["TOURNAMENT"],
+    "bowTypes": ["COMPOUND", "RECURVE", "CROSSBOW"],
+    "skillLevel": ["EXPERT"],
+    "isRegistration": true,
+    "registrationUrl": "https://asaarchery.com",
+    "entryFee": "$90 - $180",
+    "pricing": null,
+    "prizes": "Cash payouts, professional championship rings, and contingency money.",
+    "terrain": ["WOODED", "FLAT"],
+    "amenities": ["RESTROOMS", "FOOD", "PARKING"]
+  },
+  {
+    "id": "12",
+    "shootId": 12,
+    "seriesId": "ibo_2026_series",
+    "name": "IBO National Triple Crown - Leg 1",
+    "description": "First leg of the prestigious IBO Triple Crown pushing archery precision to its limits.",
+    "date": "2026-06-15",
+    "endDate": "2026-06-17",
+    "time": "7:30 AM - 4:30 PM",
+    "venueId": 6,
+    "useVenueLocation": true,
+    "shootLocation": {
+      "address": "",
+      "city": "",
+      "state": "",
+      "zip": "",
+      "lat": null,
+      "lng": null,
+      "country": ""
+    },
+    "isVerified": true,
+    "isDestination": true,
+    "shootFormat": ["THREE_D"],
+    "shootClass": ["PROFESSIONAL", "TRADITIONAL", "OPEN_FREESTYLE"],
+    "eventType": ["TOURNAMENT"],
+    "bowTypes": ["COMPOUND", "RECURVE", "LONGBOW"],
+    "skillLevel": ["INTERMEDIATE", "EXPERT"],
+    "isRegistration": true,
+    "registrationUrl": "https://ibo.net",
+    "entryFee": "$120",
+    "pricing": null,
+    "prizes": "Triple Crown circuit points and cash rewards.",
+    "terrain": ["WOODED", "HILLS"],
+    "amenities": ["RESTROOMS", "FOOD"]
+  },
+  {
+    "id": "13",
+    "shootId": 13,
+    "seriesId": "lancaster_2027_series",
+    "name": "Lancaster Archery Classic",
+    "description": "The largest East Coast indoor championship tournament featuring the famous shoot-up finals.",
+    "date": "2027-01-22",
+    "endDate": "2027-01-25",
+    "time": "6:00 AM - 10:00 PM",
+    "venueId": 7,
+    "useVenueLocation": true,
+    "shootLocation": {
+      "address": "",
+      "city": "",
+      "state": "",
+      "zip": "",
+      "lat": null,
+      "lng": null,
+      "country": ""
+    },
+    "isVerified": true,
+    "isDestination": true,
+    "shootFormat": ["TARGET"],
+    "shootClass": ["PROFESSIONAL", "TRADITIONAL", "YOUTH", "ADULT"],
+    "eventType": ["TOURNAMENT"],
+    "bowTypes": ["COMPOUND", "RECURVE"],
+    "skillLevel": ["INTERMEDIATE", "EXPERT"],
+    "isRegistration": true,
+    "registrationUrl": "https://lancasterarchery.com",
+    "entryFee": "$150 - $300",
+    "pricing": null,
+    "prizes": "$20,000 top prize for Open Pro plus extensive category payouts.",
+    "terrain": ["WOODED"],
+    "amenities": ["RESTROOMS", "PARKING"]
+  },
+  {
+    "id": "14",
+    "shootId": 14,
+    "seriesId": "yankton_2026_series",
+    "name": "Yankton Field Archery Festival",
+    "description": "Multi-discipline field course challenge hosted at the world's largest archery complex.",
+    "date": "2026-09-18",
+    "endDate": "2026-09-20",
+    "time": "8:00 AM - 4:00 PM",
+    "venueId": 8,
+    "useVenueLocation": true,
+    "shootLocation": {
+      "address": "",
+      "city": "",
+      "state": "",
+      "zip": "",
+      "lat": null,
+      "lng": null,
+      "country": ""
+    },
+    "isVerified": true,
+    "isDestination": true,
+    "shootFormat": ["FIELD_ARCHERY", "TARGET"],
+    "shootClass": ["BOWHUNTER", "PROFESSIONAL", "ADULT"],
+    "eventType": ["TOURNAMENT"],
+    "bowTypes": ["COMPOUND", "RECURVE", "LONGBOW", "CROSSBOW"],
+    "skillLevel": ["INTERMEDIATE", "EXPERT"],
+    "isRegistration": true,
+    "registrationUrl": "https://yanktonarcherycenter.org",
+    "entryFee": "$75",
+    "pricing": null,
+    "prizes": "Certificates and event placement medals.",
+    "terrain": ["FIELD", "FLAT"],
+    "amenities": ["RESTROOMS", "FOOD", "PARKING"]
+  },
+  {
+    "id": "15",
+    "shootId": 15,
+    "seriesId": "vegas_shoot_series",
+    "name": "The World Famous Vegas Shoot",
+    "description": "The largest and most prestigious global indoor archery tournament on the planet.",
+    "date": "2027-02-05",
+    "endDate": "2027-02-07",
+    "time": "7:00 AM - 9:00 PM",
+    "venueId": 9,
+    "useVenueLocation": true,
+    "shootLocation": {
+      "address": "",
+      "city": "",
+      "state": "",
+      "zip": "",
+      "lat": null,
+      "lng": null,
+      "country": ""
+    },
+    "isVerified": true,
+    "isDestination": true,
+    "shootFormat": ["TARGET"],
+    "shootClass": [
+      "PROFESSIONAL",
+      "BOWHUNTER",
+      "YOUTH",
+      "CHAMPIONSHIP",
+      "FLIGHTS"
+    ],
+    "eventType": ["TOURNAMENT"],
+    "bowTypes": ["COMPOUND", "RECURVE", "LONGBOW"],
+    "skillLevel": ["BEGINNER", "INTERMEDIATE", "EXPERT"],
+    "isRegistration": true,
+    "registrationUrl": "https://thevegasshoot.com",
+    "entryFee": "$175 - $350",
+    "pricing": null,
+    "prizes": "$50,000 grand prize for the perfect 900 score shootout.",
+    "terrain": ["FIELD", "FLAT"],
+    "amenities": ["RESTROOMS", "FOOD", "PARKING"]
+  },
+  {
+    "id": "16",
+    "shootId": 16,
+    "seriesId": "maf_2026_series",
+    "name": "Mountain Archery Fest Alpine Challenge",
+    "description": "Family-focused mountain 3D shoot running high up alpine ski resort slopes.",
+    "date": "2026-06-26",
+    "endDate": "2026-06-28",
+    "time": "8:00 AM - 5:00 PM",
+    "venueId": 10,
+    "useVenueLocation": true,
+    "shootLocation": {
+      "address": "",
+      "city": "",
+      "state": "",
+      "zip": "",
+      "lat": null,
+      "lng": null,
+      "country": ""
+    },
+    "isVerified": true,
+    "isDestination": true,
+    "shootFormat": ["THREE_D"],
+    "shootClass": ["BOWHUNTER", "YOUTH", "ADULT"],
+    "eventType": ["FUN_SHOOT"],
+    "bowTypes": ["COMPOUND", "RECURVE", "LONGBOW"],
+    "skillLevel": ["BEGINNER", "INTERMEDIATE", "EXPERT"],
+    "isRegistration": true,
+    "registrationUrl": "https://mountainarcheryfest.com",
+    "entryFee": "$55 - $110",
+    "pricing": null,
+    "prizes": "Sponsor equipment raffle entries.",
+    "terrain": ["MOUNTAIN", "ROCKY"],
+    "amenities": ["PARKING", "RESTROOMS", "FOOD"]
+  },
+  {
+    "id": "17",
+    "shootId": 17,
+    "seriesId": "s3da_2027_series",
+    "name": "S3DA Indoor National Championships",
+    "description": "High-stakes national indoor tournament showcasing top-tier youth archery teams.",
+    "date": "2027-03-12",
+    "endDate": "2027-03-14",
+    "time": "8:00 AM - 6:00 PM",
+    "venueId": 11,
+    "useVenueLocation": true,
+    "shootLocation": {
+      "address": "",
+      "city": "",
+      "state": "",
+      "zip": "",
+      "lat": null,
+      "lng": null,
+      "country": ""
+    },
+    "isVerified": true,
+    "isDestination": true,
+    "shootFormat": ["TARGET"],
+    "shootClass": ["YOUTH"],
+    "eventType": ["TOURNAMENT"],
+    "bowTypes": ["COMPOUND", "RECURVE", "LONGBOW"],
+    "skillLevel": ["INTERMEDIATE", "EXPERT"],
+    "isRegistration": true,
+    "registrationUrl": "https://s3da.org",
+    "entryFee": null,
+    "pricing": [
+      {
+        "tier": "ADULT",
+        "options": [
+          { "days": 1, "cost": 120, "currency": "USD" },
+          { "days": 2, "cost": 180, "currency": "USD" },
+          { "days": 3, "cost": 210, "currency": "USD" },
+          { "days": 4, "cost": 225, "currency": "USD" }
+        ],
+        "note": "Weekend pass available"
+      },
+      {
+        "tier": "YOUTH",
+        "options": [
+          { "days": 1, "cost": 60, "currency": "USD" },
+          { "days": 2, "cost": 90, "currency": "USD" },
+          { "days": 3, "cost": 105, "currency": "USD" },
+          { "days": 4, "cost": 120, "currency": "USD" }
+        ],
+        "note": "Youth weekend pass"
+      }
+    ],
+    "prizes": "College scholarships, national trophies, and team awards.",
+    "terrain": ["FIELD", "FLAT"],
+    "amenities": ["PARKING", "RESTROOMS", "WHEELCHAIR_ACCESSIBLE"]
+  },
+  {
+    "id": "19",
+    "shootId": 19,
+    "seriesId": "tac_2026_series",
+    "name": "Total Archery Challenge - Beaver's Bend",
+    "description": "The ultimate 3D archery test featuring rugged wooded shots and natural obstacles.",
+    "date": "2026-04-17",
+    "endDate": "2026-04-19",
+    "time": "7:00 AM - 4:00 PM Daily",
+    "venueId": 4,
+    "useVenueLocation": false,
+    "shootLocation": {
+      "address": "Beavers Bend State Park",
+      "city": "Broken Bow",
+      "state": "OK",
+      "zip": "74728",
+      "lat": null,
+      "lng": null,
+      "country": "USA"
+    },
+    "isVerified": true,
+    "isDestination": true,
+    "shootFormat": ["THREE_D"],
+    "shootClass": ["BOWHUNTER", "PROFESSIONAL", "FLIGHTS"],
+    "eventType": ["TOURNAMENT"],
+    "bowTypes": ["COMPOUND", "RECURVE", "LONGBOW"],
+    "skillLevel": ["INTERMEDIATE", "EXPERT"],
+    "terrain": ["WOODED"],
+    "amenities": ["RESTROOMS", "FOOD"],
+    "isRegistration": true,
+    "registrationUrl": "https://totalarcherychallenge.com",
+    "entryFee": null,
+    "pricing": [
+      {
+        "tier": "ADULT",
+        "options": [
+          { "days": 1, "cost": 120, "currency": "USD" },
+          { "days": 2, "cost": 180, "currency": "USD" },
+          { "days": 3, "cost": 210, "currency": "USD" },
+          { "days": 4, "cost": 225, "currency": "USD" }
+        ],
+        "note": "Weekend pass available"
+      },
+      {
+        "tier": "YOUTH",
+        "options": [
+          { "days": 1, "cost": 60, "currency": "USD" },
+          { "days": 2, "cost": 90, "currency": "USD" },
+          { "days": 3, "cost": 105, "currency": "USD" },
+          { "days": 4, "cost": 120, "currency": "USD" }
+        ],
+        "note": "Youth weekend pass"
+      }
+    ]
+  },
+  {
+    "id": "20",
+    "shootId": 20,
+    "seriesId": "tac_2026_series",
+    "name": "Total Archery Challenge - San Antonio",
+    "description": "Texas-sized 3D archery adventure with long-distance shots and technical terrain.",
+    "date": "2026-04-24",
+    "endDate": "2026-04-26",
+    "time": "7:00 AM - 4:00 PM Daily",
+    "venueId": 4,
+    "useVenueLocation": false,
+    "shootLocation": {
+      "address": "Natural Bridge Caverns, 26495 Natural Bridge Caverns Rd",
+      "city": "San Antonio",
+      "state": "TX",
+      "zip": "78266",
+      "lat": null,
+      "lng": null,
+      "country": "USA"
+    },
+    "isVerified": true,
+    "isDestination": true,
+    "shootFormat": ["THREE_D"],
+    "shootClass": ["BOWHUNTER", "PROFESSIONAL", "FLIGHTS"],
+    "eventType": ["TOURNAMENT"],
+    "bowTypes": ["COMPOUND", "RECURVE", "LONGBOW"],
+    "skillLevel": ["INTERMEDIATE", "EXPERT"],
+    "terrain": ["WOODED", "ROCKY"],
+    "amenities": ["RESTROOMS", "FOOD"],
+    "isRegistration": true,
+    "registrationUrl": "https://totalarcherychallenge.com",
+    "entryFee": null,
+    "pricing": [
+      {
+        "tier": "ADULT",
+        "options": [
+          { "days": 1, "cost": 120, "currency": "USD" },
+          { "days": 2, "cost": 180, "currency": "USD" },
+          { "days": 3, "cost": 210, "currency": "USD" },
+          { "days": 4, "cost": 225, "currency": "USD" }
+        ],
+        "note": "Weekend pass available"
+      },
+      {
+        "tier": "YOUTH",
+        "options": [
+          { "days": 1, "cost": 60, "currency": "USD" },
+          { "days": 2, "cost": 90, "currency": "USD" },
+          { "days": 3, "cost": 105, "currency": "USD" },
+          { "days": 4, "cost": 120, "currency": "USD" }
+        ],
+        "note": "Youth weekend pass"
+      }
+    ]
+  },
+  {
+    "id": "21",
+    "shootId": 21,
+    "seriesId": "tac_2026_series",
+    "name": "Total Archery Challenge - Circle E Guest Ranch",
+    "description": "Scenic and challenging mountain bowhunting simulation across rolling hills.",
+    "date": "2026-05-01",
+    "endDate": "2026-05-03",
+    "time": "7:00 AM - 4:00 PM Daily",
+    "venueId": 4,
+    "useVenueLocation": false,
+    "shootLocation": {
+      "address": "50 Circle E Lane",
+      "city": "Belvidere",
+      "state": "TN",
+      "zip": "37306",
+      "lat": null,
+      "lng": null,
+      "country": "USA"
+    },
+    "isVerified": true,
+    "isDestination": true,
+    "shootFormat": ["THREE_D"],
+    "shootClass": ["BOWHUNTER", "PROFESSIONAL", "FLIGHTS"],
+    "eventType": ["TOURNAMENT"],
+    "bowTypes": ["COMPOUND", "RECURVE", "LONGBOW"],
+    "skillLevel": ["INTERMEDIATE", "EXPERT"],
+    "terrain": ["WOODED", "HILLS"],
+    "amenities": ["RESTROOMS", "FOOD"],
+    "isRegistration": true,
+    "registrationUrl": "https://totalarcherychallenge.com",
+    "entryFee": null,
+    "pricing": [
+      {
+        "tier": "ADULT",
+        "options": [
+          { "days": 1, "cost": 120, "currency": "USD" },
+          { "days": 2, "cost": 180, "currency": "USD" },
+          { "days": 3, "cost": 210, "currency": "USD" },
+          { "days": 4, "cost": 225, "currency": "USD" }
+        ],
+        "note": "Weekend pass available"
+      },
+      {
+        "tier": "YOUTH",
+        "options": [
+          { "days": 1, "cost": 60, "currency": "USD" },
+          { "days": 2, "cost": 90, "currency": "USD" },
+          { "days": 3, "cost": 105, "currency": "USD" },
+          { "days": 4, "cost": 120, "currency": "USD" }
+        ],
+        "note": "Youth weekend pass"
+      }
+    ]
+  },
+  {
+    "id": "22",
+    "shootId": 22,
+    "seriesId": "tac_2026_series",
+    "name": "Total Archery Challenge - Killington/Pico",
+    "description": "East Coast mountain archery test featuring steep ski slope angles and lifts.",
+    "date": "2026-05-22",
+    "endDate": "2026-05-24",
+    "time": "7:00 AM - 4:00 PM Daily",
+    "venueId": 4,
+    "useVenueLocation": false,
+    "shootLocation": {
+      "address": "4763 Killington Rd",
+      "city": "Killington",
+      "state": "VT",
+      "zip": "05751",
+      "lat": null,
+      "lng": null,
+      "country": "USA"
+    },
+    "isVerified": true,
+    "isDestination": true,
+    "shootFormat": ["THREE_D"],
+    "shootClass": ["BOWHUNTER", "PROFESSIONAL", "FLIGHTS"],
+    "eventType": ["TOURNAMENT"],
+    "bowTypes": ["COMPOUND", "RECURVE", "LONGBOW"],
+    "skillLevel": ["INTERMEDIATE", "EXPERT"],
+    "terrain": ["MOUNTAIN", "WOODED"],
+    "amenities": ["RESTROOMS", "FOOD"],
+    "isRegistration": true,
+    "registrationUrl": "https://totalarcherychallenge.com",
+    "entryFee": null,
+    "pricing": [
+      {
+        "tier": "ADULT",
+        "options": [
+          { "days": 1, "cost": 120, "currency": "USD" },
+          { "days": 2, "cost": 180, "currency": "USD" },
+          { "days": 3, "cost": 210, "currency": "USD" },
+          { "days": 4, "cost": 225, "currency": "USD" }
+        ],
+        "note": "Weekend pass available"
+      },
+      {
+        "tier": "YOUTH",
+        "options": [
+          { "days": 1, "cost": 60, "currency": "USD" },
+          { "days": 2, "cost": 90, "currency": "USD" },
+          { "days": 3, "cost": 105, "currency": "USD" },
+          { "days": 4, "cost": 120, "currency": "USD" }
+        ],
+        "note": "Youth weekend pass"
+      }
+    ]
+  },
+  {
+    "id": "23",
+    "shootId": 23,
+    "seriesId": "tac_2026_series",
+    "name": "Total Archery Challenge - 7 Springs",
+    "description": "Multi-course 3D archery extravaganza spanning across beautiful Pennsylvania terrain.",
+    "date": "2026-05-28",
+    "endDate": "2026-05-31",
+    "time": "7:00 AM - 4:00 PM Daily",
+    "venueId": 4,
+    "useVenueLocation": false,
+    "shootLocation": {
+      "address": "7 Springs Mountain Resort, 777 Water Wheel Dr",
+      "city": "Seven Springs",
+      "state": "PA",
+      "zip": "15622",
+      "lat": null,
+      "lng": null,
+      "country": "USA"
+    },
+    "isVerified": true,
+    "isDestination": true,
+    "shootFormat": ["THREE_D"],
+    "shootClass": ["BOWHUNTER", "PROFESSIONAL", "FLIGHTS"],
+    "eventType": ["TOURNAMENT"],
+    "bowTypes": ["COMPOUND", "RECURVE", "LONGBOW"],
+    "skillLevel": ["INTERMEDIATE", "EXPERT"],
+    "terrain": ["MOUNTAIN", "WOODED"],
+    "amenities": ["RESTROOMS", "FOOD"],
+    "isRegistration": true,
+    "registrationUrl": "https://totalarcherychallenge.com",
+    "entryFee": null,
+    "pricing": [
+      {
+        "tier": "ADULT",
+        "options": [
+          { "days": 1, "cost": 120, "currency": "USD" },
+          { "days": 2, "cost": 180, "currency": "USD" },
+          { "days": 3, "cost": 210, "currency": "USD" },
+          { "days": 4, "cost": 225, "currency": "USD" }
+        ],
+        "note": "Weekend pass available"
+      },
+      {
+        "tier": "YOUTH",
+        "options": [
+          { "days": 1, "cost": 60, "currency": "USD" },
+          { "days": 2, "cost": 90, "currency": "USD" },
+          { "days": 3, "cost": 105, "currency": "USD" },
+          { "days": 4, "cost": 120, "currency": "USD" }
+        ],
+        "note": "Youth weekend pass"
+      }
+    ]
+  },
+  {
+    "id": "24",
+    "shootId": 24,
+    "seriesId": "tac_2026_series",
+    "name": "Total Archery Challenge - Boyne Mountain",
+    "description": "Northern Michigan mountain archery challenge with scenic courses and extreme angles.",
+    "date": "2026-06-05",
+    "endDate": "2026-06-07",
+    "time": "6:15 AM - 3:00 PM",
+    "venueId": 4,
+    "useVenueLocation": false,
+    "shootLocation": {
+      "address": "1 Boyne Mountain Rd",
+      "city": "Boyne Falls",
+      "state": "MI",
+      "zip": "49713",
+      "lat": null,
+      "lng": null,
+      "country": "USA"
+    },
+    "isVerified": true,
+    "isDestination": true,
+    "shootFormat": ["THREE_D"],
+    "shootClass": ["BOWHUNTER", "PROFESSIONAL", "FLIGHTS"],
+    "eventType": ["TOURNAMENT"],
+    "bowTypes": ["COMPOUND", "RECURVE", "LONGBOW"],
+    "skillLevel": ["INTERMEDIATE", "EXPERT"],
+    "terrain": ["MOUNTAIN", "WOODED"],
+    "amenities": ["RESTROOMS", "FOOD"],
+    "isRegistration": true,
+    "registrationUrl": "https://totalarcherychallenge.com",
+    "entryFee": null,
+    "pricing": [
+      {
+        "tier": "ADULT",
+        "options": [
+          { "days": 1, "cost": 120, "currency": "USD" },
+          { "days": 2, "cost": 180, "currency": "USD" },
+          { "days": 3, "cost": 210, "currency": "USD" },
+          { "days": 4, "cost": 225, "currency": "USD" }
+        ],
+        "note": "Weekend pass available"
+      },
+      {
+        "tier": "YOUTH",
+        "options": [
+          { "days": 1, "cost": 60, "currency": "USD" },
+          { "days": 2, "cost": 90, "currency": "USD" },
+          { "days": 3, "cost": 105, "currency": "USD" },
+          { "days": 4, "cost": 120, "currency": "USD" }
+        ],
+        "note": "Youth weekend pass"
+      }
+    ]
+  },
+  {
+    "id": "25",
+    "shootId": 25,
+    "seriesId": "tac_2026_series",
+    "name": "Total Archery Challenge - Crystal Mountain",
+    "description": "Three days of premiere outdoor 3D target courses winding through northern woods.",
+    "date": "2026-06-12",
+    "endDate": "2026-06-14",
+    "time": "7:00 AM - 4:00 PM Daily",
+    "venueId": 4,
+    "useVenueLocation": false,
+    "shootLocation": {
+      "address": "12500 Crystal Mountain Dr",
+      "city": "Thompsonville",
+      "state": "MI",
+      "zip": "49683",
+      "lat": null,
+      "lng": null,
+      "country": "USA"
+    },
+    "isVerified": true,
+    "isDestination": true,
+    "shootFormat": ["THREE_D"],
+    "shootClass": ["BOWHUNTER", "PROFESSIONAL", "FLIGHTS"],
+    "eventType": ["TOURNAMENT"],
+    "bowTypes": ["COMPOUND", "RECURVE", "LONGBOW"],
+    "skillLevel": ["INTERMEDIATE", "EXPERT"],
+    "terrain": ["MOUNTAIN", "WOODED"],
+    "amenities": ["RESTROOMS", "FOOD"],
+    "isRegistration": true,
+    "registrationUrl": "https://totalarcherychallenge.com",
+    "entryFee": null,
+    "pricing": [
+      {
+        "tier": "ADULT",
+        "options": [
+          { "days": 1, "cost": 120, "currency": "USD" },
+          { "days": 2, "cost": 180, "currency": "USD" },
+          { "days": 3, "cost": 210, "currency": "USD" },
+          { "days": 4, "cost": 225, "currency": "USD" }
+        ],
+        "note": "Weekend pass available"
+      },
+      {
+        "tier": "YOUTH",
+        "options": [
+          { "days": 1, "cost": 60, "currency": "USD" },
+          { "days": 2, "cost": 90, "currency": "USD" },
+          { "days": 3, "cost": 105, "currency": "USD" },
+          { "days": 4, "cost": 120, "currency": "USD" }
+        ],
+        "note": "Youth weekend pass"
+      }
+    ]
+  },
+  {
+    "id": "26",
+    "shootId": 26,
+    "seriesId": "tac_2026_series",
+    "name": "Total Archery Challenge - Terry Peak",
+    "description": "High-elevation mountain target ranges positioned in the Black Hills.",
+    "date": "2026-06-19",
+    "endDate": "2026-06-21",
+    "time": "7:00 AM - 4:00 PM Daily",
+    "venueId": 4,
+    "useVenueLocation": false,
+    "shootLocation": {
+      "address": "21120 Stewart Slope Rd",
+      "city": "Lead",
+      "state": "SD",
+      "zip": "57754",
+      "lat": null,
+      "lng": null,
+      "country": "USA"
+    },
+    "isVerified": true,
+    "isDestination": true,
+    "shootFormat": ["THREE_D"],
+    "shootClass": ["BOWHUNTER", "PROFESSIONAL", "FLIGHTS"],
+    "eventType": ["TOURNAMENT"],
+    "bowTypes": ["COMPOUND", "RECURVE", "LONGBOW"],
+    "skillLevel": ["INTERMEDIATE", "EXPERT"],
+    "terrain": ["MOUNTAIN"],
+    "amenities": ["RESTROOMS", "FOOD"],
+    "isRegistration": true,
+    "registrationUrl": "https://totalarcherychallenge.com",
+    "entryFee": null,
+    "pricing": [
+      {
+        "tier": "ADULT",
+        "options": [
+          { "days": 1, "cost": 120, "currency": "USD" },
+          { "days": 2, "cost": 180, "currency": "USD" },
+          { "days": 3, "cost": 210, "currency": "USD" },
+          { "days": 4, "cost": 225, "currency": "USD" }
+        ],
+        "note": "Weekend pass available"
+      },
+      {
+        "tier": "YOUTH",
+        "options": [
+          { "days": 1, "cost": 60, "currency": "USD" },
+          { "days": 2, "cost": 90, "currency": "USD" },
+          { "days": 3, "cost": 105, "currency": "USD" },
+          { "days": 4, "cost": 120, "currency": "USD" }
+        ],
+        "note": "Youth weekend pass"
+      }
+    ]
+  },
+  {
+    "id": "27",
+    "shootId": 27,
+    "seriesId": "tac_2026_series",
+    "name": "Total Archery Challenge - Red Lodge",
+    "description": "Big sky country bowhunting simulations testing long distance shots and mountain winds.",
+    "date": "2026-06-26",
+    "endDate": "2026-06-28",
+    "time": "7:00 AM - 4:00 PM Daily",
+    "venueId": 4,
+    "useVenueLocation": false,
+    "shootLocation": {
+      "address": "Red Lodge Mountain, 305 Ski Run Rd",
+      "city": "Red Lodge",
+      "state": "MT",
+      "zip": "59068",
+      "lat": null,
+      "lng": null,
+      "country": "USA"
+    },
+    "isVerified": true,
+    "isDestination": true,
+    "shootFormat": ["THREE_D"],
+    "shootClass": ["BOWHUNTER", "PROFESSIONAL", "FLIGHTS"],
+    "eventType": ["TOURNAMENT"],
+    "bowTypes": ["COMPOUND", "RECURVE", "LONGBOW"],
+    "skillLevel": ["INTERMEDIATE", "EXPERT"],
+    "terrain": ["MOUNTAIN"],
+    "amenities": ["RESTROOMS", "FOOD"],
+    "isRegistration": true,
+    "registrationUrl": "https://totalarcherychallenge.com",
+    "entryFee": null,
+    "pricing": [
+      {
+        "tier": "ADULT",
+        "options": [
+          { "days": 1, "cost": 120, "currency": "USD" },
+          { "days": 2, "cost": 180, "currency": "USD" },
+          { "days": 3, "cost": 210, "currency": "USD" },
+          { "days": 4, "cost": 225, "currency": "USD" }
+        ],
+        "note": "Weekend pass available"
+      },
+      {
+        "tier": "YOUTH",
+        "options": [
+          { "days": 1, "cost": 60, "currency": "USD" },
+          { "days": 2, "cost": 90, "currency": "USD" },
+          { "days": 3, "cost": 105, "currency": "USD" },
+          { "days": 4, "cost": 120, "currency": "USD" }
+        ],
+        "note": "Youth weekend pass"
+      }
+    ]
+  },
+  {
+    "id": "28",
+    "shootId": 28,
+    "seriesId": "tac_2026_series",
+    "name": "Total Archery Challenge - Purgatory Resort",
+    "description": "The ultimate 3D archery test featuring rugged mountain shots and extreme angles.",
+    "date": "2026-07-10",
+    "endDate": "2026-07-12",
+    "time": "7:00 AM - 4:00 PM Daily",
+    "venueId": 4,
+    "useVenueLocation": false,
+    "shootLocation": {
+      "address": "1 Wave Rd",
+      "city": "Durango",
+      "state": "CO",
+      "zip": "81301",
+      "lat": null,
+      "lng": null,
+      "country": "USA"
+    },
+    "isVerified": true,
+    "isDestination": true,
+    "shootFormat": ["THREE_D"],
+    "shootClass": ["BOWHUNTER", "PROFESSIONAL", "FLIGHTS"],
+    "eventType": ["TOURNAMENT"],
+    "bowTypes": ["COMPOUND", "RECURVE", "LONGBOW"],
+    "skillLevel": ["INTERMEDIATE", "EXPERT"],
+    "terrain": ["MOUNTAIN", "WOODED"],
+    "amenities": ["RESTROOMS", "FOOD"],
+    "isRegistration": true,
+    "registrationUrl": "https://totalarcherychallenge.com",
+    "entryFee": null,
+    "pricing": [
+      {
+        "tier": "ADULT",
+        "options": [
+          { "days": 1, "cost": 120, "currency": "USD" },
+          { "days": 2, "cost": 180, "currency": "USD" },
+          { "days": 3, "cost": 210, "currency": "USD" },
+          { "days": 4, "cost": 225, "currency": "USD" }
+        ],
+        "note": "Weekend pass available"
+      },
+      {
+        "tier": "YOUTH",
+        "options": [
+          { "days": 1, "cost": 60, "currency": "USD" },
+          { "days": 2, "cost": 90, "currency": "USD" },
+          { "days": 3, "cost": 105, "currency": "USD" },
+          { "days": 4, "cost": 120, "currency": "USD" }
+        ],
+        "note": "Youth weekend pass"
+      }
+    ]
+  },
+  {
+    "id": "29",
+    "shootId": 29,
+    "seriesId": "tac_2026_series",
+    "name": "Total Archery Challenge - Brian Head",
+    "description": "Breathtaking high-altitude technical archery ranges scaling Utah mountain peaks.",
+    "date": "2026-07-16",
+    "endDate": "2026-07-19",
+    "time": "7:00 AM - 3:00 PM",
+    "venueId": 4,
+    "useVenueLocation": false,
+    "shootLocation": {
+      "address": "Brian Head Resort, 329 State Route 143",
+      "city": "Brian Head",
+      "state": "UT",
+      "zip": "84719",
+      "lat": null,
+      "lng": null,
+      "country": "USA"
+    },
+    "isVerified": true,
+    "isDestination": true,
+    "shootFormat": ["THREE_D"],
+    "shootClass": ["BOWHUNTER", "PROFESSIONAL", "FLIGHTS"],
+    "eventType": ["TOURNAMENT"],
+    "bowTypes": ["COMPOUND", "RECURVE", "LONGBOW"],
+    "skillLevel": ["INTERMEDIATE", "EXPERT"],
+    "terrain": ["MOUNTAIN"],
+    "amenities": ["RESTROOMS", "FOOD"],
+    "isRegistration": true,
+    "registrationUrl": "https://totalarcherychallenge.com",
+    "entryFee": null,
+    "pricing": [
+      {
+        "tier": "ADULT",
+        "options": [
+          { "days": 1, "cost": 120, "currency": "USD" },
+          { "days": 2, "cost": 180, "currency": "USD" },
+          { "days": 3, "cost": 210, "currency": "USD" },
+          { "days": 4, "cost": 225, "currency": "USD" }
+        ],
+        "note": "Weekend pass available"
+      },
+      {
+        "tier": "YOUTH",
+        "options": [
+          { "days": 1, "cost": 60, "currency": "USD" },
+          { "days": 2, "cost": 90, "currency": "USD" },
+          { "days": 3, "cost": 105, "currency": "USD" },
+          { "days": 4, "cost": 120, "currency": "USD" }
+        ],
+        "note": "Youth weekend pass"
+      }
+    ]
+  },
+  {
+    "id": "30",
+    "shootId": 30,
+    "seriesId": "tac_2026_series",
+    "name": "Total Archery Challenge - Snowriver Mountain",
+    "description": "The season closer multi-state border shoot navigating the Jackson Creek Summit wilderness.",
+    "date": "2026-08-07",
+    "endDate": "2026-08-09",
+    "time": "7:00 AM - 4:00 PM Daily",
+    "venueId": 4,
+    "useVenueLocation": false,
+    "shootLocation": {
+      "address": "Snowriver Mountain Resort, E5135 Jackson Creek Rd",
+      "city": "Wakefield",
+      "state": "MI",
+      "zip": "49968",
+      "lat": null,
+      "lng": null,
+      "country": "USA"
+    },
+    "isVerified": true,
+    "isDestination": true,
+    "shootFormat": ["THREE_D"],
+    "shootClass": ["BOWHUNTER", "PROFESSIONAL", "FLIGHTS"],
+    "eventType": ["TOURNAMENT"],
+    "bowTypes": ["COMPOUND", "RECURVE", "LONGBOW"],
+    "skillLevel": ["INTERMEDIATE", "EXPERT"],
+    "terrain": ["MOUNTAIN", "WOODED"],
+    "amenities": ["RESTROOMS", "FOOD"],
+    "isRegistration": true,
+    "registrationUrl": "https://totalarcherychallenge.com",
+    "entryFee": null,
+    "pricing": [
+      {
+        "tier": "ADULT",
+        "options": [
+          { "days": 1, "cost": 120, "currency": "USD" },
+          { "days": 2, "cost": 180, "currency": "USD" },
+          { "days": 3, "cost": 210, "currency": "USD" },
+          { "days": 4, "cost": 225, "currency": "USD" }
+        ],
+        "note": "Weekend pass available"
+      },
+      {
+        "tier": "YOUTH",
+        "options": [
+          { "days": 1, "cost": 60, "currency": "USD" },
+          { "days": 2, "cost": 90, "currency": "USD" },
+          { "days": 3, "cost": 105, "currency": "USD" },
+          { "days": 4, "cost": 120, "currency": "USD" }
+        ],
+        "note": "Youth weekend pass"
+      }
+    ]
   }
 ]

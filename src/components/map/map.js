@@ -1,116 +1,139 @@
 import * as React from "react"
 import { useState, useMemo, useRef, useEffect } from "react"
 import PropTypes from "prop-types"
-import { GoogleMap, LoadScript, Marker, InfoWindow } from "@react-google-maps/api"
+import {
+  GoogleMap,
+  LoadScript,
+  Marker,
+  InfoWindow,
+} from "@react-google-maps/api"
 import { Link } from "gatsby"
-import { getDistance } from "../../utils/distance";
-
+import { getDistance } from "../../utils/distance"
 
 const mapContainerStyle = {
   width: "100%",
-  height: "40vh" // Reduced to match FTA sticky map height
+  height: "40vh", // Reduced to match FTA sticky map height
 }
 
 const defaultCenter = {
   lat: 39.8283,
-  lng: -98.5795 // Central US
+  lng: -98.5795, // Central US
 }
 
 const MapComponent = ({ shoots, venues, userLocation, activeTab }) => {
-  const [selectedItem, setSelectedItem] = useState(null);
+  const [selectedItem, setSelectedItem] = useState(null)
   const [map, setMap] = useState(null)
   const [center, setCenter] = useState(defaultCenter)
   const infoWindowRef = useRef(null)
 
   useEffect(() => {
     if (userLocation && map) {
-      map.panTo(userLocation);
-      setCenter(userLocation);
+      map.panTo(userLocation)
+      setCenter(userLocation)
     }
-  }, [userLocation, map]);
-
+  }, [userLocation, map])
 
   // effectiveLocation already computed in index.js; no need to enrich here
-  const enrichedShoots = shoots;  // Direct pass-through
+  const enrichedShoots = shoots // Direct pass-through
 
   const markers = useMemo(() => {
-    if (activeTab === 'venue') {
+    if (activeTab === "venue") {
       // Venue markers
       return venues
-        .map((venue) => {
-          const location = venue.location;
+        .map(venue => {
+          const location = venue.location
           if (!location) {
-            console.warn(`Skipping marker for ${venue.name}: No location available`);
-            return null;
+            console.warn(
+              `Skipping marker for ${venue.name}: No location available`
+            )
+            return null
           }
-          const lat = parseFloat(location.lat);
-          const lng = parseFloat(location.lng);
-          if (isNaN(lat) || isNaN(lng) || lat < -90 || lat > 90 || lng < -180 || lng > 180) {
-            console.warn(`Skipping marker for ${venue.name}: Invalid coordinates (${location.lat}, ${location.lng})`);
-            return null;
+          const lat = parseFloat(location.lat)
+          const lng = parseFloat(location.lng)
+          if (
+            isNaN(lat) ||
+            isNaN(lng) ||
+            lat < -90 ||
+            lat > 90 ||
+            lng < -180 ||
+            lng > 180
+          ) {
+            console.warn(
+              `Skipping marker for ${venue.name}: Invalid coordinates (${location.lat}, ${location.lng})`
+            )
+            return null
           }
-          const position = { lat, lng };
+          const position = { lat, lng }
           return {
             position,
-            venue,  // Use 'venue' key for this type
-            key: venue.id
-          };
+            venue, // Use 'venue' key for this type
+            key: venue.id,
+          }
         })
-        .filter(Boolean); // Remove null entries
+        .filter(Boolean) // Remove null entries
     }
 
     // Existing shoot markers logic (for non-venue tabs)
     return enrichedShoots
-      .map((shoot) => {
+      .map(shoot => {
         const location = shoot.effectiveLocation
         if (!location) {
-          console.warn(`Skipping marker for ${shoot.name}: No effective location available`)
+          console.warn(
+            `Skipping marker for ${shoot.name}: No effective location available`
+          )
           return null
         }
         const lat = parseFloat(location.lat)
         const lng = parseFloat(location.lng)
-        if (isNaN(lat) || isNaN(lng) || lat < -90 || lat > 90 || lng < -180 || lng > 180) {
-          console.warn(`Skipping marker for ${shoot.name}: Invalid coordinates (${location.lat}, ${location.lng})`)
+        if (
+          isNaN(lat) ||
+          isNaN(lng) ||
+          lat < -90 ||
+          lat > 90 ||
+          lng < -180 ||
+          lng > 180
+        ) {
+          console.warn(
+            `Skipping marker for ${shoot.name}: Invalid coordinates (${location.lat}, ${location.lng})`
+          )
           return null
         }
         const position = { lat, lng }
         return {
           position,
           shoot,
-          key: shoot.id
+          key: shoot.id,
         }
       })
       .filter(Boolean) // Remove null entries
-  }, [enrichedShoots, venues, activeTab]);  // Added venues to deps
+  }, [enrichedShoots, venues, activeTab]) // Added venues to deps
 
-
-  const handleMarkerClick = (marker) => {
+  const handleMarkerClick = marker => {
     if (marker.shoot) {
-      setSelectedItem(marker.shoot);
+      setSelectedItem(marker.shoot)
     } else if (marker.venue) {
-      setSelectedItem(marker.venue);
+      setSelectedItem(marker.venue)
     }
   }
 
-
   const handleMapClick = () => {
-    setSelectedItem(null);
+    setSelectedItem(null)
   }
 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString)
+  const formatDate = dateString => {
+    const date = new Date(`${dateString}T00:00:00`)
     return date.toLocaleDateString("en-US", { month: "short", day: "numeric" })
   }
 
-  const getDisplayFormat = (shoot) => {
+  const getDisplayFormat = shoot => {
     const format = shoot.shootFormat?.[0] ?? "Event"
     const indoor = shoot.isIndoor ? " Indoor" : " Outdoor"
     return `${format}${indoor}`
   }
 
-  const getShootTypeDisplay = (shoot) => shoot.shootType?.[0] ?? "General"
+  const getShootTypeDisplay = shoot => shoot.shootType?.[0] ?? "General"
 
-  const getAmenityIcons = (amenities) => {
+  const getAmenityIcons = amenities => {
     if (!amenities) return ""
     const icons = []
     if (amenities.petFriendly) icons.push("🐕")
@@ -121,14 +144,18 @@ const MapComponent = ({ shoots, venues, userLocation, activeTab }) => {
   }
 
   // Custom SVG icon for markers
-  const geoIcon = useMemo(() => ({
-    url: "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(`
+  const geoIcon = useMemo(
+    () => ({
+      url:
+        "data:image/svg+xml;charset=UTF-8," +
+        encodeURIComponent(`
     <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="#dc3545" class="bi bi-geo-alt-fill" viewBox="0 0 16 16">
       <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10m0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6"/>
     </svg>
-  `)
-  }), [])
-
+  `),
+    }),
+    []
+  )
 
   // Safe position for InfoWindow (using effectiveLocation for shoots, location for venues)
   const safeInfoPosition = useMemo(() => {
@@ -140,7 +167,6 @@ const MapComponent = ({ shoots, venues, userLocation, activeTab }) => {
     if (isNaN(lat) || isNaN(lng)) return null
     return { lat, lng }
   }, [selectedItem])
-
 
   return (
     // <LoadScript googleMapsApiKey={process.env.GATSBY_GOOGLE_MAPS_API_KEY}>
@@ -156,15 +182,15 @@ const MapComponent = ({ shoots, venues, userLocation, activeTab }) => {
             {
               featureType: "poi",
               elementType: "labels",
-              stylers: [{ visibility: "off" }]
-            }
+              stylers: [{ visibility: "off" }],
+            },
           ],
           disableDefaultUI: true,
           zoomControl: true,
-          mapTypeControl: true
+          mapTypeControl: true,
         }}
       >
-        {markers.map((marker) => (
+        {markers.map(marker => (
           <Marker
             key={marker.key}
             position={marker.position}
@@ -180,7 +206,7 @@ const MapComponent = ({ shoots, venues, userLocation, activeTab }) => {
             ref={infoWindowRef}
           >
             {(() => {
-              const isShoot = selectedItem.date; // Simple check: shoots have 'date'
+              const isShoot = selectedItem.date // Simple check: shoots have 'date'
               if (isShoot) {
                 return (
                   <div className="p-2">
@@ -189,16 +215,26 @@ const MapComponent = ({ shoots, venues, userLocation, activeTab }) => {
                       <strong>Date:</strong> {formatDate(selectedItem.date)}
                     </p>
                     <p className="mb-2 small">
-                      <strong>Location:</strong> {selectedItem.effectiveLocation?.address || 'TBD'}, {selectedItem.effectiveLocation?.city}, {selectedItem.effectiveLocation?.state} {selectedItem.effectiveLocation?.zip || ''}
+                      <strong>Location:</strong>{" "}
+                      {selectedItem.effectiveLocation?.address || "TBD"},{" "}
+                      {selectedItem.effectiveLocation?.city},{" "}
+                      {selectedItem.effectiveLocation?.state}{" "}
+                      {selectedItem.effectiveLocation?.zip || ""}
                     </p>
                     {userLocation && selectedItem.effectiveLocation && (
                       <p className="mb-2 small">
-                        <strong>Distance:</strong> {getDistance(userLocation, selectedItem.effectiveLocation).toFixed(1)} mi
+                        <strong>Distance:</strong>{" "}
+                        {getDistance(
+                          userLocation,
+                          selectedItem.effectiveLocation
+                        ).toFixed(1)}{" "}
+                        mi
                       </p>
                     )}
                     {getAmenityIcons(selectedItem.amenities) && (
                       <p className="mb-2 small text-muted">
-                        <strong>Amenities:</strong> {getAmenityIcons(selectedItem.amenities)}
+                        <strong>Amenities:</strong>{" "}
+                        {getAmenityIcons(selectedItem.amenities)}
                       </p>
                     )}
                     <div className="d-flex gap-2">
@@ -210,12 +246,15 @@ const MapComponent = ({ shoots, venues, userLocation, activeTab }) => {
                       >
                         Directions
                       </a>
-                      <Link to={`/shoots/${selectedItem.slug}`} className="btn btn-sm btn-primary">
+                      <Link
+                        to={`/shoots/${selectedItem.slug}`}
+                        className="btn btn-sm btn-primary"
+                      >
                         View Details
                       </Link>
                     </div>
                   </div>
-                );
+                )
               } else {
                 // Venue
                 return (
@@ -226,22 +265,30 @@ const MapComponent = ({ shoots, venues, userLocation, activeTab }) => {
                     </p>
                     {selectedItem.hours && (
                       <p className="mb-2 small">
-                        <strong>Hours:</strong> Weekdays: {selectedItem.hours.weekday || "TBD"} | Weekends: {selectedItem.hours.weekend || "TBD"}
+                        <strong>Hours:</strong> Weekdays:{" "}
+                        {selectedItem.hours.weekday || "TBD"} | Weekends:{" "}
+                        {selectedItem.hours.weekend || "TBD"}
                       </p>
                     )}
 
                     {selectedItem.contact && (
                       <p className="mb-2 small text-muted">
-                        <strong>Contact:</strong> Phone: {selectedItem.contact.phone || "TBD"}
+                        <strong>Contact:</strong> Phone:{" "}
+                        {selectedItem.contact.phone || "TBD"}
                       </p>
                     )}
-                    {selectedItem.contact &&(
+                    {selectedItem.contact && (
                       <p className="mb-2 small">
-                        <strong>Email:</strong> {selectedItem.contact.email || "TBD"}
+                        <strong>Email:</strong>{" "}
+                        {selectedItem.contact.email || "TBD"}
                       </p>
                     )}
                     <p className="mb-2 small">
-                      <strong>Location:</strong> {selectedItem.location?.address || 'TBD'}, {selectedItem.location?.city}, {selectedItem.location?.state} {selectedItem.location?.zip || ''}
+                      <strong>Location:</strong>{" "}
+                      {selectedItem.location?.address || "TBD"},{" "}
+                      {selectedItem.location?.city},{" "}
+                      {selectedItem.location?.state}{" "}
+                      {selectedItem.location?.zip || ""}
                     </p>
                     <div className="d-flex gap-2">
                       <a
@@ -258,7 +305,7 @@ const MapComponent = ({ shoots, venues, userLocation, activeTab }) => {
                       </button>
                     </div>
                   </div>
-                );
+                )
               }
             })()}
           </InfoWindow>
@@ -282,11 +329,11 @@ MapComponent.propTypes = {
         petFriendly: PropTypes.bool,
         food: PropTypes.bool,
         wheelchairAccessible: PropTypes.bool,
-        camping: PropTypes.bool
+        camping: PropTypes.bool,
       }),
       description: PropTypes.string,
       time: PropTypes.string,
-      slug: PropTypes.string.isRequired
+      slug: PropTypes.string.isRequired,
     })
   ),
   venues: PropTypes.arrayOf(
@@ -299,16 +346,15 @@ MapComponent.propTypes = {
         city: PropTypes.string,
         state: PropTypes.string,
         address: PropTypes.string,
-        zip: PropTypes.string
-      })
+        zip: PropTypes.string,
+      }),
     })
   ).isRequired,
   userLocation: PropTypes.shape({
     lat: PropTypes.number,
     lng: PropTypes.number,
     activeTab: PropTypes.string,
-  })
-
+  }),
 }
 
 export default MapComponent

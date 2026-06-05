@@ -1,7 +1,5 @@
 import React from "react"
 
-import { SearchProvider } from "./src/components/context/SearchContext"
-
 export const onRenderBody = ({ setHeadComponents }) => {
   setHeadComponents([
     <link
@@ -17,8 +15,3 @@ export const onRenderBody = ({ setHeadComponents }) => {
     ></script>,
   ])
 }
-
-// Wrap root element with SearchProvider for SSR
-export const wrapRootElement = ({ element }) => (
-  <SearchProvider>{element}</SearchProvider>
-)

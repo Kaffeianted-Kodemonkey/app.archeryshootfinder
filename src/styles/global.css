@@ -4,53 +4,53 @@
 @import 'bootstrap/dist/css/bootstrap.min.css';
 
 /* ==========================================================================
-   ROOT VARIABLES - Complete Custom Theme (Navy/Gold for ArcheryShootFinder)
+   ROOT VARIABLES - Desert Lizard & Archery Target Theme
    ========================================================================== */
 :root {
-  /* Primary (Navy Blue for clubs/links) */
-  --bs-primary: #003F5C;
-  --bs-primary-rgb: 0, 63, 92;
-  --bs-primary-bg-subtle: rgba(var(--bs-primary-rgb), 0.15);
+  /* Primary (Deep Obsidian / Charcoal - Base text, headers & structural dark buttons) */
+  --bs-primary: #2C2C2A;
+  --bs-primary-rgb: 44, 44, 42;
+  --bs-primary-bg-subtle: rgba(var(--bs-primary-rgb), 0.12);
 
-  /* Secondary (Target Gold) */
-  --bs-secondary: #FFB700;
-  --bs-secondary-rgb: 255, 183, 0;
-  --bs-secondary-bg-subtle: rgba(var(--bs-secondary-rgb), 0.15);
-
-  /* Success (Green for ranges) */
-  --bs-success: #28a745;
+  /* Success (Target Ring Green - EXCLUSIVELY reserved for verified registration statuses) */
+  --bs-success: #28A745;
   --bs-success-rgb: 40, 167, 69;
   --bs-success-bg-subtle: rgba(var(--bs-success-rgb), 0.15);
 
-  /* Danger (Red for pro shops) */
-  --bs-danger: #dc3545;
-  --bs-danger-rgb: 220, 53, 69;
-  --bs-danger-bg-subtle: rgba(var(--bs-danger-rgb), 0.15);
-
-  /* Warning (Orange for organizations) */
-  --bs-warning: #fd7e14;
-  --bs-warning-rgb: 253, 126, 20;
-  --bs-warning-bg-subtle: rgba(var(--bs-warning-rgb), 0.15);
-
-  /* Info (Purple for associations) */
-  --bs-info: #6f42c1;
-  --bs-info-rgb: 111, 66, 193;
+  /* Info (Target Ring Blue - FREEMIUM Tier / Registered Non-Profits) */
+  --bs-info: #4A8CA8;
+  --bs-info-rgb: 74, 140, 168;
   --bs-info-bg-subtle: rgba(var(--bs-info-rgb), 0.15);
 
-  /* Light (Gray backgrounds) */
-  --bs-light: #f8f9fa;
-  --bs-light-rgb: 248, 249, 250;
+  /* Secondary (Target Ring Red/Sandstone Copper - PREMIUM Tier / Pro Shops & Commercial Clubs) */
+  --bs-secondary: #D05A3F;
+  --bs-secondary-rgb: 208, 90, 63;
+  --bs-secondary-bg-subtle: rgba(var(--bs-secondary-rgb), 0.15);
+
+  /* Warning (Target Ring Gold / Cactus Flower - DESTINATION Tier / Major Tours & Competitions) */
+  --bs-warning: #E6A100;
+  --bs-warning-rgb: 230, 161, 0;
+  --bs-warning-bg-subtle: rgba(var(--bs-warning-rgb), 0.15);
+
+  /* Danger (Sun-Baked Clay Accent Tones) */
+  --bs-danger: #B84126;
+  --bs-danger-rgb: 184, 65, 38;
+  --bs-danger-bg-subtle: rgba(var(--bs-danger-rgb), 0.15);
+
+  /* Light (Desert Sand / Warm Bone Backgrounds) */
+  --bs-light: #F4EFE2;
+  --bs-light-rgb: 244, 239, 226;
   --bs-light-bg-subtle: rgba(var(--bs-light-rgb), 0.15);
 
-  /* Dark (Text/contrasts) */
-  --bs-dark: #212529;
+  /* Dark (Deep Canyon Black - High contrast text layers) */
+  --bs-dark: #1E1E1C;
   --bs-dark-rgb: 33, 37, 41;
 
-  /* Body and general */
-  --bs-body-bg: #f8f9fa;
-  --bs-body-color: #212529;
-  --bs-link-color: #003F5C;
-  --bs-link-hover-color: #002a40;
+  /* Body and global link layout configurations */
+  --bs-body-bg: #FAF7F0; /* Soft warm light tone instead of blinding clinical white */
+  --bs-body-color: #1E1E1C;
+  --bs-link-color: #D05A3F; /* Sandstone action items */
+  --bs-link-hover-color: #B84126;
 
   /* App-specific transitions */
   --app-transition: 250ms ease;
@@ -86,6 +86,15 @@ main {
   overflow-y: auto !important;
   min-height: calc(100vh - 180px); /* Navbar + footer/peek buffer */
   padding-bottom: 4rem; /* Extra bottom padding for peek/footer */
+}
+
+/* Banner*/
+.banner {
+  background-color: var(--bs-info) !important;
+  color: var(--bs-dark) !important;
+  padding: 1rem !important;
+  border: 2px solid var(--bs-secondary) !important; /* Gold accent underline */
+  height: 600px;
 }
 
 /* Footer and offcanvas positioning */
@@ -144,6 +153,7 @@ main.map-view .list-scroll-container {
   padding-top: 1rem;
   padding-bottom: 120px; /* Consolidated clearance for peek handle + footer */
 }
+
 
 /* Search Offcanvas (full-height side slide with scrolling) */
 .search-offcanvas {
@@ -529,7 +539,7 @@ main.map-view .list-scroll-container {
   .directory-section .nav-tabs .nav-link {
     font-size: 0.8rem !important;
     padding: 0.4rem 0.6rem !important;
-    margin-right: 0.2rem !important;
+    margin-right: 0.0rem !important;
     white-space: nowrap !important;
     min-width: auto !important;
   }

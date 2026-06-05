@@ -3,13 +3,19 @@ import { useStaticQuery, graphql } from "gatsby"
 import { useRef } from "react" // Add this
 
 import Navbar from "./Navbar"
-import Footer from "./Footer"
-//import SearchDrawer from "../search/SearchDrawer"
-import { useSearch } from "../context/SearchContext"
 import MapComponent from "../map/map"
+import Footer from "./Footer"
+
 //import Tabs from "../list/tabs"
 
-const Layout = ({ children, view, setView, mapProps, listProps, listViewContent }) => {
+const Layout = ({
+  children,
+  view,
+  setView,
+  mapProps,
+  listProps,
+  listViewContent,
+}) => {
   const data = useStaticQuery(graphql`
     query SiteTitleQuery {
       site {
@@ -21,20 +27,14 @@ const Layout = ({ children, view, setView, mapProps, listProps, listViewContent 
     }
   `)
 
-  const { showSearch } = useSearch()
-  const searchDrawerRef = useRef(null)
-
-  const mainClass = showSearch
-    ? "container-fluid gx-0 p-0 flex-grow-1 pb-5"
-    : "container-fluid gx-0 p-0 flex-grow-1 pb-3"
-
+  const mainClass = "container-fluid gx-0 p-0 flex-grow-1 pb-3"
   const finalMainClass = view === "map" ? `${mainClass} map-view` : mainClass
 
-  const handleOpenSearch = () => {
-    if (searchDrawerRef.current) {
-      searchDrawerRef.current.show()
-    }
-  }
+  // const handleOpenSearch = () => {
+  //   if (searchDrawerRef.current) {
+  //     searchDrawerRef.current.show()
+  //   }
+  // }
 
   return (
     <>
@@ -48,18 +48,37 @@ const Layout = ({ children, view, setView, mapProps, listProps, listViewContent 
       <main className={finalMainClass}>
         {view === "map" && mapProps && listProps ? (
           <div className="d-flex flex-column h-100">
-            <div className="row g-0 sticky-top shadow-sm" style={{ zIndex: 1020, top: '56px' }}>
+            <div
+              className="row g-0 sticky-top shadow-sm"
+              style={{ zIndex: 1020, top: "56px" }}
+            >
               <div
                 className="col bg-light border-bottom position-relative"
-                style={{ height: '35vh', maxHeight: '400px', minHeight: '250px' }}
+                style={{
+                  height: "35vh",
+                  maxHeight: "400px",
+                  minHeight: "250px",
+                }}
               >
                 <MapComponent {...mapProps} />
               </div>
             </div>
 
-            <div className="row g-0 flex-grow-1 mt-5 pt-5">
+            {/* Sponsor/Influencer Banner - Placeholder */}
+            <div className="row g-0">
+              <div className="col bannertext-white text-center py-3">
+                <p className="mb-0 small">
+                  <i className="bi bi-star-fill me-1"></i>
+                  Sponsor &amp; Influencer Banner Area
+                  <span className="ms-2 text-white-50">(Coming Soon)</span>
+                </p>
+              </div>
+            </div>
+
+            <div className="row g-0 flex-grow-0 mt-5 pt-5">
               <div className="col /* bg-white */ overflow-auto">
-                {listViewContent}  {/* Use prop instead of direct <Tabs {...listProps} /> */}
+                {listViewContent}{" "}
+                {/* Use prop instead of direct <Tabs {...listProps} /> */}
               </div>
             </div>
           </div>
@@ -72,7 +91,7 @@ const Layout = ({ children, view, setView, mapProps, listProps, listViewContent 
 
       <Footer />
 
-      {!showSearch && (
+      {/* {!showSearch && (
         <div
           className="fixed-bottom bg-light border-top d-flex align-items-center justify-content-center py-2 container-fluid gx-0 p-0"
           style={{
@@ -97,7 +116,7 @@ const Layout = ({ children, view, setView, mapProps, listProps, listViewContent 
             }}
           ></div>
         </div>
-      )}
+      )} */}
 
       {/* <SearchDrawer ref={searchDrawerRef} /> */}
     </>

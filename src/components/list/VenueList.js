@@ -1,181 +1,317 @@
 // src/components/list/VenueList.js
 // Poupers of this page: This is my venue directory tab disply.
-import * as React from "react";
-import { useStaticQuery, graphql, Link } from "gatsby";
-import { getDistance } from "../../utils/distance";
+import * as React from "react"
+import { Link } from "gatsby"
+import { getDistance } from "../../utils/distance"
 
 // venueType mapping for icons and styles (uppercase enums)
 const venueTypeMapping = {
-  CLUB: { icon: "bi-building", className: "bg-primary text-white", rowBg: "bg-light" },
-  RANGE: { icon: "bi-crosshairs", className: "bg-success text-white", rowBg: "bg-light" },
-  PRO_SHOP: { icon: "bi-shop", className: "bg-danger text-white", rowBg: "bg-light" },
-  ASSOCIATION: { icon: "bi-people", className: "bg-purple text-white", rowBg: "bg-light" },
-  ORGANIZATION: { icon: "bi-star", className: "bg-warning text-dark", rowBg: "bg-light" },
-  default: { icon: "bi-geo-alt", className: "bg-secondary text-white", rowBg: "bg-light" }
-};
+  CLUB: {
+    icon: "bi-building",
+    className: "bg-primary text-white",
+    rowBg: "bg-light",
+  },
+  RANGE: {
+    icon: "bi-crosshairs",
+    className: "bg-success text-white",
+    rowBg: "bg-light",
+  },
+  PRO_SHOP: {
+    icon: "bi-shop",
+    className: "bg-danger text-white",
+    rowBg: "bg-light",
+  },
+  ASSOCIATION: {
+    icon: "bi-people",
+    className: "bg-purple text-white",
+    rowBg: "bg-light",
+  },
+  ORGANIZATION: {
+    icon: "bi-star",
+    className: "bg-warning text-dark",
+    rowBg: "bg-light",
+  },
+  default: {
+    icon: "bi-geo-alt",
+    className: "bg-secondary text-white",
+    rowBg: "bg-light",
+  },
+}
 
-const VenueList = ({ location, showUnclaimed = false }) => {
-  const data = useStaticQuery(graphql`
-    query VenueListQuery {
-      allVenuesJson {
-        nodes {
-          id
-          venueId
-          slug
-          name
-          description
-          venueType
-          subscription  # Changed from tier
-          location {
-            city
-            state
-            lat
-            lng
-          }
-          contact {
-            phone
-            email
-          }
-          hours{
-            day
-            open
-            close
-            closed
-          }
-          facilities
-          hostedShoots {
-            venueId
-            date
-          }
-          isClaimed
-        }
-      }
+const VenueList = ({
+  allVenues,
+  location,
+  showUnclaimed = false,
+  currentShoots = [],
+  upcomingShoots = [],
+  destinationShoots = [],
+  setActiveTab,
+  setSelectedVenueId,
+}) => {
+  let venues = Array.isArray(allVenues) ? [...allVenues] : []
+  const allShoots = [...currentShoots, ...upcomingShoots, ...destinationShoots]
 
-      allShootsJson {
-        nodes {
-          id
-          shootId
-          name
-          date
-          isVerified
-          venueId
-          venue {
-            venueId
-            isClaimed
-            subscription
-          }             
-        }
-      }
-    }
-  `);
-
-  let venues = data.allVenuesJson.nodes;
-  const allShoots = data.allShootsJson.nodes;
-
-  // Filter unclaimed (basic tier)
   if (!showUnclaimed) {
-    venues = venues.filter(venue => venue.subscription !== "basic");
+    venues = venues.filter(venue => venue.subscription !== "basic")
   }
-
-  // Sort by distance if location, else name
-  if (location && location.lat && location.lng) {
-    venues.sort((a, b) => {
-      const distA = getDistance(location, a.location);
-      const distB = getDistance(location, b.location);
-      return distA - distB;
-    });
-  } else {
-    venues.sort((a, b) => a.name.localeCompare(b.name));
-  }
-
-  // Manual join: Get upcoming count from hostedShoots IDs + allShoots
-  const getUpcomingCount = (hostedShoots) => {
-    const now = new Date();
-    // hostedShoots is now an array of objects, not IDs
-    return (hostedShoots || []).filter(shoot => new Date(shoot.date) > now).length;
-  };
-
 
   if (venues.length === 0) {
     return (
-      <div className="alert alert-info text-center py-4 my-3 mx-0 px-0" role="alert" aria-live="polite">
-        No venues found. {showUnclaimed ? "" : "Toggle to show unclaimed venues."}
+      <div
+        className="alert alert-info text-center py-4 my-3 mx-0 px-0"
+        role="alert"
+        aria-live="polite"
+      >
+        No venues found.{" "}
+        {showUnclaimed ? "" : "Toggle to show unclaimed venues."}
       </div>
-    );
+    )
+  }
+
+  if (location && location.lat && location.lng) {
+    venues.sort(
+      (a, b) =>
+        getDistance(location, a.location) - getDistance(location, b.location)
+    )
+  } else {
+    venues.sort((a, b) => a.name.localeCompare(b.name))
+  }
+
+  const getVenueShootCounts = venueId => {
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    const horizon = new Date(today)
+    horizon.setDate(today.getDate() + 21)
+    horizon.setHours(23, 59, 59, 999)
+
+    const venueShoots = allShoots.filter(s => {
+      const vid = s.venue?.venueId || s.venueId
+      return vid === venueId
+    })
+
+    let current = 0,
+      upcoming = 0,
+      destination = 0
+
+    venueShoots.forEach(shoot => {
+      if (shoot.isDestination) {
+        destination++
+      } else {
+        const start = new Date(shoot.date)
+        const end = shoot.endDate ? new Date(shoot.endDate) : start
+        start.setHours(0, 0, 0, 0)
+        end.setHours(23, 59, 59, 999)
+        if (start <= horizon && end >= today) current++
+        else if (start > horizon) upcoming++
+      }
+    })
+
+    return {
+      currentCount: current,
+      upcomingCount: upcoming,
+      destinationCount: destination,
+    }
   }
 
   return (
     <div className="row">
-      {venues.map((venue) => {
-        const location = venue.location || {};
-        const contact = venue.contact || {};
-        const equipment = venue.equipment || {};
-        const hours = venue.hours || {};
-        const membership = venue.membership || {};
-        const distanceValue = (location && venue.location) ? getDistance(location, venue.location).toFixed(1) : "N/A";
-        const distance = `${distanceValue} mi`;
-        /* console.log('location:', location);  // Check if location is set
-        console.log('venue.location:', location);    // Check venue coords
-        console.log('distance calculated:', distance);  // Verify final value
- */
-        const cityState = `${location.city || ''}, ${location.state || ''}`;
-        const mapping = venueTypeMapping[venue.venueType] || venueTypeMapping.default;
-        const shootsCount = getUpcomingCount(venue.hostedShoots || []);
+      {venues.map(venue => {
+        const location = venue.location || {}
+        const contact = venue.contact || {}
+        const equipment = venue.equipment || {}
+        const hours = venue.hours || {}
+        const membership = venue.membership || {}
+        const distanceValue =
+          location && venue.location
+            ? getDistance(location, venue.location).toFixed(1)
+            : "N/A"
+        const distance = `${distanceValue} mi`
+        const cityState = `${location.city || ""}, ${location.state || ""}`
+        const mapping =
+          venueTypeMapping[venue.venueType] || venueTypeMapping.default
+
         // Logic helpers
-        const isUnclaimed = venue.subscription === "BASIC";
-        const isNonProfit = venue.subscription === "FREEMIUM";
-        const isPaidTier = venue.subscription === "PREMIUM" || venue.subscription === "DESTINATION";
+        const isUnclaimed = venue.subscription === "BASIC"
+        const isNonProfit = venue.subscription === "FREEMIUM"
+        const isPaidTier =
+          venue.subscription === "PREMIUM" ||
+          venue.subscription === "DESTINATION"
 
+        const hasPhone = contact.phone && contact.phone.trim().length > 0
+        const hasEmail = contact.email && contact.email.trim().length > 0
 
-        const hasPhone = contact.phone && contact.phone.trim().length > 0;
-        const hasEmail = contact.email && contact.email.trim().length > 0;
+        // Inside your venues.map loop:
+        const { currentCount, upcomingCount, destinationCount } =
+          getVenueShootCounts(venue.venueId)
+
+        const totalShoots = currentCount + upcomingCount
 
         return (
           <div key={venue.id} className="col-12 mb-3">
             <div className={`card ${mapping.rowBg}`}>
+              {/* Card Header starts here */}
               <div className="card-header pt-3">
-                <div className="row align-items-center">
-                  <div className="col-4">
-                    <span className={`badge ${mapping.className}`}>
-                      <i className={`bi ${venue.icon || mapping.icon} me-1`}></i>{venue.venueType}
-                    </span>
-                    <p className="fs-6 mt-3"><i className="bi bi-geo-alt"></i> {distance}<br />{cityState}</p>
-                  </div>
-                  <div className="col m-0 p-0">
-                    <h2 className="card-title fs-5 mb-0">{venue.name}</h2>
-                    <p className="card-text text-muted small mb-0">{venue.description}</p>
-                  </div>
-                </div>
+                <span className={`badge ${mapping.className}`}>
+                  <i className={`bi ${venue.icon || mapping.icon} me-1`}></i>
+                  {venue.venueType}
+                </span>{" "}
+                <h2 className="card-title fs-3 mt-2 mb-0">{venue.name}</h2>
+                <p className="fs-6 mt-2">
+                  <i className="bi bi-geo-alt"></i> {distance} | {cityState}
+                </p>
               </div>
+              {/* Card Body starts here */}
               <div className="card-body">
                 <div className="row">
-                  <div className="col-md-6">
+                  <div className="col-md-7">
+                    <h3 className="fs-5">
+                      <strong>About the Venue</strong>
+                    </h3>
+                    <p>{venue.description}</p>
+
                     {venue.facilities && venue.facilities.length > 0 && (
-                      <p className="card-text mb-1"><strong>Facilities:</strong><br /> {venue.facilities.join(', ')}</p>
-                    )}
-                    {equipment.rentalAvailable !== undefined && (
                       <p className="card-text mb-1">
-                        <strong>Equipment:<br /></strong> {equipment.rentalAvailable ? 'Rentals available' : 'BYO'} {equipment.notes ? ` - ${equipment.notes}` : ''}
+                        <strong>Facilities:</strong>
+                        <br /> {venue.facilities.join(", ")}
                       </p>
                     )}
-                    {hours.weekday && (
-                      <p className="card-text mb-1"><strong>Hours:<br /></strong> Weekdays: {hours.weekday} <br /> Weekends: {hours.weekend || 'N/A'}</p>
+                    {equipment && equipment.rentalAvailable !== undefined ? (
+                      <p className="card-text mb-1">
+                        <strong>Equipment:</strong>
+                        <br />
+                        {equipment.rentalAvailable
+                          ? "Rentals available"
+                          : "BYO"}{" "}
+                        {equipment.notes ? ` - ${equipment.notes}` : ""}
+                      </p>
+                    ) : (
+                      <p className="card-text mb-1">
+                        <strong>Equipment:</strong> TBA
+                      </p>
                     )}
                   </div>
-                  <div className="col-md-6">
-                    {hasPhone && <p className="card-text mb-1"><strong><i className="bi bi-telephone-outbound" data-label="Phone"></i></strong> <a href={`tel:${contact.phone}`}>{contact.phone}</a></p>}
-                    {hasEmail && <p className="card-text mb-1"><strong><i className="bi bi-envelope-arrow-up" data-label="Email"></i></strong> <a href={`mailto:${contact.email}`}>{contact.email}</a></p>}
-                    {membership.required !== undefined && (
+                  <div className="col-md-5">
+                    {hours && (hours.weekday || hours.weekend) ? (
                       <p className="card-text mb-1">
-                        <strong>Membership:</strong> {membership.required ? 'Required' : 'Optional'} - {membership.details || 'N/A'}
-                        {membership.url && <a href={membership.url} className="ms-1">Join</a>}
+                        <strong>Hours:</strong>
+                        <br />
+                        Weekdays: {hours.weekday || "TBD"} <br />
+                        Weekends: {hours.weekend || "TBD"}
+                      </p>
+                    ) : (
+                      <p className="card-text mb-1">
+                        <strong>Hours:</strong> TBD
                       </p>
                     )}
-                    {shootsCount > 0 && (
-                      <Link to={`?activeTab=shoots&clubId=${venue.id}`} className="text-decoration-none fw-medium">
-                        {shootsCount} Upcoming Shoots <i className="bi bi-arrow-right ms-1 text-primary"></i>
-                      </Link>
+
+                    {membership && membership.required !== undefined ? (
+                      <p className="card-text mb-1">
+                        <strong>Membership:</strong>{" "}
+                        {membership.required ? (
+                          <>
+                            Required
+                            {membership.url && (
+                              <a
+                                href={membership.url}
+                                className="ms-1"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                Join
+                              </a>
+                            )}
+                            {membership.details && ` - ${membership.details}`}
+                          </>
+                        ) : (
+                          "No membership required"
+                        )}
+                      </p>
+                    ) : (
+                      <p className="card-text mb-1">
+                        <strong>Membership:</strong> TBD
+                      </p>
                     )}
+
+                    <hr />
+                    <h3 className="fs-5">
+                      <strong>Contact Info</strong>
+                    </h3>
+                    {hasPhone && (
+                      <p className="card-text mb-1">
+                        <strong>
+                          <i
+                            className="bi bi-telephone-outbound"
+                            data-label="Phone"
+                          ></i>
+                        </strong>{" "}
+                        <a href={`tel:${contact.phone}`}>{contact.phone}</a>
+                      </p>
+                    )}
+                    {hasEmail && (
+                      <p className="card-text mb-1">
+                        <strong>
+                          <i
+                            className="bi bi-envelope-arrow-up"
+                            data-label="Email"
+                          ></i>
+                        </strong>{" "}
+                        <a href={`mailto:${contact.email}`}>{contact.email}</a>
+                      </p>
+                    )}
+
+                    <hr />
+                    <h3 className="fs-5">
+                      <strong>Hosted Shoots</strong>
+                    </h3>
+                    <div className="card-text mb-1">
+                      {currentCount > 0 ? (
+                        <button
+                          onClick={() => {
+                            if (setSelectedVenueId && setActiveTab) {
+                              setSelectedVenueId(venue.venueId)
+                              setActiveTab("current")
+                            }
+                          }}
+                          className="btn btn-sm btn-link p-0 text-decoration-none"
+                        >
+                          ({currentCount}) Current
+                        </button>
+                      ) : (
+                        <span className="text-muted">(0) Current</span>
+                      )}
+                      <span className="text-muted"> | </span>
+                      {upcomingCount > 0 ? (
+                        <button
+                          onClick={() => {
+                            if (setSelectedVenueId && setActiveTab) {
+                              setSelectedVenueId(venue.venueId)
+                              setActiveTab("upcoming")
+                            }
+                          }}
+                          className="btn btn-sm btn-link p-0 text-decoration-none"
+                        >
+                          ({upcomingCount}) Upcoming
+                        </button>
+                      ) : (
+                        <span className="text-muted">(0) Upcoming</span>
+                      )}
+                      <span className="text-muted"> | </span>
+                      {destinationCount > 0 ? (
+                        <button
+                          onClick={() => {
+                            if (setSelectedVenueId && setActiveTab) {
+                              setSelectedVenueId(venue.venueId)
+                              setActiveTab("destination")
+                            }
+                          }}
+                          className="btn btn-sm btn-link p-0 text-decoration-none"
+                        >
+                          ({destinationCount}) Destination
+                        </button>
+                      ) : (
+                        <span className="text-muted">(0) Destination</span>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -184,24 +320,36 @@ const VenueList = ({ location, showUnclaimed = false }) => {
                 {venue.isClaimed ? (
                   <>
                     <span className="text-success small">
-                      <i className="bi bi-patch-check-fill"></i> {isNonProfit ? "Verified Club" : "Verified Venue"}
+                      <i className="bi bi-patch-check-fill"></i>{" "}
+                      {isNonProfit ? "Verified Club" : "Verified Venue"}
                     </span>
-                    <Link to={`/venues/${venue.slug}`} className="btn btn-sm btn-success">View Details</Link>
+                    <Link
+                      to={`/venues/${venue.slug}`}
+                      className="btn btn-sm btn-success"
+                    >
+                      View Details
+                    </Link>
                   </>
                 ) : (
                   <>
-                    <span className="text-muted small"><i className="bi bi-question-circle"></i> Unclaimed</span>
-                    <Link to="/pricing" className="btn btn-sm btn-outline-warning">Claim Listing</Link>
+                    <span className="text-muted small">
+                      <i className="bi bi-question-circle"></i> Unclaimed
+                    </span>
+                    <Link
+                      to="/pricing"
+                      className="btn btn-sm btn-outline-warning"
+                    >
+                      Claim Listing
+                    </Link>
                   </>
-                  
                 )}
               </div>
             </div>
           </div>
-        );
+        )
       })}
     </div>
-  );
-};
+  )
+}
 
-export default VenueList;
+export default VenueList

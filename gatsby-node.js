@@ -29,40 +29,40 @@ exports.createSchemaCustomization = ({ actions }) => {
       venueType: VenueType
       slug: String
       description: String
-      subscription: VenueTier # Pay teir, Freemium, Premium, Destination 
+      subscription: VenueTier # Pay teir, Freemium, Premium, Destination
       icon: String
       iconColor: String
       hours: [BusinessHours]
       location: Location  # access as venue.location.city in components
       contact: Contact   # Raw JSON; access as venue.contact.phone in components
       facilities: [Facility] # not shoot spacifice as a venue may have [3D_COURSE, INDOOR_RANGE, OUTDOOR_RANGE, PRO_SHOP_ON_SITE, KITCHEN, CAMPGROUND]
-      amenities: [Amenities] 
+      amenities: [Amenities]
       equipmentAllowed: [EquipmentType]
       customEquipmentRules: [String]
       membership: String # URL to mebership registration/signup
       hostedShoots: [ShootsJson] @link(by: "venueId", from: "venueId")
       imageUrl: String
       isClaimed: Boolean!
-      sanctioning: [Association]      
+      sanctioning: [Association]
     }
 
     type ShootsJson implements Node {
       id: ID!            # Gatsby internal ID
       shootId: Int!   # Unique Venue Identifier
       venueId: Int!    # Unique Venue Identifier
-      venue: VenuesJson @link(by: "venueId", from: "venueId") 
+      venue: VenuesJson @link(by: "venueId", from: "venueId")
       name: String
       description: String
       date: Date # @dateformat # if null then show TBD
       endDate: Date # if null then show TBD
-      time: String # if null then show TBD     
+      time: String # if null then show TBD
       useVenueLocation: Boolean # if true then the shoot uses the Venue Location
       shootLocation: Location
       isVerified: Boolean # shows if a shoot has been verified by a claimed venue
       shootFormat: [ShootFormat]
       eventType: [EventType]
       customFormat: [String]      # For events not in list this adds them to other
-      shootClass: [ShootClass] 
+      shootClass: [ShootClass]
       customClass: [String]
       bowTypes: [BowTypes]
       skillLevel: [SkillLevel]
@@ -72,7 +72,7 @@ exports.createSchemaCustomization = ({ actions }) => {
       amenities: [Amenities]
       isDestination: Boolean!
       isMember: Boolean # some may require a membership to sign up
-      isRegistration: Boolean # this lets shooters know they if they have to sign up or can walk in. Exp: TAC must reg online before event
+      isRegistration: Boolean # this lets shooters know they have to sign up or can walk in. Exp: TAC must reg online before event
       registrationUrl: String # if there is a url set isRegistration to true
       entryFee: String
     }
@@ -188,6 +188,9 @@ exports.createSchemaCustomization = ({ actions }) => {
       PROFESSIONAL
       CAMP
       CLINIC
+      FLIGHTS
+      CHAMPIONSHIP
+      NONSHOOTER
     }
 
     enum ShootFormat {
@@ -215,7 +218,6 @@ exports.createSchemaCustomization = ({ actions }) => {
     enum SkillLevel {
       BEGINNER
       INTERMEDIATE
-      PRO_EXPERIENCED
       EXPERT
     }
 
@@ -225,6 +227,7 @@ exports.createSchemaCustomization = ({ actions }) => {
       RECURVE
       LONGBOW
       BAREBOW
+      CROSSBOW
     }
 
     enum Terrain {
@@ -235,6 +238,7 @@ exports.createSchemaCustomization = ({ actions }) => {
       DESERT
       FIELD
       URBAN
+      HILLS
     }
 
 

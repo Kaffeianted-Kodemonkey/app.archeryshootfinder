@@ -2,10 +2,8 @@
 import * as React from "react"
 import { useState } from "react"
 import { Link } from "gatsby"
-import { useSearch } from "../context/SearchContext"
 
 const Navbar = ({ siteTitle, siteDesc, view, setView }) => {
-  const { showSearch, setShowSearch } = useSearch()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   const handleLinkClick = () => {
@@ -13,12 +11,16 @@ const Navbar = ({ siteTitle, siteDesc, view, setView }) => {
   }
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-primary fixed-top shadow-sm" style={{ zIndex: 1050 }}>
+    <nav
+      className="navbar navbar-expand-lg navbar-dark bg-primary fixed-top shadow-sm"
+      style={{ zIndex: 1050 }}
+    >
       <div className="container-fluid">
         <Link className="navbar-brand fw-bold" to="/">
           {siteTitle}
         </Link>
-        <small className="text-white">{siteDesc}</small>
+        <small className="text-white fs-5 pe-2">{siteDesc}</small>
+        <i class="bi bi-bullseye text-white me-3"></i>
         <button
           className="navbar-toggler"
           type="button"
@@ -29,26 +31,29 @@ const Navbar = ({ siteTitle, siteDesc, view, setView }) => {
         >
           <span className="navbar-toggler-icon"></span>
         </button>
-        <div className={`collapse navbar-collapse ${isMenuOpen ? 'show' : ''}`} id="navbarNav">
+        <div
+          className={`collapse navbar-collapse ${isMenuOpen ? "show" : ""}`}
+          id="navbarNav"
+        >
           <ul className="navbar-nav me-auto">
             <li className="nav-item">
               <Link
-                to="/"
-                className={`nav-link ${view === 'list' ? 'active' : ''}`}
+                to="/pricing"
+                className={`nav-link ${view === "list" ? "active" : ""}`}
                 onClick={() => {
-                  setView('list')
+                  setView("list")
                   handleLinkClick()
                 }}
               >
-                Register Shoot
+                Price Tiers
               </Link>
             </li>
             <li className="nav-item">
               <Link
                 to="/"
-                className={`nav-link ${view === 'map' ? 'active' : ''}`}
+                className={`nav-link ${view === "map" ? "active" : ""}`}
                 onClick={() => {
-                  setView('map')
+                  setView("map")
                   handleLinkClick()
                 }}
               >
@@ -57,18 +62,30 @@ const Navbar = ({ siteTitle, siteDesc, view, setView }) => {
             </li>
             <li className="nav-item">
               <Link
-                to="/"
-                className={`nav-link ${view === 'list' ? 'active' : ''}`}
+                to="https://archeryshootfinder.com"
+                className={`nav-link ${view === "list" ? "active" : ""}`}
                 onClick={() => {
-                  setView('list')
+                  setView("list")
                   handleLinkClick()
                 }}
               >
-                Submit Feedback
+                FAQ
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link
+                to="https://archeryshootfinder.com/#join"
+                className={`nav-link ${view === "list" ? "active" : ""}`}
+                onClick={() => {
+                  setView("list")
+                  handleLinkClick()
+                }}
+              >
+                Feedback
               </Link>
             </li>
           </ul>
-          <ul className="navbar-nav">
+          {/*<ul className="navbar-nav">
             <li className="nav-item">
               <button
                 className="btn btn-outline-light btn-sm"
@@ -77,7 +94,7 @@ const Navbar = ({ siteTitle, siteDesc, view, setView }) => {
                 <i className="bi bi-search me-1"></i>Search
               </button>
             </li>
-          </ul>
+          </ul>*/}
         </div>
       </div>
     </nav>
