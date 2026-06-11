@@ -20,7 +20,14 @@ const defaultCenter = {
   lng: -98.5795, // Central US
 }
 
-const MapComponent = ({ shoots, venues, userLocation, activeTab }) => {
+const MapComponent = ({
+  shoots,
+  venues,
+  userLocation,
+  activeTab,
+  selectedShoot,
+  onClearSelection,
+}) => {
   const [selectedItem, setSelectedItem] = useState(null)
   const [map, setMap] = useState(null)
   const [center, setCenter] = useState(defaultCenter)
@@ -32,6 +39,21 @@ const MapComponent = ({ shoots, venues, userLocation, activeTab }) => {
       setCenter(userLocation)
     }
   }, [userLocation, map])
+
+  useEffect(() => {
+    if (selectedShoot && map) {
+      // Find the location for this shoot
+      const loc = selectedShoot.effectiveLocation || selectedShoot.shootLocation
+      if (loc) {
+        const lat = parseFloat(loc.lat)
+        const lng = parseFloat(loc.lng)
+        if (!isNaN(lat) && !isNaN(lng)) {
+          map.panTo({ lat, lng })
+          setSelectedItem(selectedShoot) // opens the InfoWindow
+        }
+      }
+    }
+  }, [selectedShoot, map])
 
   // effectiveLocation already computed in index.js; no need to enrich here
   const enrichedShoots = shoots // Direct pass-through
@@ -202,7 +224,10 @@ const MapComponent = ({ shoots, venues, userLocation, activeTab }) => {
         {selectedItem && safeInfoPosition && (
           <InfoWindow
             position={safeInfoPosition}
-            onCloseClick={() => setSelectedItem(null)}
+            onCloseClick={() => {
+              setSelectedItem(null)
+              onClearSelection?.()
+            }}
             ref={infoWindowRef}
           >
             {(() => {
@@ -355,6 +380,8 @@ MapComponent.propTypes = {
     lng: PropTypes.number,
     activeTab: PropTypes.string,
   }),
+  selectedShoot: PropTypes.object,
+  onClearSelection: PropTypes.func,
 }
 
 export default MapComponent

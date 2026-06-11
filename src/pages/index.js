@@ -32,6 +32,8 @@ const IndexPage = ({ data }) => {
     if (activeTabParam) setActiveTab(activeTabParam)
   }, [])
 
+  const [selectedShootForMap, setSelectedShootForMap] = useState(null)
+
   // Just calculate the effectiveLocation
   const shootsWithVenues = useMemo(() => {
     return Shoots.map(shoot => {
@@ -54,6 +56,10 @@ const IndexPage = ({ data }) => {
     () => shootsWithVenues.filter(shoot => shoot.isDestination != true),
     [shootsWithVenues]
   )
+
+  const handleSelectShoot = shoot => {
+    setSelectedShootForMap(shoot)
+  }
 
   // Date boundaries using util
   const { now, currentTab } = useMemo(() => getDateBoundaries(), [])
@@ -183,7 +189,9 @@ const IndexPage = ({ data }) => {
       shoots: shootsToPass,
       venues: venuesToPass,
       userLocation: userLocation,
-      activeTab: activeTab, // New: Pass activeTab to map
+      activeTab: activeTab,
+      selectedShoot: selectedShootForMap,
+      onClearSelection: () => setSelectedShootForMap(null),
     }
   }, [
     activeTab,
@@ -191,6 +199,7 @@ const IndexPage = ({ data }) => {
     filteredUpcomingShoots,
     Venues,
     userLocation,
+    selectedShootForMap,
   ])
 
   const displayCurrentShoots = useMemo(() => {
@@ -229,6 +238,7 @@ const IndexPage = ({ data }) => {
       setActiveTab,
       selectedVenueId,
       setSelectedVenueId,
+      onSelectShoot: handleSelectShoot,
     }
   }, [
     shootsWithVenues,
@@ -367,6 +377,7 @@ export const query = graphql`
           venueId
           isClaimed
           name
+          slug
           contact {
             phone
             email

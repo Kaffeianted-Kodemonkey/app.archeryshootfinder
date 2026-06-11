@@ -2,7 +2,9 @@
 import * as React from "react"
 import PropTypes from "prop-types"
 import { Link } from "gatsby"
-import { getLabel } from "../../data/pricingEnums"
+import ShootFilters from "./ShootFilters"
+
+//import { getLabel } from "../../data/pricingEnums"
 
 const getStatusInfo = shoot => {
   if (shoot.isVerified) {
@@ -49,7 +51,18 @@ const getRegLabel = url => {
   return "Register"
 }
 
-const DestList = ({ shoots = [], selectedVenueId = null }) => {
+const DestList = ({
+  shoots = [],
+  selectedVenueId = null,
+  userLocation,
+  onSelectShoot,
+}) => {
+  const [filteredShoots, setFilteredShoots] = React.useState(shoots)
+
+  React.useEffect(() => {
+    setFilteredShoots(shoots)
+  }, [shoots])
+
   if (shoots.length === 0) {
     return (
       <div className="alert alert-info">
@@ -58,8 +71,8 @@ const DestList = ({ shoots = [], selectedVenueId = null }) => {
     )
   }
 
-  // Group shoots by venueId (fallback to shoot.venueId if venue relation missing)
-  const grouped = shoots.reduce((acc, shoot) => {
+  // Group the FILTERED shoots by venue (this is the key one-line change)
+  const grouped = filteredShoots.reduce((acc, shoot) => {
     const vid = shoot.venue?.venueId || shoot.venueId || "unknown"
     if (!acc[vid]) acc[vid] = []
     acc[vid].push(shoot)
@@ -69,222 +82,247 @@ const DestList = ({ shoots = [], selectedVenueId = null }) => {
   const venues = Object.entries(grouped)
 
   return (
-    <div className="accordion accordion-flush" id="shootAccordion">
-      {venues.map(([venueId, venueShoots], vIndex) => {
-        const isOpen = venueId === selectedVenueId
-        const first = venueShoots[0]
-        const venue = first.venue || {}
-        const loc =
-          first.useVenueLocation !== false && venue.location
-            ? venue.location
-            : first.shootLocation
-        const cityState =
-          loc?.city && loc?.state ? `${loc.city}, ${loc.state}` : "TBD"
+    <div>
+      {/* Filters sit above the accordion - they filter destinations inside the groups */}
+      <ShootFilters
+        shoots={shoots}
+        onFilteredChange={setFilteredShoots}
+        userLocation={userLocation}
+      />
 
-        const status = getStatusInfo(first)
-        const regLabel = getRegLabel(first.registrationUrl)
+      {/* Existing grouped accordion structure stays exactly the same */}
+      <div className="accordion accordion-flush" id="shootAccordion">
+        {venues.map(([venueId, venueShoots], vIndex) => {
+          const isOpen = venueId === selectedVenueId
+          const first = venueShoots[0]
+          const venue = first.venue || {}
+          const loc =
+            first.useVenueLocation !== false && venue.location
+              ? venue.location
+              : first.shootLocation
+          const cityState =
+            loc?.city && loc?.state ? `${loc.city}, ${loc.state}` : "TBD"
 
-        return (
-          <div className="accordion-item" key={venueId}>
-            <h2 className="accordion-header" id={`heading-${vIndex}`}>
-              <button
-                className={`accordion-button ${
-                  isOpen ? "" : "collapsed"
-                } bg-success-subtle border border-2 border-success shadow-none focus-ring-0`}
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target={`#collapse-${vIndex}`}
-                aria-expanded={isOpen}
-                aria-controls={`collapse-${vIndex}`}
-              >
-                <div className="d-flex w-100 justify-content-between align-items-start">
-                  <div>
-                    {/* Line 1: Venue name */}
-                    <strong className="fs-5">{venue.name}</strong>
+          const status = getStatusInfo(first)
+          const regLabel = getRegLabel(first.registrationUrl)
 
-                    {/* Line 2: Date + total shoots count */}
+          return (
+            <div className="accordion-item" key={venueId}>
+              <h2 className="accordion-header" id={`heading-${vIndex}`}>
+                <button
+                  className={`accordion-button ${
+                    isOpen ? "" : "collapsed"
+                  } bg-success-subtle border border-2 border-success shadow-none focus-ring-0`}
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target={`#collapse-${vIndex}`}
+                  aria-expanded={isOpen}
+                  aria-controls={`collapse-${vIndex}`}
+                >
+                  <div className="d-flex w-100 justify-content-between align-items-start">
                     <div>
-                      {formatDateShort(first.date, first.endDate)} — Total
-                      Shoots in Series ({venueShoots.length})
-                    </div>
+                      {/* Line 1: Venue name */}
+                      <strong className="fs-5">{venue.name}</strong>
 
-                    {/* Line 3: Badges across the bottom */}
-                    <div className="mt-1">
-                      <span className="me-2 badge bg-secondary">
-                        {humanizeEnum(first.shootFormat?.[0])}
-                      </span>
-                      <span className={`badge ${status.className}`}>
-                        {status.label}
-                      </span>
+                      {/* Line 2: Date + total shoots count */}
+                      <div>
+                        {formatDateShort(first.date, first.endDate)} — Total
+                        Shoots in Series ({venueShoots.length})
+                      </div>
+
+                      {/* Line 3: Badges across the bottom */}
+                      <div className="mt-1">
+                        <span className="me-2 badge bg-secondary">
+                          {humanizeEnum(first.shootFormat?.[0])}
+                        </span>
+                        <span className={`badge ${status.className}`}>
+                          {status.label}
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </button>
-            </h2>
+                </button>
+              </h2>
 
-            <div
-              id={`collapse-${vIndex}`}
-              className={`accordion-collapse collapse${isOpen ? " show" : ""}`}
-              aria-labelledby={`heading-${vIndex}`}
-              data-bs-parent="#shootAccordion"
-            >
-              <div className="accordion-body">
-                <h3 className="fa-5">Registration cost per shooter</h3>
-                {/* Price table – prefers structured pricing, falls back to entryFee string */}
-                <div className="resposive-table my-3">
-                  <table className="table table-bordered">
-                    <thead>
-                      <tr>
-                        <th>Tickets</th>
-                        <th>1 Day</th>
-                        <th>2 Days</th>
-                        <th>3 Days</th>
-                        <th>4 Days*</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {first.pricing && first.pricing.length > 0 ? (
-                        first.pricing.map(priceTier => {
-                          const tier = priceTier.tier
-                          const options = priceTier.options || []
-                          const getCost = days =>
-                            options.find(o => o.days === days)?.cost ?? ""
+              <div
+                id={`collapse-${vIndex}`}
+                className={`accordion-collapse collapse${
+                  isOpen ? " show" : ""
+                }`}
+                aria-labelledby={`heading-${vIndex}`}
+                data-bs-parent="#shootAccordion"
+              >
+                <div className="accordion-body">
+                  <div className="col">
+                    <h3 className="fs-5">
+                      <strong>Hosted by:</strong>
+                      <span className="ms-2">
+                        {venue.isClaimed ? (
+                          <Link to={`/venues/${venue.slug}`}>{venue.name}</Link>
+                        ) : (
+                          venue.name
+                        )}
+                      </span>
+                    </h3>
+                  </div>
+                  <hr />
+                  <h3 className="fa-5">Registration cost per shooter</h3>
+                  {/* Price table – prefers structured pricing, falls back to entryFee string */}
+                  <div className="resposive-table my-3">
+                    <table className="table table-bordered">
+                      <thead>
+                        <tr>
+                          <th>Tickets</th>
+                          <th>1 Day</th>
+                          <th>2 Days</th>
+                          <th>3 Days</th>
+                          <th>4 Days*</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {first.pricing && first.pricing.length > 0 ? (
+                          first.pricing.map(priceTier => {
+                            const tier = priceTier.tier
+                            const options = priceTier.options || []
+                            const getCost = days =>
+                              options.find(o => o.days === days)?.cost ?? ""
+
+                            return (
+                              <tr key={tier}>
+                                <th className="py-2">{tier}</th>
+                                <td>${getCost(1)}</td>
+                                <td>${getCost(2)}</td>
+                                <td>${getCost(3)}</td>
+                                <td>${getCost(4)}</td>
+                              </tr>
+                            )
+                          })
+                        ) : (
+                          <tr>
+                            <th className="py-2">Entry Fee</th>
+                            <td colSpan={4}>{first.entryFee || "TBD"}</td>
+                          </tr>
+                        )}
+
+                        {/* Prizes row */}
+                        <tr>
+                          <th>PRIZES:</th>
+                          <td colSpan={4}> {first.prizes}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+
+                    <small>
+                      <strong>
+                        <em>
+                          *Note: 4-Day passes are only applicable to extended
+                          stops (ie. Seven Springs, PA or Brian Head, UT).
+                        </em>
+                      </strong>
+                    </small>
+                  </div>
+
+                  {/* About Event */}
+                  <h3 className="fs-5">
+                    <strong>About the Event</strong>
+                  </h3>
+                  <p>{first.description}</p>
+
+                  {/* Event Rules */}
+                  <h3 className="fs-5">
+                    <strong>Rules & Regulations</strong>
+                  </h3>
+                  <p>
+                    General evet rules can be found on our landing page. [link
+                    PDF]
+                  </p>
+
+                  {first.registrationUrl && (
+                    <a
+                      href={first.registrationUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn btn-sm btn-success me-2"
+                    >
+                      {getRegLabel(first.registrationUrl)}
+                    </a>
+                  )}
+
+                  <Link
+                    to={`/shoots/${first.slug}`}
+                    className="btn btn-sm btn-outline-primary"
+                  >
+                    Venue Details
+                  </Link>
+
+                  {/* Dynamic table listing ALL shoots for this venue */}
+                  <div className="resposive-table mt-3">
+                    <div className="row ">
+                      <div className="col">
+                        {first.time && (
+                          <h3 className="fs-5">
+                            <strong>Shoots & Time:</strong> {first.time}
+                          </h3>
+                        )}
+                      </div>
+                    </div>
+                    <table className="table table-bordered table-striped">
+                      <thead>
+                        <tr>
+                          {/* <th width="45%">Shoot</th>*/}
+                          <th className="fs-5">Date</th>
+                          <th className="fs-5">Location</th>
+                          <th className="fs-5">Info</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {venueShoots.map((s, idx) => {
+                          const sLoc =
+                            s.useVenueLocation !== false && venue.location
+                              ? venue.location
+                              : s.shootLocation
+                          const sCity =
+                            sLoc?.city && sLoc?.state
+                              ? `${sLoc.city}, ${sLoc.state}`
+                              : "TBD"
 
                           return (
-                            <tr key={tier}>
-                              <th className="py-2">{tier}</th>
-                              <td>${getCost(1)}</td>
-                              <td>${getCost(2)}</td>
-                              <td>${getCost(3)}</td>
-                              <td>${getCost(4)}</td>
-                            </tr>
-                          )
-                        })
-                      ) : (
-                        <tr>
-                          <th className="py-2">Entry Fee</th>
-                          <td colSpan={4}>{first.entryFee || "TBD"}</td>
-                        </tr>
-                      )}
-
-                      {/* Prizes row */}
-                      <tr>
-                        <th>PRIZES:</th>
-                        <td colSpan={4}> {first.prizes}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-
-                  <small>
-                    <strong>
-                      <em>
-                        *Note: 4-Day passes are only applicable to extended
-                        stops (ie. Seven Springs, PA or Brian Head, UT).
-                      </em>
-                    </strong>
-                  </small>
-                </div>
-
-                {/* About Event */}
-                <h3 className="fs-5">
-                  <strong>About the Event</strong>
-                </h3>
-                <p>{first.description}</p>
-
-                {/* Event Rules */}
-                <h3 className="fs-5">
-                  <strong>Rules & Regulations</strong>
-                </h3>
-                <p>
-                  General evet rules can be found on our landing page. [link
-                  PDF]
-                </p>
-
-                {first.registrationUrl && (
-                  <a
-                    href={first.registrationUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn btn-sm btn-success me-2"
-                  >
-                    {getRegLabel(first.registrationUrl)}
-                  </a>
-                )}
-
-                <Link
-                  to={`/shoots/${first.slug}`}
-                  className="btn btn-sm btn-outline-primary"
-                >
-                  Venue Details
-                </Link>
-
-                {/* Dynamic table listing ALL shoots for this venue */}
-                <div className="resposive-table mt-3">
-                  <div className="row ">
-                    <div className="col">
-                      {first.time && (
-                        <h3 className="fs-5">
-                          <strong>Shoots & Time:</strong> {first.time}
-                        </h3>
-                      )}
-                    </div>
-                  </div>
-                  <table className="table table-bordered table-striped">
-                    <thead>
-                      <tr>
-                        {/* <th width="45%">Shoot</th>*/}
-                        <th className="fs-5">Date</th>
-                        <th className="fs-5">Location</th>
-                        <th className="fs-5">Info</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {venueShoots.map((s, idx) => {
-                        const sLoc =
-                          s.useVenueLocation !== false && venue.location
-                            ? venue.location
-                            : s.shootLocation
-                        const sCity =
-                          sLoc?.city && sLoc?.state
-                            ? `${sLoc.city}, ${sLoc.state}`
-                            : "TBD"
-
-                        return (
-                          <React.Fragment key={s.id || idx}>
-                            {/* New name row */}
-                            <tr>
-                              <td
-                                colSpan={3}
-                                className="fw-bold bg-info-subtle"
-                              >
-                                {s.name}
-                              </td>
-                            </tr>
-
-                            {/* Normal data row */}
-                            <tr>
-                              <td>{formatDateShort(s.date, s.endDate)}</td>
-                              <td>{sCity}</td>
-                              <td>
-                                <Link
-                                  to={`/shoots/${s.slug}`}
-                                  className="btn btn-sm btn-outline-primary"
+                            <React.Fragment key={s.id || idx}>
+                              {/* New name row */}
+                              <tr>
+                                <td
+                                  colSpan={3}
+                                  className="fw-bold bg-info-subtle"
                                 >
-                                  Map
-                                </Link>
-                              </td>
-                            </tr>
-                          </React.Fragment>
-                        )
-                      })}
-                    </tbody>
-                  </table>
+                                  {s.name}
+                                </td>
+                              </tr>
+
+                              {/* Normal data row */}
+                              <tr>
+                                <td>{formatDateShort(s.date, s.endDate)}</td>
+                                <td>{sCity}</td>
+                                <td>
+                                  <button
+                                    className="btn btn-sm btn-outline-primary"
+                                    onClick={() => onSelectShoot?.(s)}
+                                  >
+                                    Map
+                                  </button>
+                                </td>
+                              </tr>
+                            </React.Fragment>
+                          )
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        )
-      })}
+          )
+        })}
+      </div>
     </div>
   )
 }
@@ -292,6 +330,7 @@ const DestList = ({ shoots = [], selectedVenueId = null }) => {
 DestList.propTypes = {
   shoots: PropTypes.array,
   selectedVenueId: PropTypes.string, // or number, depending on your IDs
+  onSelectShoot: PropTypes.func,
 }
 
 export default DestList

@@ -1,19 +1,63 @@
-/**
- * Implement Gatsby's Node APIs in this file.
- *
- * See: https://www.gatsbyjs.com/docs/reference/config-files/gatsby-node/
- */
-
 const path = require("path")
 
 /**
  * @type {import('gatsby').GatsbyNode['createPages']}
  */
-exports.createPages = async ({ graphql, actions }) => {
+exports.createPages = async ({ graphql, actions, reporter }) => {
   const { createPage } = actions
 
-  // TODO: In future phase, add DSG for venue landing pages (non-basic tiers only)
-  // For now, no dynamic pages - all content in directory tabs
+  // 1. Run a GraphQL query to grab all registered venue IDs and Slugs
+  const result = await graphql(`
+    query GetSpotlightVenues {
+      allVenuesJson {
+        nodes {
+          id
+          venueId
+          slug
+        }
+      }
+    }
+  `)
+
+  // Handle data query error exceptions safely
+  if (result.errors) {
+    reporter.panicOnBuild(
+      `Error while running GraphQL query inside gatsby-node.js`,
+      result.errors
+    )
+    return
+  }
+
+  const venues = result.data.allVenuesJson.nodes
+  const spotlightTemplate = path.resolve(`src/templates/spotlight.js`)
+
+  // 2. Loop through every venue item and programmatically create their public URL
+  venues.forEach(venue => {
+    // Generate an fallback slug configuration if one isn't explicitly defined in the file
+    const pathSlug = venue.slug ? venue.slug : `venue-${venue.venueId}`
+
+    createPage({
+      path: `/venues/${pathSlug}`, // The public URL path structure
+      component: spotlightTemplate, // Target layout rendering template file
+      context: {
+        // Pass the internal Gatsby node ID to the template page-query as a variable
+        id: venue.id,
+        venueId: venue.venueId,
+      },
+    })
+  })
+}
+/**
+ * NEW HOOK: Tell Gatsby to treat /portal/ as a client-side route dashboard
+ */
+exports.onCreatePage = async ({ page, actions }) => {
+  const { createPage } = actions
+
+  // If a file is created inside the /portal path, let the browser handle sub-routes
+  if (page.path.match(/^\/portal/)) {
+    page.matchPath = "/portal/*"
+    createPage(page)
+  }
 }
 
 /**
@@ -29,6 +73,8 @@ exports.createSchemaCustomization = ({ actions }) => {
       venueType: VenueType
       slug: String
       description: String
+      tagline: String
+      bio: String
       subscription: VenueTier # Pay teir, Freemium, Premium, Destination
       icon: String
       iconColor: String
@@ -44,6 +90,10 @@ exports.createSchemaCustomization = ({ actions }) => {
       imageUrl: String
       isClaimed: Boolean!
       sanctioning: [Association]
+      terrain: [Terrain]
+      amenities: [Amenities]
+      equipmentAllowed: [EquipmentType]
+      bowTypes: [BowTypes]
     }
 
     type ShootsJson implements Node {

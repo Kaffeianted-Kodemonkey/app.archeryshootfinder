@@ -85,33 +85,6 @@ const Layout = ({
         )}
       </main>
       <Footer />
-      {/* {!showSearch && (
-        <div
-          className="fixed-bottom bg-light border-top d-flex align-items-center justify-content-center py-2 container-fluid gx-0 p-0"
-          style={{
-            bottom: "60px",
-            height: "60px",
-            cursor: "grab",
-            width: "100%",
-            zIndex: 1040,
-          }}
-        >
-          <button
-            className="btn btn-outline-secondary btn-sm me-2"
-            onClick={handleOpenSearch}
-          >
-            <i className="bi bi-search me-1"></i>Search
-          </button>
-          <div
-            className="bg-secondary-subtle rounded mx-auto"
-            style={{
-              width: "40px",
-              height: "4px",
-            }}
-          ></div>
-        </div>
-      )} */}
-      {/* <SearchDrawer ref={searchDrawerRef} /> */}
     </>
   )
 }

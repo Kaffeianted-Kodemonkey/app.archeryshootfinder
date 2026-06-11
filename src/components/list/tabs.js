@@ -17,6 +17,7 @@ const Tabs = ({
   shoots,
   venues,
   userLocation,
+  onSelectShoot,
   currentShoots: propCurrentShoots,
   upcomingShoots: propUpcomingShoots,
   activeTab: propActiveTab,
@@ -207,8 +208,10 @@ const Tabs = ({
         </div>
       ) : (
         <DestList
+          key={activeTab}
           shoots={destinationShoots}
           selectedVenueId={propSelectedVenueId}
+          onSelectShoot={onSelectShoot}
         />
       )
     }
@@ -254,6 +257,7 @@ const Tabs = ({
         </div>
       ) : (
         <ShootList
+          key={activeTab}
           shoots={shoots}
           userLocation={userLocation}
           venueIdMapping={venueIdMapping}
@@ -261,6 +265,7 @@ const Tabs = ({
           sortField={shootSortField}
           sortDirection={shootSortDirection}
           onSwitchToVenueTab={() => setActiveTabFunc("venue")}
+          onSelectShoot={onSelectShoot}
         />
       )
     }
@@ -277,6 +282,7 @@ const Tabs = ({
         </div>
       ) : (
         <ShootList
+          key={activeTab}
           shoots={shoots}
           userLocation={userLocation}
           venueIdMapping={venueIdMapping}
@@ -284,6 +290,7 @@ const Tabs = ({
           sortField={shootSortField}
           sortDirection={shootSortDirection}
           onSwitchToVenueTab={() => setActiveTabFunc("venue")}
+          onSelectShoot={onSelectShoot}
         />
       )
     }
@@ -317,6 +324,7 @@ Tabs.propTypes = {
   upcomingShoots: PropTypes.array,
   activeTab: PropTypes.string,
   setActiveTab: PropTypes.func,
+  onSelectShoot: PropTypes.func,
 }
 
 export default React.memo(Tabs) // Memo to prevent unnecessary re-renders
