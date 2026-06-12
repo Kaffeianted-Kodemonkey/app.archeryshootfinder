@@ -1,8 +1,6 @@
 // src/components/layout/Layout.js
 import * as React from "react"
 import { useStaticQuery, graphql } from "gatsby"
-import { useRef } from "react"
-
 import Navbar from "./Navbar"
 import MapComponent from "../map/map"
 import Footer from "./Footer"

@@ -12,9 +12,9 @@
     "useVenueLocation": true,
     "shootLocation": {
       "address": "Black Knolls - South of Vernal",
-      "city": "Vernal",
-      "state": "UT",
-      "zip": "84078",
+      "city": "Dinosaur",
+      "state": "CO",
+      "zip": "81610",
       "lat": 37.156092,
       "lng": -113.5688451,
       "country": "USA"
@@ -28,7 +28,7 @@
     "skillLevel": ["BEGINNER", "INTERMEDIATE"],
     "isRegistration": false,
     "registrationUrl": "",
-    "entryFee": "$20",
+    "entryFee": null,
     "pricing": [
       {
         "tier": "ADULT",
@@ -70,13 +70,7 @@
     "isRegistration": true,
     "registrationUrl": "https://example.com",
     "entryFee": "$10",
-    "pricing": [
-      {
-        "tier": "ADULT",
-        "options": [{ "days": 1, "cost": 60, "currency": "USD" }],
-        "note": ""
-      }
-    ],
+    "pricing": [],
     "prizes": "Trophy",
     "terrain": ["FLAT"],
     "amenities": ["RESTROOMS"]
@@ -111,13 +105,7 @@
     "isRegistration": false,
     "registrationUrl": "",
     "entryFee": "$20 per participant",
-    "pricing": [
-      {
-        "tier": "YOUTH",
-        "options": [{ "days": 1, "cost": 60, "currency": "USD" }],
-        "note": "Free for under 8 with Adult"
-      }
-    ],
+    "pricing": [],
     "prizes": "All participants receive a certificate and participation ribbon.",
     "terrain": ["FLAT"],
     "amenities": ["WHEELCHAIR_ACCESSIBLE", "PET_FRIENDLY", "FOOD", "CAMPING"]
@@ -152,13 +140,7 @@
     "isRegistration": true,
     "registrationUrl": "https://example.com",
     "entryFee": "$30 per event",
-    "pricing": [
-      {
-        "tier": "ADULT",
-        "options": [{ "days": 1, "cost": 60, "currency": "USD" }],
-        "note": "Points for season championship"
-      }
-    ],
+    "pricing": [],
     "prizes": "Points accumulate for season championship. Monthly awards.",
     "terrain": ["MOUNTAIN"],
     "amenities": ["WHEELCHAIR_ACCESSIBLE", "PET_FRIENDLY", "FOOD", "CAMPING"]
@@ -193,13 +175,7 @@
     "isRegistration": true,
     "registrationUrl": "https://pacificcoastarchery.com/register",
     "entryFee": "$35 per day",
-    "pricing": [
-      {
-        "tier": "ADULT",
-        "options": [{ "days": 1, "cost": 60, "currency": "USD" }],
-        "note": "Weekend Pass"
-      }
-    ],
+    "pricing": [],
     "prizes": "Trophies and gift cards for top finishers.",
     "terrain": ["FLAT"],
     "amenities": ["WHEELCHAIR_ACCESSIBLE", "CAMPING"]
@@ -234,13 +210,7 @@
     "isRegistration": true,
     "registrationUrl": "https://midwestarchery.org/CAMP",
     "entryFee": "$150 for the week",
-    "pricing": [
-      {
-        "tier": "YOUTH",
-        "options": [{ "days": 1, "cost": 60, "currency": "USD" }],
-        "note": "Ages 8-18"
-      }
-    ],
+    "pricing": [],
     "prizes": "Certificates and skill badges for all campers.",
     "terrain": ["FLAT"],
     "amenities": ["CAMPING"]
@@ -275,13 +245,7 @@
     "isRegistration": false,
     "registrationUrl": "",
     "entryFee": "$40",
-    "pricing": [
-      {
-        "tier": "ADULT",
-        "options": [{ "days": 1, "cost": 60, "currency": "USD" }],
-        "note": "Includes guide map"
-      }
-    ],
+    "pricing": [],
     "prizes": "Cash prizes for accuracy leaders.",
     "terrain": ["WOODED"],
     "amenities": ["FOOD", "CAMPING"]
@@ -351,13 +315,7 @@
     "isRegistration": true,
     "registrationUrl": "https://urbanarcherychicago.com/workshop",
     "entryFee": "$25",
-    "pricing": [
-      {
-        "tier": "ADULT",
-        "options": [{ "days": 1, "cost": 60, "currency": "USD" }],
-        "note": "3hr session"
-      }
-    ],
+    "pricing": [],
     "prizes": "Discount coupon for shop services.",
     "terrain": ["FLAT"],
     "amenities": ["WHEELCHAIR_ACCESSIBLE", "PET_FRIENDLY"]
@@ -392,13 +350,7 @@
     "isRegistration": true,
     "registrationUrl": "https://rockymountainarchery.org/cert",
     "entryFee": "$100",
-    "pricing": [
-      {
-        "tier": "PROFESSIONAL",
-        "options": [{ "days": 1, "cost": 60, "currency": "USD" }],
-        "note": "Level 1 Coach"
-      }
-    ],
+    "pricing": [],
     "prizes": "Official USA Archery certification.",
     "terrain": ["ROCKY"],
     "amenities": ["RESTROOMS"]
@@ -432,6 +384,7 @@
     "skillLevel": ["INTERMEDIATE", "EXPERT"],
     "isRegistration": true,
     "registrationUrl": "https://totalarcherychallenge.com",
+    "entryFee": null,
     "pricing": [
       {
         "tier": "ADULT",
@@ -440,8 +393,7 @@
           { "days": 2, "cost": 180, "currency": "USD" },
           { "days": 3, "cost": 210, "currency": "USD" },
           { "days": 4, "cost": 225, "currency": "USD" }
-        ],
-        "note": "Weekend pass available"
+        ]
       },
       {
         "tier": "YOUTH",
@@ -488,7 +440,7 @@
     "isRegistration": true,
     "registrationUrl": "https://asaarchery.com",
     "entryFee": "$90 - $180",
-    "pricing": null,
+    "pricing": [],
     "prizes": "Cash payouts, professional championship rings, and contingency money.",
     "terrain": ["WOODED", "FLAT"],
     "amenities": ["RESTROOMS", "FOOD", "PARKING"]
@@ -523,7 +475,7 @@
     "isRegistration": true,
     "registrationUrl": "https://ibo.net",
     "entryFee": "$120",
-    "pricing": null,
+    "pricing": [],
     "prizes": "Triple Crown circuit points and cash rewards.",
     "terrain": ["WOODED", "HILLS"],
     "amenities": ["RESTROOMS", "FOOD"]
@@ -558,7 +510,7 @@
     "isRegistration": true,
     "registrationUrl": "https://lancasterarchery.com",
     "entryFee": "$150 - $300",
-    "pricing": null,
+    "pricing": [],
     "prizes": "$20,000 top prize for Open Pro plus extensive category payouts.",
     "terrain": ["WOODED"],
     "amenities": ["RESTROOMS", "PARKING"]
@@ -712,8 +664,7 @@
           { "days": 2, "cost": 180, "currency": "USD" },
           { "days": 3, "cost": 210, "currency": "USD" },
           { "days": 4, "cost": 225, "currency": "USD" }
-        ],
-        "note": "Weekend pass available"
+        ]
       },
       {
         "tier": "YOUTH",
@@ -770,8 +721,7 @@
           { "days": 2, "cost": 180, "currency": "USD" },
           { "days": 3, "cost": 210, "currency": "USD" },
           { "days": 4, "cost": 225, "currency": "USD" }
-        ],
-        "note": "Weekend pass available"
+        ]
       },
       {
         "tier": "YOUTH",
@@ -825,8 +775,7 @@
           { "days": 2, "cost": 180, "currency": "USD" },
           { "days": 3, "cost": 210, "currency": "USD" },
           { "days": 4, "cost": 225, "currency": "USD" }
-        ],
-        "note": "Weekend pass available"
+        ]
       },
       {
         "tier": "YOUTH",
@@ -880,8 +829,7 @@
           { "days": 2, "cost": 180, "currency": "USD" },
           { "days": 3, "cost": 210, "currency": "USD" },
           { "days": 4, "cost": 225, "currency": "USD" }
-        ],
-        "note": "Weekend pass available"
+        ]
       },
       {
         "tier": "YOUTH",
@@ -935,8 +883,7 @@
           { "days": 2, "cost": 180, "currency": "USD" },
           { "days": 3, "cost": 210, "currency": "USD" },
           { "days": 4, "cost": 225, "currency": "USD" }
-        ],
-        "note": "Weekend pass available"
+        ]
       },
       {
         "tier": "YOUTH",
@@ -990,8 +937,7 @@
           { "days": 2, "cost": 180, "currency": "USD" },
           { "days": 3, "cost": 210, "currency": "USD" },
           { "days": 4, "cost": 225, "currency": "USD" }
-        ],
-        "note": "Weekend pass available"
+        ]
       },
       {
         "tier": "YOUTH",
@@ -1045,8 +991,7 @@
           { "days": 2, "cost": 180, "currency": "USD" },
           { "days": 3, "cost": 210, "currency": "USD" },
           { "days": 4, "cost": 225, "currency": "USD" }
-        ],
-        "note": "Weekend pass available"
+        ]
       },
       {
         "tier": "YOUTH",
@@ -1100,8 +1045,7 @@
           { "days": 2, "cost": 180, "currency": "USD" },
           { "days": 3, "cost": 210, "currency": "USD" },
           { "days": 4, "cost": 225, "currency": "USD" }
-        ],
-        "note": "Weekend pass available"
+        ]
       },
       {
         "tier": "YOUTH",
@@ -1157,16 +1101,6 @@
           { "days": 4, "cost": 225, "currency": "USD" }
         ],
         "note": "Weekend pass available"
-      },
-      {
-        "tier": "YOUTH",
-        "options": [
-          { "days": 1, "cost": 60, "currency": "USD" },
-          { "days": 2, "cost": 90, "currency": "USD" },
-          { "days": 3, "cost": 105, "currency": "USD" },
-          { "days": 4, "cost": 120, "currency": "USD" }
-        ],
-        "note": "Youth weekend pass"
       }
     ]
   },
@@ -1212,16 +1146,6 @@
           { "days": 4, "cost": 225, "currency": "USD" }
         ],
         "note": "Weekend pass available"
-      },
-      {
-        "tier": "YOUTH",
-        "options": [
-          { "days": 1, "cost": 60, "currency": "USD" },
-          { "days": 2, "cost": 90, "currency": "USD" },
-          { "days": 3, "cost": 105, "currency": "USD" },
-          { "days": 4, "cost": 120, "currency": "USD" }
-        ],
-        "note": "Youth weekend pass"
       }
     ]
   },
@@ -1267,16 +1191,6 @@
           { "days": 4, "cost": 225, "currency": "USD" }
         ],
         "note": "Weekend pass available"
-      },
-      {
-        "tier": "YOUTH",
-        "options": [
-          { "days": 1, "cost": 60, "currency": "USD" },
-          { "days": 2, "cost": 90, "currency": "USD" },
-          { "days": 3, "cost": 105, "currency": "USD" },
-          { "days": 4, "cost": 120, "currency": "USD" }
-        ],
-        "note": "Youth weekend pass"
       }
     ]
   },
@@ -1322,16 +1236,6 @@
           { "days": 4, "cost": 225, "currency": "USD" }
         ],
         "note": "Weekend pass available"
-      },
-      {
-        "tier": "YOUTH",
-        "options": [
-          { "days": 1, "cost": 60, "currency": "USD" },
-          { "days": 2, "cost": 90, "currency": "USD" },
-          { "days": 3, "cost": 105, "currency": "USD" },
-          { "days": 4, "cost": 120, "currency": "USD" }
-        ],
-        "note": "Youth weekend pass"
       }
     ]
   },
@@ -1375,8 +1279,7 @@
           { "days": 2, "cost": 180, "currency": "USD" },
           { "days": 3, "cost": 210, "currency": "USD" },
           { "days": 4, "cost": 225, "currency": "USD" }
-        ],
-        "note": "Weekend pass available"
+        ]
       },
       {
         "tier": "YOUTH",
@@ -1389,5 +1292,277 @@
         "note": "Youth weekend pass"
       }
     ]
+  },
+  {
+    "id": "red_rock_friday_spot",
+    "shootId": 31,
+    "seriesId": "red_rock_weekly_2026",
+    "name": "Red Rock Archery - Friday Night Spot Round",
+    "description": "Weekly indoor spot round competition featuring a mix of Vegas and five-spot targets with a cash payback payout.",
+    "date": "2026-06-12",
+    "endDate": "2026-06-12",
+    "time": "7:00 PM",
+    "venueId": 105,
+    "useVenueLocation": true,
+    "shootLocation": {
+      "address": "3193 Hall Ave",
+      "city": "Grand Junction",
+      "state": "CO",
+      "zip": "81504",
+      "lat": 39.0712,
+      "lng": -108.4975,
+      "country": "USA"
+    },
+    "isVerified": true,
+    "isDestination": false,
+    "shootFormat": ["TARGET", "VEGAS", "FIVE_SPOT"],
+    "shootClass": ["BOWHUNTER", "TARGET", "FLIGHTS"],
+    "eventType": ["LEAGUE", "WEEKLY_SHOOT"],
+    "bowTypes": ["COMPOUND", "RECURVE", "LONGBOW"],
+    "skillLevel": ["BEGINNER", "INTERMEDIATE", "EXPERT"],
+    "terrain": ["INDOOR"],
+    "amenities": ["PARKING"],
+    "isRegistration": false,
+    "registrationUrl": "https://www.facebook.com/p/Red-Rock-Archery-100057237948418/",
+    "entryFee": "$20.0",
+    "pricing": []
+  },
+  {
+    "id": "red_rock_friday_2026_06_19",
+    "shootId": 32,
+    "seriesId": "red_rock_weekly_2026",
+    "name": "Red Rock Archery - Friday Night Spot Round",
+    "description": "Weekly indoor spot round competition featuring a mix of Vegas and five-spot targets with a cash payback payout.",
+    "date": "2026-06-19",
+    "endDate": "2026-06-19",
+    "time": "7:00 PM",
+    "venueId": 105,
+    "useVenueLocation": true,
+    "shootLocation": {
+      "address": "3193 Hall Ave",
+      "city": "Grand Junction",
+      "state": "CO",
+      "zip": "81504",
+      "lat": 39.0712,
+      "lng": -108.4975,
+      "country": "USA"
+    },
+    "isVerified": true,
+    "isDestination": false,
+    "shootFormat": ["TARGET", "VEGAS", "FIVE_SPOT"],
+    "shootClass": ["BOWHUNTER", "TARGET", "FLIGHTS"],
+    "eventType": ["LEAGUE", "WEEKLY_SHOOT"],
+    "bowTypes": ["COMPOUND", "RECURVE", "LONGBOW"],
+    "skillLevel": ["BEGINNER", "INTERMEDIATE", "EXPERT"],
+    "terrain": ["INDOOR"],
+    "amenities": ["PARKING"],
+    "isRegistration": false,
+    "registrationUrl": "https://facebook.com",
+    "entryFee": "$20.0",
+    "pricing": []
+  },
+  {
+    "id": "red_rock_friday_2026_06_26",
+    "shootId": 33,
+    "seriesId": "red_rock_weekly_2026",
+    "name": "Red Rock Archery - Friday Night Spot Round",
+    "description": "Weekly indoor spot round competition featuring a mix of Vegas and five-spot targets with a cash payback payout.",
+    "date": "2026-06-26",
+    "endDate": "2026-06-26",
+    "time": "7:00 PM",
+    "venueId": 105,
+    "useVenueLocation": true,
+    "shootLocation": {
+      "address": "3193 Hall Ave",
+      "city": "Grand Junction",
+      "state": "CO",
+      "zip": "81504",
+      "lat": 39.0712,
+      "lng": -108.4975,
+      "country": "USA"
+    },
+    "isVerified": true,
+    "isDestination": false,
+    "shootFormat": ["TARGET", "VEGAS", "FIVE_SPOT"],
+    "shootClass": ["BOWHUNTER", "TARGET", "FLIGHTS"],
+    "eventType": ["LEAGUE", "WEEKLY_SHOOT"],
+    "bowTypes": ["COMPOUND", "RECURVE", "LONGBOW"],
+    "skillLevel": ["BEGINNER", "INTERMEDIATE", "EXPERT"],
+    "terrain": ["INDOOR"],
+    "amenities": ["PARKING"],
+    "isRegistration": false,
+    "registrationUrl": "https://facebook.com",
+    "entryFee": "$20.0",
+    "pricing": []
+  },
+  {
+    "id": "red_rock_friday_2026_07_03",
+    "shootId": 34,
+    "seriesId": "red_rock_weekly_2026",
+    "name": "Red Rock Archery - Friday Night Spot Round",
+    "description": "Weekly indoor spot round competition featuring a mix of Vegas and five-spot targets with a cash payback payout.",
+    "date": "2026-07-03",
+    "endDate": "2026-07-03",
+    "time": "7:00 PM",
+    "venueId": 105,
+    "useVenueLocation": true,
+    "shootLocation": {
+      "address": "3193 Hall Ave",
+      "city": "Grand Junction",
+      "state": "CO",
+      "zip": "81504",
+      "lat": 39.0712,
+      "lng": -108.4975,
+      "country": "USA"
+    },
+    "isVerified": true,
+    "isDestination": false,
+    "shootFormat": ["TARGET", "VEGAS", "FIVE_SPOT"],
+    "shootClass": ["BOWHUNTER", "TARGET", "FLIGHTS"],
+    "eventType": ["LEAGUE", "WEEKLY_SHOOT"],
+    "bowTypes": ["COMPOUND", "RECURVE", "LONGBOW"],
+    "skillLevel": ["BEGINNER", "INTERMEDIATE", "EXPERT"],
+    "terrain": ["INDOOR"],
+    "amenities": ["PARKING"],
+    "isRegistration": false,
+    "registrationUrl": "https://facebook.com",
+    "entryFee": "$20.0",
+    "pricing": []
+  },
+  {
+    "id": "red_rock_friday_2026_07_10",
+    "shootId": 35,
+    "seriesId": "red_rock_weekly_2026",
+    "name": "Red Rock Archery - Friday Night Spot Round",
+    "description": "Weekly indoor spot round competition featuring a mix of Vegas and five-spot targets with a cash payback payout.",
+    "date": "2026-07-10",
+    "endDate": "2026-07-10",
+    "time": "7:00 PM",
+    "venueId": 105,
+    "useVenueLocation": true,
+    "shootLocation": {
+      "address": "3193 Hall Ave",
+      "city": "Grand Junction",
+      "state": "CO",
+      "zip": "81504",
+      "lat": 39.0712,
+      "lng": -108.4975,
+      "country": "USA"
+    },
+    "isVerified": true,
+    "isDestination": false,
+    "shootFormat": ["TARGET", "VEGAS", "FIVE_SPOT"],
+    "shootClass": ["BOWHUNTER", "TARGET", "FLIGHTS"],
+    "eventType": ["LEAGUE", "WEEKLY_SHOOT"],
+    "bowTypes": ["COMPOUND", "RECURVE", "LONGBOW"],
+    "skillLevel": ["BEGINNER", "INTERMEDIATE", "EXPERT"],
+    "terrain": ["INDOOR"],
+    "amenities": ["PARKING"],
+    "isRegistration": false,
+    "registrationUrl": "https://facebook.com",
+    "entryFee": "$20.0",
+    "pricing": []
+  },
+  {
+    "id": "red_rock_friday_2026_07_17",
+    "shootId": 36,
+    "seriesId": "red_rock_weekly_2026",
+    "name": "Red Rock Archery - Friday Night Spot Round",
+    "description": "Weekly indoor spot round competition featuring a mix of Vegas and five-spot targets with a cash payback payout.",
+    "date": "2026-07-17",
+    "endDate": "2026-07-17",
+    "time": "7:00 PM",
+    "venueId": 105,
+    "useVenueLocation": true,
+    "shootLocation": {
+      "address": "3193 Hall Ave",
+      "city": "Grand Junction",
+      "state": "CO",
+      "zip": "81504",
+      "lat": 39.0712,
+      "lng": -108.4975,
+      "country": "USA"
+    },
+    "isVerified": true,
+    "isDestination": false,
+    "shootFormat": ["TARGET", "VEGAS", "FIVE_SPOT"],
+    "shootClass": ["BOWHUNTER", "TARGET", "FLIGHTS"],
+    "eventType": ["LEAGUE", "WEEKLY_SHOOT"],
+    "bowTypes": ["COMPOUND", "RECURVE", "LONGBOW"],
+    "skillLevel": ["BEGINNER", "INTERMEDIATE", "EXPERT"],
+    "terrain": ["INDOOR"],
+    "amenities": ["PARKING"],
+    "isRegistration": false,
+    "registrationUrl": "https://facebook.com",
+    "entryFee": "$20.0",
+    "pricing": []
+  },
+  {
+    "id": "red_rock_friday_2026_07_24",
+    "shootId": 37,
+    "seriesId": "red_rock_weekly_2026",
+    "name": "Red Rock Archery - Friday Night Spot Round",
+    "description": "Weekly indoor spot round competition featuring a mix of Vegas and five-spot targets with a cash payback payout.",
+    "date": "2026-07-24",
+    "endDate": "2026-07-24",
+    "time": "7:00 PM",
+    "venueId": 105,
+    "useVenueLocation": true,
+    "shootLocation": {
+      "address": "3193 Hall Ave",
+      "city": "Grand Junction",
+      "state": "CO",
+      "zip": "81504",
+      "lat": 39.0712,
+      "lng": -108.4975,
+      "country": "USA"
+    },
+    "isVerified": true,
+    "isDestination": false,
+    "shootFormat": ["TARGET", "VEGAS", "FIVE_SPOT"],
+    "shootClass": ["BOWHUNTER", "TARGET", "FLIGHTS"],
+    "eventType": ["LEAGUE", "WEEKLY_SHOOT"],
+    "bowTypes": ["COMPOUND", "RECURVE", "LONGBOW"],
+    "skillLevel": ["BEGINNER", "INTERMEDIATE", "EXPERT"],
+    "terrain": ["INDOOR"],
+    "amenities": ["PARKING"],
+    "isRegistration": false,
+    "registrationUrl": "https://facebook.com",
+    "entryFee": "$20.0",
+    "pricing": []
+  },
+  {
+    "id": "red_rock_friday_2026_07_31",
+    "shootId": 38,
+    "seriesId": "red_rock_weekly_2026",
+    "name": "Red Rock Archery - Friday Night Spot Round",
+    "description": "Weekly indoor spot round competition featuring a mix of Vegas and five-spot targets with a cash payback payout.",
+    "date": "2026-07-31",
+    "endDate": "2026-07-31",
+    "time": "7:00 PM",
+    "venueId": 105,
+    "useVenueLocation": true,
+    "shootLocation": {
+      "address": "3193 Hall Ave",
+      "city": "Grand Junction",
+      "state": "CO",
+      "zip": "81504",
+      "lat": 39.0712,
+      "lng": -108.4975,
+      "country": "USA"
+    },
+    "isVerified": true,
+    "isDestination": false,
+    "shootFormat": ["TARGET", "VEGAS", "FIVE_SPOT"],
+    "shootClass": ["BOWHUNTER", "TARGET", "FLIGHTS"],
+    "eventType": ["LEAGUE", "WEEKLY_SHOOT"],
+    "bowTypes": ["COMPOUND", "RECURVE", "LONGBOW"],
+    "skillLevel": ["BEGINNER", "INTERMEDIATE", "EXPERT"],
+    "terrain": ["INDOOR"],
+    "amenities": ["PARKING"],
+    "isRegistration": false,
+    "registrationUrl": "https://facebook.com",
+    "entryFee": "$20.0",
+    "pricing": []
   }
 ]

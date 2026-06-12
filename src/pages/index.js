@@ -357,6 +357,7 @@ export const query = graphql`
         terrain
         bowTypes
         skillLevel
+        entryFee
         pricing {
           tier
           note

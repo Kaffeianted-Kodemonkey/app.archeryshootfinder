@@ -98,7 +98,7 @@ const ShootFilters = ({ shoots, onFilteredChange, userLocation }) => {
   }
 
   return (
-    <div className="d-flex flex-nowrap align-items-center gap-2 p-3 small overflow-auto border border-2 border-warning bg-warning-subtle">
+    <div className="d-flex flex-nowrap align-items-center gap-2 p-3 small overflow-auto border border-2 border-black bg-warning-subtle">
       <select
         className="form-select form-select-sm w-auto"
         value={filters.state}

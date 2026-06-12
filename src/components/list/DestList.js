@@ -4,8 +4,6 @@ import PropTypes from "prop-types"
 import { Link } from "gatsby"
 import ShootFilters from "./ShootFilters"
 
-//import { getLabel } from "../../data/pricingEnums"
-
 const getStatusInfo = shoot => {
   if (shoot.isVerified) {
     return { className: "bg-warning text-dark", label: "Not Verified" }
@@ -100,11 +98,11 @@ const DestList = ({
             first.useVenueLocation !== false && venue.location
               ? venue.location
               : first.shootLocation
-          const cityState =
-            loc?.city && loc?.state ? `${loc.city}, ${loc.state}` : "TBD"
+          // const cityState =
+          //   loc?.city && loc?.state ? `${loc.city}, ${loc.state}` : "TBD"
 
           const status = getStatusInfo(first)
-          const regLabel = getRegLabel(first.registrationUrl)
+          // const regLabel = getRegLabel(first.registrationUrl)
 
           return (
             <div className="accordion-item" key={venueId}>

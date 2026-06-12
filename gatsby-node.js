@@ -153,10 +153,15 @@ exports.createSchemaCustomization = ({ actions }) => {
     }
 
     type ShootPrice {
-      tier: ShootClass  # e.g., "Adult", "Youth", "Cubs", "Member"
-      cost: Float       # e.g., 25.00
-      currency: String  # Default to "USD"
-      note: String      # e.g., "Includes lunch", "Per day"
+      tier: ShootClass
+      note: String
+      options: [PriceOption]
+    }
+
+    type PriceOption {
+      days: Int
+      cost: Float
+      currency: String
     }
 
     # Enums for validation
@@ -175,10 +180,9 @@ exports.createSchemaCustomization = ({ actions }) => {
       PET_FRIENDLY
       WHEELCHAIR_ACCESSIBLE
       PARKING
-      EQUIPMENT_RENTAL
-      LESSONS
       PICNIC_AREA
       WIFI
+      KITCHEN
     }
 
     enum VenueTier {
@@ -188,13 +192,19 @@ exports.createSchemaCustomization = ({ actions }) => {
       DESTINATION # Top Tier
     }
 
+    enum Services {
+      BOW_TUNING_STATION
+      CUSTOM_TUNING
+      EQUIPMENT_RENTAL
+      EQUIPMENT_SALES
+      LESSONS
+    }
+
     enum Facility {
       THREE_D_COURSE
       INDOOR_RANGE
       OUTDOOR_RANGE
-      PRO_SHOP
-      KITCHEN
-      CAMPING
+      ARENA_FAIR_GROUNDS
     }
 
     enum Association {
@@ -241,6 +251,8 @@ exports.createSchemaCustomization = ({ actions }) => {
       FLIGHTS
       CHAMPIONSHIP
       NONSHOOTER
+      TARGET
+      ALL_PARTICIPANTS
     }
 
     enum ShootFormat {
@@ -250,6 +262,8 @@ exports.createSchemaCustomization = ({ actions }) => {
       INDOOR
       OUTDOOR
       SMOKER_ROUND
+      FIVE_SPOT
+      VEGAS
       LONG_DISTANCE_CHALLENGE
       NOVELTY # Good catch-all for "Fun Shoots" or "Iron Man" rounds
     }
@@ -263,6 +277,7 @@ exports.createSchemaCustomization = ({ actions }) => {
       CAMP
       FUN_SHOOT
       EDUCATIONAL
+      WEEKLY_SHOOT
     }
 
     enum SkillLevel {
@@ -289,6 +304,8 @@ exports.createSchemaCustomization = ({ actions }) => {
       FIELD
       URBAN
       HILLS
+      INDOOR
+      OUTDOOR
     }
 
 
