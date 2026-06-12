@@ -38,9 +38,9 @@ const Portal = () => {
   // Format subscription plan naming rules for the badge string display
   const getPlanBadgeLabel = () => {
     const plan = user.planId ? user.planId.toUpperCase() : ""
-    if (plan.includes("DESTINATION")) return "🏅 Destination Tier"
+    if (plan.includes("DESTINATION")) return "Destination Tier"
     if (plan.includes("PREMIUM")) return "⭐ Premium Tier"
-    return "🟢 Freemium Non-Profit"
+    return "Freemium Non-Profit"
   }
 
   return (
