@@ -217,7 +217,7 @@ const ShootList = ({
                 data-bs-parent="#shootAccordion"
               >
                 <div className="accordion-body">
-                  <h3 className="fa-5">Registration cost per shooter</h3>
+                  <h3 className="fa-5">Registration Cost per Shooter</h3>
                   {/* Price table – prefers structured pricing, falls back to entryFee string */}
                   {first.entryFee ? (
                     // Plain text entry fee — NO table
@@ -266,7 +266,7 @@ const ShootList = ({
                   <h3 className="fs-5">
                     <strong>About the Event</strong>
                   </h3>
-                  <p>{first.description}</p>
+                  <p>{first.venue?.description}</p>
 
                   {/* Event Rules */}
                   <h3 className="fs-5">
@@ -288,12 +288,14 @@ const ShootList = ({
                     </a>
                   )}
 
-                  <Link
-                    to={`/shoots/${first.slug}`}
-                    className="btn btn-sm btn-outline-primary"
-                  >
-                    Venue Details
-                  </Link>
+                  {first.venue?.slug && (
+                    <Link
+                      to={`/venues/${first.venue.slug}`}
+                      className="btn btn-sm btn-outline-primary"
+                    >
+                      Venue Details
+                    </Link>
+                  )}
 
                   {/* Dynamic table listing ALL shoots for this venue */}
                   <div className="resposive-table mt-3">
@@ -311,6 +313,7 @@ const ShootList = ({
                         <tr>
                           {/* <th width="45%">Shoot</th>*/}
                           <th className="fs-5">Date</th>
+                          <th className="fs-5">Format</th>
                           <th className="fs-5">Location</th>
                           <th className="fs-5">Info</th>
                         </tr>
@@ -331,7 +334,7 @@ const ShootList = ({
                               {/* New name row */}
                               <tr>
                                 <td
-                                  colSpan={3}
+                                  colSpan={4}
                                   className="fw-bold bg-info-subtle"
                                 >
                                   {s.name}
@@ -341,6 +344,7 @@ const ShootList = ({
                               {/* Normal data row */}
                               <tr>
                                 <td>{formatDateShort(s.date, s.endDate)}</td>
+                                <td>{s.shootFormat?.join(", ")}</td>
                                 <td>{sCity}</td>
                                 <td>
                                   <button

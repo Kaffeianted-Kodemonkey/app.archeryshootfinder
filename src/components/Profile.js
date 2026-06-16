@@ -1,8 +1,12 @@
 // src/components/Profile.js
 import * as React from "react"
-import { useState } from "react"
+import { useState, useEffect, useMemo } from "react"
+import { graphql } from "gatsby"
+import PropTypes from "prop-types"
+import Layout from "../components/layout/Layout"
+import Seo from "../components/seo"
 
-const Profile = ({ user }) => {
+const Profile = ({ user, data }) => {
   // 1. Setup local form state mirroring your custom WordPress schema
   const [formData, setFormData] = useState({
     name: user?.name || "",
@@ -24,6 +28,14 @@ const Profile = ({ user }) => {
 
   const [saveStatus, setSaveStatus] = useState("")
 
+  const [selectedVenueId, setSelectedVenueId] = useState(null)
+  const Shoots = data?.allShootsJson?.nodes || []
+  const Venues = data?.allVenuesJson?.nodes || []
+  const [view, setView] = useState("map")
+  const [myShoots, setMyShoots] = useState([])
+  const [editingShoot, setEditingShoot] = useState(null)
+  const [showAddForm, setShowAddForm] = useState(false)
+
   // Handler for top-level text inputs
   const handleTopLevelChange = e => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
@@ -39,6 +51,19 @@ const Profile = ({ user }) => {
       },
     })
   }
+
+  useEffect(() => {
+    if (!user || !Shoots.length) return
+
+    // The user owns exactly one venue – get its ID
+    const venueId = user.venueId || user.venue?.venueId
+
+    const ownedShoots = Shoots.filter(
+      s => s.venueId === venueId || s.venue?.venueId === venueId
+    )
+
+    setMyShoots(ownedShoots)
+  }, [user, Shoots])
 
   // Handler for pushing/removing checked facility enums from state array
   const handleFacilityChange = facilityEnum => {
@@ -96,201 +121,312 @@ const Profile = ({ user }) => {
         </div>
       )}
 
-      <form onSubmit={handleSubmit}>
-        {/* BLOCK 1: Core Details */}
-        <div className="card border-0 bg-light p-3 mb-4 shadow-sm">
-          <h5 className="fw-bold text-secondary mb-3">Core Details</h5>
+      {/* ==================== MY SHOOTS ACCORDION ==================== */}
+      <div className="mt-5">
+        <h4 className="fw-bold text-dark mb-3">My Venue Shoots</h4>
 
-          <div className="mb-3">
-            <label className="form-label fw-bold text-muted small mb-1">
-              Venue Display Name
-            </label>
-            <input
-              type="text"
-              name="name"
-              className="form-control"
-              value={formData.name}
-              onChange={handleTopLevelChange}
-              required
-            />
-          </div>
+        {myShoots.length === 0 ? (
+          <p className="text-muted">You have no shoots yet.</p>
+        ) : (
+          <div
+            className="accordion accordion-flush border"
+            id="venueShootsAccordion"
+          >
+            {myShoots.map((shoot, index) => {
+              const isOpen = editingShoot?.id === shoot.id
+              const headerId = `shoot-header-${shoot.id}`
+              const bodyId = `shoot-body-${shoot.id}`
 
-          <div className="mb-3">
-            <label className="form-label fw-bold text-muted small mb-1">
-              Venue Classification
-            </label>
-            <select
-              name="venueType"
-              className="form-select"
-              value={formData.venueType}
-              onChange={handleTopLevelChange}
-            >
-              <option value="CLUB">Club</option>
-              <option value="ASSOCIATION">Association</option>
-              <option value="PRO_SHOP">Pro Shop & Range</option>
-              <option value="ORGANIZATION">Organization</option>
-            </select>
-          </div>
+              return (
+                <div className="accordion-item" key={shoot.id}>
+                  {/* Header */}
+                  <h2 className="accordion-header" id={headerId}>
+                    <button
+                      className={`accordion-button ${
+                        isOpen ? "" : "collapsed"
+                      }`}
+                      type="button"
+                      data-bs-toggle="collapse"
+                      data-bs-target={`#${bodyId}`}
+                      aria-expanded={isOpen}
+                      aria-controls={bodyId}
+                      onClick={() => setEditingShoot(shoot)}
+                    >
+                      Shoot #{shoot.shootId} – {shoot.name || "Untitled Shoot"}
+                    </button>
+                  </h2>
 
-          <div className="mb-2">
-            <label className="form-label fw-bold text-muted small mb-1">
-              About / Description
-            </label>
-            <textarea
-              name="description"
-              rows="3"
-              className="form-control"
-              placeholder="Detail your target distances, layout rules, and operating values..."
-              value={formData.description}
-              onChange={handleTopLevelChange}
-            />
-          </div>
-        </div>
-
-        {/* BLOCK 2: Location Parameters */}
-        <div className="card border-0 bg-light p-3 mb-4 shadow-sm">
-          <h5 className="fw-bold text-secondary mb-3">Location Mapping</h5>
-
-          <div className="mb-3">
-            <label className="form-label fw-bold text-muted small mb-1">
-              Street Address
-            </label>
-            <input
-              type="text"
-              name="address"
-              className="form-control"
-              value={formData.location.address}
-              onChange={e => handleNestedChange("location", e)}
-            />
-          </div>
-
-          <div className="row g-2">
-            <div className="col-6">
-              <label className="form-label fw-bold text-muted small mb-1">
-                City
-              </label>
-              <input
-                type="text"
-                name="city"
-                className="form-control"
-                value={formData.location.city}
-                onChange={e => handleNestedChange("location", e)}
-              />
-            </div>
-            <div className="col-3">
-              <label className="form-label fw-bold text-muted small mb-1">
-                State
-              </label>
-              <input
-                type="text"
-                name="state"
-                className="form-control"
-                placeholder="CO"
-                value={formData.location.state}
-                onChange={e => handleNestedChange("location", e)}
-              />
-            </div>
-            <div className="col-3">
-              <label className="form-label fw-bold text-muted small mb-1">
-                Zip
-              </label>
-              <input
-                type="text"
-                name="zip"
-                className="form-control"
-                value={formData.location.zip}
-                onChange={e => handleNestedChange("location", e)}
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* BLOCK 3: Contact Channels */}
-        <div className="card border-0 bg-light p-3 mb-4 shadow-sm">
-          <h5 className="fw-bold text-secondary mb-3">Contact Channels</h5>
-
-          <div className="row g-2 mb-3">
-            <div className="col-6">
-              <label className="form-label fw-bold text-muted small mb-1">
-                Public Phone
-              </label>
-              <input
-                type="tel"
-                name="phone"
-                className="form-control"
-                value={formData.contact.phone}
-                onChange={e => handleNestedChange("contact", e)}
-              />
-            </div>
-            <div className="col-6">
-              <label className="form-label fw-bold text-muted small mb-1">
-                Public Email
-              </label>
-              <input
-                type="email"
-                name="email"
-                className="form-control"
-                value={formData.contact.email}
-                onChange={e => handleNestedChange("contact", e)}
-              />
-            </div>
-          </div>
-
-          <div className="mb-1">
-            <label className="form-label fw-bold text-muted small mb-1">
-              External Website Link
-            </label>
-            <input
-              type="url"
-              name="website"
-              className="form-control"
-              placeholder="https://yourarcheryrange.com"
-              value={formData.contact.website}
-              onChange={e => handleNestedChange("contact", e)}
-            />
-          </div>
-        </div>
-
-        {/* BLOCK 4: Facilities Array Checklist */}
-        <div className="card border-0 bg-light p-3 mb-4 shadow-sm">
-          <h5 className="fw-bold text-secondary mb-1">Available Facilities</h5>
-          <p className="text-muted small mb-3">
-            Toggles feature parameters inside directory queries.
-          </p>
-
-          <div className="row g-3">
-            {facilityOptions.map(option => (
-              <div key={option.value} className="col-6">
-                <div className="form-check">
-                  <input
-                    type="checkbox"
-                    id={option.value}
-                    className="form-check-input"
-                    checked={formData.facilities.includes(option.value)}
-                    onChange={() => handleFacilityChange(option.value)}
-                  />
-                  <label
-                    htmlFor={option.value}
-                    className="form-check-label fw-semibold text-dark cursor-pointer"
+                  {/* Body / Edit Form */}
+                  <div
+                    id={bodyId}
+                    className={`accordion-collapse collapse ${
+                      isOpen ? "show" : ""
+                    }`}
+                    aria-labelledby={headerId}
+                    data-bs-parent="#venueShootsAccordion"
                   >
-                    {option.label}
-                  </label>
+                    <div className="accordion-body">
+                      <form
+                        onSubmit={e => {
+                          e.preventDefault()
+                          // TODO: send updated shoot data to your backend / WP API
+                          console.log("Saving shoot", editingShoot)
+                        }}
+                      >
+                        <div className="row g-3">
+                          <div className="col-md-6">
+                            <label className="form-label small fw-bold">
+                              Shoot Name
+                            </label>
+                            <input
+                              type="text"
+                              className="form-control"
+                              value={editingShoot?.name || ""}
+                              onChange={e =>
+                                setEditingShoot({
+                                  ...editingShoot,
+                                  name: e.target.value,
+                                })
+                              }
+                            />
+                          </div>
+
+                          <div className="col-md-6">
+                            <label className="form-label small fw-bold">
+                              Date
+                            </label>
+                            <input
+                              type="date"
+                              className="form-control"
+                              value={editingShoot?.date || ""}
+                              onChange={e =>
+                                setEditingShoot({
+                                  ...editingShoot,
+                                  date: e.target.value,
+                                })
+                              }
+                            />
+                          </div>
+
+                          {/* Add any other fields you need: description, format, entryFee, etc. */}
+                        </div>
+
+                        <div className="d-flex gap-2 mt-4">
+                          <button type="submit" className="btn btn-primary">
+                            Save Changes
+                          </button>
+
+                          <button
+                            type="button"
+                            className="btn btn-success"
+                            onClick={() => {
+                              // Mark as verified
+                              const updated = {
+                                ...editingShoot,
+                                isVerified: true,
+                              }
+                              setEditingShoot(updated)
+                              // TODO: persist the verification change
+                              console.log("Verified shoot", updated)
+                            }}
+                          >
+                            Verify Shoot
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        )}
+      </div>
+      {/* ==================== ADD NEW SHOOT (always visible) ==================== */}
+      <div className="mt-4">
+        <button
+          type="button"
+          className="btn btn-outline-primary fw-bold"
+          onClick={() => setShowAddForm(!showAddForm)}
+        >
+          {showAddForm ? "Cancel" : "+ Add New Shoot"}
+        </button>
+
+        {showAddForm && (
+          <div className="card border mt-3 p-4 shadow-sm">
+            <h5 className="fw-bold mb-3 text-secondary">Create New Shoot</h5>
+
+            <form
+              onSubmit={e => {
+                e.preventDefault()
+                const newShoot = {
+                  ...(editingShoot || {}),
+                  id: `new-${Date.now()}`,
+                  venueId: user?.venueId || user?.venue?.venueId,
+                  isVerified: false,
+                }
+                console.log("Creating new shoot:", newShoot)
+
+                setMyShoots(prev => [...prev, newShoot])
+                setShowAddForm(false)
+                setEditingShoot(null)
+              }}
+            >
+              <div className="row g-3">
+                <div className="col-md-6">
+                  <label className="form-label small fw-bold">Shoot Name</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={editingShoot?.name || ""}
+                    onChange={e =>
+                      setEditingShoot({
+                        ...(editingShoot || {}),
+                        name: e.target.value,
+                      })
+                    }
+                    required
+                  />
+                </div>
+
+                <div className="col-md-6">
+                  <label className="form-label small fw-bold">Date</label>
+                  <input
+                    type="date"
+                    className="form-control"
+                    value={editingShoot?.date || ""}
+                    onChange={e =>
+                      setEditingShoot({
+                        ...(editingShoot || {}),
+                        date: e.target.value,
+                      })
+                    }
+                    required
+                  />
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
 
-        {/* Form Submit Button */}
-        <button
-          type="submit"
-          className="btn btn-primary fw-bold px-4 py-2 shadow-sm"
-        >
-          Save Profile Content
-        </button>
-      </form>
+              <button type="submit" className="btn btn-success mt-4">
+                Create Shoot
+              </button>
+            </form>
+          </div>
+        )}
+      </div>
     </div>
   )
 }
 
 export default Profile
+
+export const query = graphql`
+  query AllData {
+    # 1. Fetch the Venues
+    allVenuesJson {
+      nodes {
+        id
+        venueId
+        slug
+        name
+        description
+        venueType
+        subscription
+        icon
+        iconColor
+        location {
+          address
+          city
+          state
+          zip
+          lat
+          lng
+        }
+        contact {
+          phone
+          email
+          website
+          facebook
+          instagram
+        }
+        facilities
+        amenities
+        equipmentAllowed
+        customEquipmentRules
+        hours {
+          day
+          open
+          closed
+        }
+        membership
+        hostedShoots {
+          id
+          # name
+          date
+          # shootFormat
+        }
+        imageUrl
+        isClaimed
+      }
+    }
+
+    # 2. ADD THIS: Fetch the Shoots
+    allShootsJson {
+      nodes {
+        id
+        shootId
+        name
+        description
+        date
+        endDate
+        time
+        amenities
+        useVenueLocation
+        shootLocation {
+          lat
+          lng
+          city
+          state
+        }
+        shootFormat
+        shootClass
+        terrain
+        bowTypes
+        skillLevel
+        entryFee
+        pricing {
+          tier
+          note
+          options {
+            days
+            cost
+            currency
+          }
+        }
+
+        prizes
+        isVerified
+        isRegistration
+        isDestination
+        # Link back to venue for your "shootsWithVenues" logic
+        venueId
+        venue {
+          venueId
+          isClaimed
+          name
+          contact {
+            phone
+            email
+          }
+          location {
+            address
+            city
+            state
+            lat
+            lng
+          }
+          subscription
+        }
+      }
+    }
+  }
+`

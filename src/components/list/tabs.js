@@ -24,6 +24,8 @@ const Tabs = ({
   setActiveTab: propSetActiveTab,
   selectedVenueId: propSelectedVenueId,
   setSelectedVenueId: propSetSelectedVenueId,
+  showRegionalBanner,
+  userState,
   displayCurrentShoots: propDisplayCurrentShoots,
   displayUpcomingShoots: propDisplayUpcomingShoots,
 }) => {
@@ -256,17 +258,25 @@ const Tabs = ({
           No shoots in the next 21 days.
         </div>
       ) : (
-        <ShootList
-          key={activeTab}
-          shoots={shoots}
-          userLocation={userLocation}
-          venueIdMapping={venueIdMapping}
-          onSort={handleShootSort}
-          sortField={shootSortField}
-          sortDirection={shootSortDirection}
-          onSwitchToVenueTab={() => setActiveTabFunc("venue")}
-          onSelectShoot={onSelectShoot}
-        />
+        <>
+          {showRegionalBanner && (
+            <div className="alert alert-info py-2 mx-3 mt-2 small">
+              No shoots within 50 miles of your location. Showing regional
+              results for <strong>{userState}</strong>.
+            </div>
+          )}
+          <ShootList
+            key={activeTab}
+            shoots={shoots}
+            userLocation={userLocation}
+            venueIdMapping={venueIdMapping}
+            onSort={handleShootSort}
+            sortField={shootSortField}
+            sortDirection={shootSortDirection}
+            onSwitchToVenueTab={() => setActiveTabFunc("venue")}
+            onSelectShoot={onSelectShoot}
+          />
+        </>
       )
     }
 
@@ -281,17 +291,25 @@ const Tabs = ({
           No upcoming shoots beyond 21 days.
         </div>
       ) : (
-        <ShootList
-          key={activeTab}
-          shoots={shoots}
-          userLocation={userLocation}
-          venueIdMapping={venueIdMapping}
-          onSort={handleShootSort}
-          sortField={shootSortField}
-          sortDirection={shootSortDirection}
-          onSwitchToVenueTab={() => setActiveTabFunc("venue")}
-          onSelectShoot={onSelectShoot}
-        />
+        <>
+          {showRegionalBanner && (
+            <div className="alert alert-info py-2 mx-3 mt-2 small">
+              No shoots within 50 miles of your location. Showing regional
+              results for <strong>{userState}</strong>.
+            </div>
+          )}
+          <ShootList
+            key={activeTab}
+            shoots={shoots}
+            userLocation={userLocation}
+            venueIdMapping={venueIdMapping}
+            onSort={handleShootSort}
+            sortField={shootSortField}
+            sortDirection={shootSortDirection}
+            onSwitchToVenueTab={() => setActiveTabFunc("venue")}
+            onSelectShoot={onSelectShoot}
+          />
+        </>
       )
     }
 

@@ -22,6 +22,9 @@ const IndexPage = ({ data }) => {
   const [filteredCurrentShoots, setFilteredCurrentShoots] = useState([])
   const [filteredUpcomingShoots, setFilteredUpcomingShoots] = useState([])
   const [userLocation, setUserLocation] = useState(null)
+  const [userState, setUserState] = useState("CO")
+  const [userCountry, setUserCountry] = useState("USA")
+  const [showRegionalBanner, setShowRegionalBanner] = useState(false)
   const [activeTab, setActiveTab] = useState("current")
 
   // URL param handling (local)
@@ -31,8 +34,6 @@ const IndexPage = ({ data }) => {
 
     if (activeTabParam) setActiveTab(activeTabParam)
   }, [])
-
-  const [selectedShootForMap, setSelectedShootForMap] = useState(null)
 
   // Just calculate the effectiveLocation
   const shootsWithVenues = useMemo(() => {
@@ -53,13 +54,9 @@ const IndexPage = ({ data }) => {
   }, [Shoots])
 
   const nonDestinationShoots = useMemo(
-    () => shootsWithVenues.filter(shoot => shoot.isDestination != true),
+    () => shootsWithVenues.filter(shoot => !shoot.isDestination), // ← correct
     [shootsWithVenues]
   )
-
-  const handleSelectShoot = shoot => {
-    setSelectedShootForMap(shoot)
-  }
 
   // Date boundaries using util
   const { now, currentTab } = useMemo(() => getDateBoundaries(), [])
@@ -106,46 +103,58 @@ const IndexPage = ({ data }) => {
             lng: position.coords.longitude,
           }
           setUserLocation(loc)
+          setUserCountry("USA")
 
-          // Apply distance filter + date sort for each tab
           let geoCurrent = computedCurrentShoots
-          let outside = false
+          let geoUpcoming = computedUpcomingShoots
+          let showBanner = false
 
-          if (computedCurrentShoots.length === 0) {
-            const filteredUpcoming = filterByDistance(
-              computedUpcomingShoots,
-              loc,
-              50,
-              computedUpcomingShoots
-            )
-            // Detect fallback → nothing was within 50 miles
-            if (filteredUpcoming.length === computedUpcomingShoots.length) {
-              outside = true
-            }
-            geoCurrent = filteredUpcoming
+          const applyStateFilter = list =>
+            list.filter(s => {
+              const l =
+                s.useVenueLocation !== false && s.venue?.location
+                  ? s.venue.location
+                  : s.shootLocation
+              return l?.state === userState
+            })
+
+          // --- Current tab ---
+          const distCurrent = filterByDistance(
+            computedCurrentShoots,
+            loc,
+            50,
+            computedCurrentShoots
+          )
+          if (
+            distCurrent.length === computedCurrentShoots.length &&
+            computedCurrentShoots.length > 0
+          ) {
+            showBanner = true
+            geoCurrent = applyStateFilter(computedCurrentShoots)
           } else {
-            const filteredCurrent = filterByDistance(
-              computedCurrentShoots,
-              loc,
-              50,
-              computedCurrentShoots
-            )
-            if (filteredCurrent.length === computedCurrentShoots.length) {
-              outside = true
-            }
-            geoCurrent = filteredCurrent
+            geoCurrent = distCurrent
           }
 
-          setFilteredCurrentShoots(geoCurrent)
-          // setIsOutside50Miles(outside)
-
-          const geoUpcoming = filterByDistance(
+          // --- Upcoming tab ---
+          const distUpcoming = filterByDistance(
             computedUpcomingShoots,
             loc,
             50,
             computedUpcomingShoots
           )
+          if (
+            distUpcoming.length === computedUpcomingShoots.length &&
+            computedUpcomingShoots.length > 0
+          ) {
+            showBanner = true
+            geoUpcoming = applyStateFilter(computedUpcomingShoots)
+          } else {
+            geoUpcoming = distUpcoming
+          }
+
+          setFilteredCurrentShoots(geoCurrent)
           setFilteredUpcomingShoots(geoUpcoming)
+          setShowRegionalBanner(showBanner)
         },
         error => {
           console.warn("Geolocation error", error)
@@ -189,9 +198,7 @@ const IndexPage = ({ data }) => {
       shoots: shootsToPass,
       venues: venuesToPass,
       userLocation: userLocation,
-      activeTab: activeTab,
-      selectedShoot: selectedShootForMap,
-      onClearSelection: () => setSelectedShootForMap(null),
+      activeTab: activeTab, // New: Pass activeTab to map
     }
   }, [
     activeTab,
@@ -199,7 +206,6 @@ const IndexPage = ({ data }) => {
     filteredUpcomingShoots,
     Venues,
     userLocation,
-    selectedShootForMap,
   ])
 
   const displayCurrentShoots = useMemo(() => {
@@ -238,7 +244,6 @@ const IndexPage = ({ data }) => {
       setActiveTab,
       selectedVenueId,
       setSelectedVenueId,
-      onSelectShoot: handleSelectShoot,
     }
   }, [
     shootsWithVenues,
@@ -293,6 +298,7 @@ export const query = graphql`
         venueId
         slug
         name
+        bio
         description
         venueType
         subscription
@@ -340,7 +346,6 @@ export const query = graphql`
         id
         shootId
         name
-        description
         date
         endDate
         time
@@ -367,17 +372,18 @@ export const query = graphql`
             currency
           }
         }
+
         prizes
-        isDestination
         isVerified
         isRegistration
-        registrationUrl
+        isDestination
         # Link back to venue for your "shootsWithVenues" logic
         venueId
         venue {
           venueId
           isClaimed
           name
+          description
           slug
           contact {
             phone

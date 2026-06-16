@@ -1,46 +1,55 @@
 import * as React from "react"
 
-const ShootFilters = ({ shoots, onFilteredChange, userLocation }) => {
+const ShootFilters = ({
+  shoots,
+  onFilteredChange,
+  userLocation,
+  userState,
+  userCountry,
+}) => {
   const [filters, setFilters] = React.useState({
-    state: "",
+    state: "", // ← new: selected state (empty = show all)
     bowType: "",
     format: "",
     shootClass: "",
     skillLevel: "",
   })
+
   const [sort, setSort] = React.useState({ field: "", direction: "asc" })
 
   const options = React.useMemo(() => {
-    const states = new Set()
     const bowTypes = new Set()
     const formats = new Set()
     const classes = new Set()
     const levels = new Set()
+    const states = new Set()
 
     shoots.forEach(s => {
+      s.bowTypes?.forEach(b => bowTypes.add(b))
+      s.shootFormat?.forEach(f => formats.add(f))
+      s.shootClass?.forEach(c => classes.add(c))
+      s.skillLevel?.forEach(l => levels.add(l))
+
       const loc =
         s.useVenueLocation !== false && s.venue?.location
           ? s.venue.location
           : s.shootLocation
       if (loc?.state) states.add(loc.state)
-      s.bowTypes?.forEach(b => bowTypes.add(b))
-      s.shootFormat?.forEach(f => formats.add(f))
-      s.shootClass?.forEach(c => classes.add(c))
-      s.skillLevel?.forEach(l => levels.add(l))
     })
 
     return {
-      states: [...states].sort(),
       bowTypes: [...bowTypes].sort(),
       formats: [...formats].sort(),
       classes: [...classes].sort(),
       levels: [...levels].sort(),
+      states: [...states].sort(), // ← new
     }
   }, [shoots])
 
   React.useEffect(() => {
     let result = [...shoots]
 
+    // STATE FILTER (new)
     if (filters.state) {
       result = result.filter(s => {
         const loc =
@@ -50,6 +59,9 @@ const ShootFilters = ({ shoots, onFilteredChange, userLocation }) => {
         return loc?.state === filters.state
       })
     }
+    // "local" = do nothing (data is already the local set from index.js)
+
+    // other filters stay the same
     if (filters.bowType)
       result = result.filter(s => s.bowTypes?.includes(filters.bowType))
     if (filters.format)
@@ -59,33 +71,11 @@ const ShootFilters = ({ shoots, onFilteredChange, userLocation }) => {
     if (filters.skillLevel)
       result = result.filter(s => s.skillLevel?.includes(filters.skillLevel))
 
-    if (sort.field === "state") {
-      result.sort((a, b) => {
-        const la =
-          a.useVenueLocation !== false && a.venue?.location
-            ? a.venue.location
-            : a.shootLocation
-        const lb =
-          b.useVenueLocation !== false && b.venue?.location
-            ? b.venue.location
-            : b.shootLocation
-        const sa = la?.state || ""
-        const sb = lb?.state || ""
-        return sort.direction === "asc"
-          ? sa.localeCompare(sb)
-          : sb.localeCompare(sa)
-      })
-    }
-
     onFilteredChange(result)
-  }, [filters, sort, shoots, userLocation, onFilteredChange])
+  }, [filters, shoots, onFilteredChange])
 
   const updateFilter = (key, value) => setFilters(p => ({ ...p, [key]: value }))
-  const toggleSort = field => {
-    const dir =
-      sort.field === field && sort.direction === "asc" ? "desc" : "asc"
-    setSort({ field, direction: dir })
-  }
+
   const reset = () => {
     setFilters({
       state: "",
@@ -98,16 +88,17 @@ const ShootFilters = ({ shoots, onFilteredChange, userLocation }) => {
   }
 
   return (
-    <div className="d-flex flex-nowrap align-items-center gap-2 p-3 small overflow-auto border border-2 border-black bg-warning-subtle">
+    <div className="d-flex flex-nowrap align-items-center gap-2 p-3 small overflow-auto border border-2 border-warning bg-warning-subtle">
+      {/* State filter – shows every state that has shoots */}
       <select
         className="form-select form-select-sm w-auto"
         value={filters.state}
         onChange={e => updateFilter("state", e.target.value)}
       >
-        <option value="">State</option>
-        {options.states.map(s => (
-          <option key={s} value={s}>
-            {s}
+        <option value="">All States</option>
+        {options.states.map(st => (
+          <option key={st} value={st}>
+            {st}
           </option>
         ))}
       </select>

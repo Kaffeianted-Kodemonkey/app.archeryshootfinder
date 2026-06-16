@@ -151,20 +151,7 @@ const DestList = ({
                 data-bs-parent="#shootAccordion"
               >
                 <div className="accordion-body">
-                  <div className="col">
-                    <h3 className="fs-5">
-                      <strong>Hosted by:</strong>
-                      <span className="ms-2">
-                        {venue.isClaimed ? (
-                          <Link to={`/venues/${venue.slug}`}>{venue.name}</Link>
-                        ) : (
-                          venue.name
-                        )}
-                      </span>
-                    </h3>
-                  </div>
-                  <hr />
-                  <h3 className="fa-5">Registration cost per shooter</h3>
+                  <h3 className="fa-5">Registration Cost per Shooter</h3>
                   {/* Price table – prefers structured pricing, falls back to entryFee string */}
                   <div className="resposive-table my-3">
                     <table className="table table-bordered">
@@ -224,7 +211,7 @@ const DestList = ({
                   <h3 className="fs-5">
                     <strong>About the Event</strong>
                   </h3>
-                  <p>{first.description}</p>
+                  <p>{first.venue?.description}</p>
 
                   {/* Event Rules */}
                   <h3 className="fs-5">

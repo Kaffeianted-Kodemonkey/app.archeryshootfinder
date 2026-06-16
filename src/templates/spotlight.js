@@ -8,30 +8,32 @@ import Seo from "../components/seo"
 const SpotlightTemplate = ({ data }) => {
   const venue = data.venuesJson
 
-  // Tab selector state to control the (0) Current | (0) Upcoming | (0) Destination display engine
-  const [activeTab, setActiveTab] = useState("current")
-
   if (!venue) return null
-
-  // Setup classification switches based on your exact VenueType Enum rules
-  const isProShop = venue.venueType === "PRO_SHOP"
-  const isClubOrOrg =
-    venue.venueType === "CLUB" ||
-    venue.venueType === "ORGANIZATION" ||
-    venue.venueType === "ASSOCIATION"
-
-  // Dynamically group your array counts inside your tab parameters
-  const shootCounts = {
-    current: venue.hostedShoots?.filter(s => !s.isDestination).length || 0,
-    upcoming: venue.hostedShoots?.filter(s => s.date).length || 0,
-    destination: venue.hostedShoots?.filter(s => s.isDestination).length || 0,
-  }
 
   return (
     <Layout>
       <Seo title={venue.name} description={venue.description} />
 
-      <main className="container py-5 border border-2 border-sucess-subtle bg-white rounded shadow-sm">
+      {/* Floating Close Button – always shown on Spotlight pages */}
+      <button
+        onClick={() => window.history.back()}
+        className="btn btn-dark position-fixed"
+        style={{
+          top: "20px",
+          right: "20px",
+          zIndex: 2000,
+          borderRadius: "50%",
+          width: "48px",
+          height: "48px",
+          fontSize: "1.5rem",
+          lineHeight: "1",
+        }}
+        aria-label="Close and return to shoot list"
+      >
+        ✕
+      </button>
+
+      <main className="container py-5 border border-2 border-warning-subtle bg-white rounded shadow-sm">
         {/* TITLE AND TAGLINE & HERO IMAGE */}
         <div className="row px-3 py-5 mb-4  text-body-emphasis">
           <div className="col">[venue image here]</div>
@@ -40,7 +42,7 @@ const SpotlightTemplate = ({ data }) => {
         <div className="row px-3 pt-3 mb-4 text-body-emphasis border-top border-bottom border-2 border-success bg-success-subtle">
           <div className="col">
             {venue.isClaimed && (
-              <span className="badge bg-success py-2 px-2 me-2 mb-3 fw-bold small">
+              <span className="badge bg-success py-2 px-2 me-2 mb- fw-bold small">
                 <i className="bi bi-check-lg"></i> Verified Listing
               </span>
             )}

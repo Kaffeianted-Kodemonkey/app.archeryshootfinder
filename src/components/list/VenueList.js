@@ -116,17 +116,23 @@ const VenueList = ({
   return (
     <div className="row">
       {venues.map(venue => {
-        const location = venue.location || {}
+        const venueLocation = venue.location || {}
         const contact = venue.contact || {}
         const equipment = venue.equipment || {}
         const hours = venue.hours || {}
         const membership = venue.membership || {}
+
+        // Calculate distance from the USER (prop) to the VENUE
         const distanceValue =
-          location && venue.location
-            ? getDistance(location, venue.location).toFixed(1)
+          location && venueLocation.lat != null && venueLocation.lng != null
+            ? getDistance(location, venueLocation).toFixed(1)
             : "N/A"
+
         const distance = `${distanceValue} mi`
-        const cityState = `${location.city || ""}, ${location.state || ""}`
+        const cityState = `${venueLocation.city || ""}, ${
+          venueLocation.state || ""
+        }`
+
         const mapping =
           venueTypeMapping[venue.venueType] || venueTypeMapping.default
 
@@ -163,34 +169,15 @@ const VenueList = ({
               {/* Card Body starts here */}
               <div className="card-body">
                 <div className="row">
-                  <div className="col-md-7">
+                  <div className="col-ms-12">
                     <h3 className="fs-5">
                       <strong>About the Venue</strong>
                     </h3>
                     <p>{venue.description}</p>
-
-                    {venue.facilities && venue.facilities.length > 0 && (
-                      <p className="card-text mb-1">
-                        <strong>Facilities:</strong>
-                        <br /> {venue.facilities.join(", ")}
-                      </p>
-                    )}
-                    {equipment && equipment.rentalAvailable !== undefined ? (
-                      <p className="card-text mb-1">
-                        <strong>Equipment:</strong>
-                        <br />
-                        {equipment.rentalAvailable
-                          ? "Rentals available"
-                          : "BYO"}{" "}
-                        {equipment.notes ? ` - ${equipment.notes}` : ""}
-                      </p>
-                    ) : (
-                      <p className="card-text mb-1">
-                        <strong>Equipment:</strong> TBA
-                      </p>
-                    )}
                   </div>
-                  <div className="col-md-5">
+                </div>
+                <div className="row">
+                  <div className="col-sm-6">
                     {hours && (hours.weekday || hours.weekend) ? (
                       <p className="card-text mb-1">
                         <strong>Hours:</strong>
@@ -231,8 +218,8 @@ const VenueList = ({
                         <strong>Membership:</strong> TBD
                       </p>
                     )}
-
-                    <hr />
+                  </div>
+                  <div className="col-sm-6">
                     <h3 className="fs-5">
                       <strong>Contact Info</strong>
                     </h3>
@@ -258,60 +245,64 @@ const VenueList = ({
                         <a href={`mailto:${contact.email}`}>{contact.email}</a>
                       </p>
                     )}
+                  </div>
+                </div>
 
-                    <hr />
+                <hr />
+
+                <div className="row">
+                  <div className="col-sm-12">
                     <h3 className="fs-5">
-                      <strong>Hosted Shoots</strong>
+                      <strong>Number of Shoots:</strong>
                     </h3>
-                    <div className="card-text mb-1">
-                      {currentCount > 0 ? (
-                        <button
-                          onClick={() => {
-                            if (setSelectedVenueId && setActiveTab) {
-                              setSelectedVenueId(venue.venueId)
-                              setActiveTab("current")
-                            }
-                          }}
-                          className="btn btn-sm btn-link p-0 text-decoration-none"
-                        >
-                          ({currentCount}) Current
-                        </button>
-                      ) : (
-                        <span className="text-muted">(0) Current</span>
-                      )}
-                      <span className="text-muted"> | </span>
-                      {upcomingCount > 0 ? (
-                        <button
-                          onClick={() => {
-                            if (setSelectedVenueId && setActiveTab) {
-                              setSelectedVenueId(venue.venueId)
-                              setActiveTab("upcoming")
-                            }
-                          }}
-                          className="btn btn-sm btn-link p-0 text-decoration-none"
-                        >
-                          ({upcomingCount}) Upcoming
-                        </button>
-                      ) : (
-                        <span className="text-muted">(0) Upcoming</span>
-                      )}
-                      <span className="text-muted"> | </span>
-                      {destinationCount > 0 ? (
-                        <button
-                          onClick={() => {
-                            if (setSelectedVenueId && setActiveTab) {
-                              setSelectedVenueId(venue.venueId)
-                              setActiveTab("destination")
-                            }
-                          }}
-                          className="btn btn-sm btn-link p-0 text-decoration-none"
-                        >
-                          ({destinationCount}) Destination
-                        </button>
-                      ) : (
-                        <span className="text-muted">(0) Destination</span>
-                      )}
-                    </div>
+
+                    {currentCount > 0 ? (
+                      <button
+                        onClick={() => {
+                          if (setSelectedVenueId && setActiveTab) {
+                            setSelectedVenueId(venue.venueId)
+                            setActiveTab("current")
+                          }
+                        }}
+                        className="btn btn-sm btn-link p-0 text-decoration-none"
+                      >
+                        ({currentCount}) Current
+                      </button>
+                    ) : (
+                      <span className="text-muted">(0) Current</span>
+                    )}
+                    <span className="text-muted"> | </span>
+                    {upcomingCount > 0 ? (
+                      <button
+                        onClick={() => {
+                          if (setSelectedVenueId && setActiveTab) {
+                            setSelectedVenueId(venue.venueId)
+                            setActiveTab("upcoming")
+                          }
+                        }}
+                        className="btn btn-sm btn-link p-0 text-decoration-none"
+                      >
+                        ({upcomingCount}) Upcoming
+                      </button>
+                    ) : (
+                      <span className="text-muted">(0) Upcoming</span>
+                    )}
+                    <span className="text-muted"> | </span>
+                    {destinationCount > 0 ? (
+                      <button
+                        onClick={() => {
+                          if (setSelectedVenueId && setActiveTab) {
+                            setSelectedVenueId(venue.venueId)
+                            setActiveTab("destination")
+                          }
+                        }}
+                        className="btn btn-sm btn-link p-0 text-decoration-none"
+                      >
+                        ({destinationCount}) Destination
+                      </button>
+                    ) : (
+                      <span className="text-muted">(0) Destination</span>
+                    )}
                   </div>
                 </div>
               </div>

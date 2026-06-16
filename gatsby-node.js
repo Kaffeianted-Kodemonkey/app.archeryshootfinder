@@ -102,7 +102,6 @@ exports.createSchemaCustomization = ({ actions }) => {
       venueId: Int!    # Unique Venue Identifier
       venue: VenuesJson @link(by: "venueId", from: "venueId")
       name: String
-      description: String
       date: Date # @dateformat # if null then show TBD
       endDate: Date # if null then show TBD
       time: String # if null then show TBD
