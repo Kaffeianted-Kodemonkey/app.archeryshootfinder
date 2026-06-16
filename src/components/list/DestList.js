@@ -233,12 +233,14 @@ const DestList = ({
                     </a>
                   )}
 
-                  <Link
-                    to={`/shoots/${first.slug}`}
-                    className="btn btn-sm btn-outline-primary"
-                  >
-                    Venue Details
-                  </Link>
+                  {first.venue?.slug && (
+                    <Link
+                      to={`/venues/${first.venue.slug}`}
+                      className="btn btn-sm btn-outline-primary"
+                    >
+                      Venue Details
+                    </Link>
+                  )}
 
                   {/* Dynamic table listing ALL shoots for this venue */}
                   <div className="resposive-table mt-3">
