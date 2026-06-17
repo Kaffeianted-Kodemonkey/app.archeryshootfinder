@@ -7,24 +7,24 @@ import InstallButton from "../InstallButton"
 const Navbar = ({ siteTitle, siteDesc, view, setView }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false) // Track the dashboard dropdown state
-  const [loggedInUser, setLoggedInUser] = useState(null)
+  const [loggedInhost, setLoggedInhost] = useState(null)
 
   // Dynamic Session Monitor: Look for the portal's active login token
   useEffect(() => {
-    const checkUserSession = () => {
-      const savedUser = localStorage.getItem("mock_venue_user")
-      if (savedUser) {
-        setLoggedInUser(JSON.parse(savedUser))
+    const checkhostSession = () => {
+      const savedhost = localStorage.getItem("mock_venue_host")
+      if (savedhost) {
+        setLoggedInhost(JSON.parse(savedhost))
       } else {
-        setLoggedInUser(null)
+        setLoggedInhost(null)
       }
     }
 
-    checkUserSession()
+    checkhostSession()
 
     if (typeof window !== "undefined") {
-      window.addEventListener("storage", checkUserSession)
-      return () => window.removeEventListener("storage", checkUserSession)
+      window.addEventListener("storage", checkhostSession)
+      return () => window.removeEventListener("storage", checkhostSession)
     }
   }, [])
 
@@ -36,8 +36,8 @@ const Navbar = ({ siteTitle, siteDesc, view, setView }) => {
   const handleLogoutClick = () => {
     setIsMenuOpen(false)
     setIsDropdownOpen(false)
-    localStorage.removeItem("mock_venue_user")
-    setLoggedInUser(null)
+    localStorage.removeItem("mock_venue_host")
+    setLoggedInhost(null)
     navigate("/pricing")
   }
 
@@ -93,7 +93,7 @@ const Navbar = ({ siteTitle, siteDesc, view, setView }) => {
             </li>
 
             {/* NESTED VENUE PORTAL MENU SECTION */}
-            {loggedInUser ? (
+            {loggedInhost ? (
               /* If Logged In: Render a nested dropdown menu labeled "Venue Portal" */
               <li
                 className={`nav-item dropdown ${isDropdownOpen ? "show" : ""}`}
@@ -177,9 +177,9 @@ const Navbar = ({ siteTitle, siteDesc, view, setView }) => {
 
           <div className="d-flex align-items-center gap-2">
             {/* Displaying an active logged-in badge on the right edge */}
-            {loggedInUser && (
+            {loggedInhost && (
               <div className="d-none d-lg-block text-white bg-dark bg-opacity-25 rounded px-3 py-1 small fw-semibold">
-                {loggedInUser.name}
+                {loggedInhost.name}
               </div>
             )}
             <InstallButton />

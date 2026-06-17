@@ -44,7 +44,7 @@ const RegisterPage = ({ location }) => {
     )
   }
 
-  // Determine user friendly label for the selected tier
+  // Determine host friendly label for the selected tier
   const isFree =
     selectedPlanId ===
     "Af-85E7wXeddzdG2BnpJC7aVh71hDAzDdOuDmmbZNREZoPtZFtw8hTYV7wgXVFAk70fRgOX3QdfRCQc1"
@@ -66,15 +66,15 @@ const RegisterPage = ({ location }) => {
       return
     }
 
-    // Save mock user to local storage for our draft portal
-    const mockUser = {
+    // Save mock host to local storage for our draft portal
+    const mockhost = {
       name: formData.venueName,
       email: formData.contactEmail,
       subscriptionId: "FREE-ACCOUNT",
       planId: "free",
       isLoggedIn: true,
     }
-    localStorage.setItem("mock_venue_user", JSON.stringify(mockUser))
+    localStorage.setItem("mock_venue_host", JSON.stringify(mockhost))
 
     alert("Non-Profit account drafted successfully!")
     navigate("/portal/")
@@ -141,7 +141,7 @@ const RegisterPage = ({ location }) => {
 
                   {/* Step B: Checkout Area */}
                   {isFree ? (
-                    // Button for Freemium users
+                    // Button for Freemium hosts
                     <button
                       type="submit"
                       className="btn btn-success w-100 py-2 fw-bold"
@@ -186,15 +186,15 @@ const RegisterPage = ({ location }) => {
                               plan_id: selectedPlanId,
                             })
                           }}
-                          // Fires immediately after the user finishes approving the PayPal popup windows
+                          // Fires immediately after the host finishes approving the PayPal popup windows
                           onApprove={async (data, actions) => {
                             console.log(
                               "PayPal Approved Subscription Data:",
                               data
                             )
 
-                            // Mock Session Data: Store in local browser cache to simulate a real user database
-                            const mockUser = {
+                            // Mock Session Data: Store in local browser cache to simulate a real host database
+                            const mockhost = {
                               name: formData.venueName,
                               email: formData.contactEmail,
                               subscriptionId: data.subscriptionID,
@@ -202,15 +202,15 @@ const RegisterPage = ({ location }) => {
                               isLoggedIn: true,
                             }
                             localStorage.setItem(
-                              "mock_venue_user",
-                              JSON.stringify(mockUser)
+                              "mock_venue_host",
+                              JSON.stringify(mockhost)
                             )
 
                             alert(
                               "Subscription Authorized! Redirecting to your venue portal dashboard..."
                             )
 
-                            // Push user straight to their brand new dashboard layout
+                            // Push host straight to their brand new dashboard layout
                             navigate("/portal")
                           }}
                           onError={err => {

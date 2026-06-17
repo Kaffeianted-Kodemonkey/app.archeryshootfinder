@@ -28,7 +28,7 @@ ChartJS.register(
   Legend
 )
 
-const Dashboard = ({ user }) => {
+const Dashboard = ({ host }) => {
   const [chartType, setChartType] = useState("line")
 
   const labels = [
@@ -164,7 +164,7 @@ const Dashboard = ({ user }) => {
             </p>
             <div className="bg-light border rounded p-2 mb-3 font-monospace small text-truncate">
               Reference Token:{" "}
-              {user?.subscriptionId || "FREE-VERIFICATION-NODE"}
+              {host?.subscriptionId || "FREE-VERIFICATION-NODE"}
             </div>
             <button className="btn btn-sm btn-outline-primary fw-bold py-2 px-3 shadow-sm mt-auto align-self-start">
               <i className="bi bi-paypal me-1"></i> Launch PayPal Billing Center

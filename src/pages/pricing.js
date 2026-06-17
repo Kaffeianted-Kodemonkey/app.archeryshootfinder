@@ -94,7 +94,7 @@ const venueTiers = [
     headline: "Drive Foot Traffic and Increase Sales",
     addShootR: "Outside Bus. Locaiotion state $45",
     description:
-      "Built for commercial brick-and-mortar archery retailers looking to turn local users into paying customers at their tech counters and lanes.",
+      "Built for commercial brick-and-mortar archery retailers looking to turn local hosts into paying customers at their tech counters and lanes.",
     features: [
       "Green 'Verified' badge",
       "Directory Listing with pre-generated non-verified shoots",

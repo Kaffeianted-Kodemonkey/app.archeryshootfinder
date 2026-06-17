@@ -8,13 +8,13 @@ import AdminDash from "../components/AdminDash"
 import Profile from "../components/Profile"
 
 const Portal = () => {
-  const [user, setUser] = useState(null)
+  const [host, sethost] = useState(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const savedUser = localStorage.getItem("mock_venue_user")
-    if (savedUser) {
-      setUser(JSON.parse(savedUser))
+    const savedhost = localStorage.getItem("mock_venue_host")
+    if (savedhost) {
+      sethost(JSON.parse(savedhost))
     } else {
       navigate("/login")
     }
@@ -33,11 +33,11 @@ const Portal = () => {
     )
   }
 
-  if (!user) return null
+  if (!host) return null
 
   // Format subscription plan naming rules for the badge string display
   const getPlanBadgeLabel = () => {
-    const plan = user.planId ? user.planId.toUpperCase() : ""
+    const plan = host.planId ? host.planId.toUpperCase() : ""
     if (plan.includes("DESTINATION")) return "Destination Tier"
     if (plan.includes("PREMIUM")) return "⭐ Premium Tier"
     return "Freemium Non-Profit"
@@ -53,10 +53,11 @@ const Portal = () => {
             <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-4 border-bottom">
               <div>
                 <h1 className="h2 fw-bold text-dark mb-0">
-                  Welcome back, {user.name}!
+                  Welcome back, {host.name}!
                 </h1>
                 <p className="text-muted small mb-0">
-                  Managing account parameters for: <strong>{user.email}</strong>
+                  Managing content & account parameters for:{" "}
+                  <strong>{host.email}</strong>
                 </p>
               </div>
 
@@ -71,8 +72,8 @@ const Portal = () => {
             {/* DYNAMIC CONTENT ROUTER PANEL */}
             <div className="py-2">
               <Router basepath="/portal">
-                <AdminDash path="/" user={user} />
-                <Profile path="/profile" user={user} />
+                <AdminDash path="/" host={host} />
+                <Profile path="/profile" host={host} />
               </Router>
             </div>
           </main>

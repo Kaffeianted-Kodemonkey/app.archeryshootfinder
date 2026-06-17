@@ -6,22 +6,22 @@ import PropTypes from "prop-types"
 import Layout from "../components/layout/Layout"
 import Seo from "../components/seo"
 
-const Profile = ({ user, data }) => {
+const Profile = ({ host, data }) => {
   // 1. Setup local form state mirroring your custom WordPress schema
   const [formData, setFormData] = useState({
-    name: user?.name || "",
+    name: host?.name || "",
     venueType: "CLUB", // Matches your VenueType Enum
     description: "",
     location: {
-      address: "",
-      city: "",
-      state: "",
-      zip: "",
+      address: host?.location || "",
+      city: host?.city || "",
+      state: host?.state || "",
+      zip: host?.zip || "",
     },
     contact: {
-      phone: "",
-      email: user?.email || "",
-      website: "",
+      phone: host?.phone || "",
+      email: host?.email || "",
+      website: host?.url || "",
     },
     facilities: [], // Holds selected Facility Enums
   })
@@ -35,6 +35,13 @@ const Profile = ({ user, data }) => {
   const [myShoots, setMyShoots] = useState([])
   const [editingShoot, setEditingShoot] = useState(null)
   const [showAddForm, setShowAddForm] = useState(false)
+
+  // === NEW: Bottom sheet state ===
+  const [showVenueSheet, setShowVenueSheet] = useState(false)
+  const [showShootSheet, setShowShootSheet] = useState(false)
+  const [selectedShoot, setSelectedShoot] = useState(null)
+
+  const venue = host
 
   // Handler for top-level text inputs
   const handleTopLevelChange = e => {
@@ -53,17 +60,17 @@ const Profile = ({ user, data }) => {
   }
 
   useEffect(() => {
-    if (!user || !Shoots.length) return
+    if (!host || !Shoots.length) return
 
-    // The user owns exactly one venue – get its ID
-    const venueId = user.venueId || user.venue?.venueId
+    // The host owns exactly one venue – get its ID
+    const venueId = host.venueId || host.venue?.venueId
 
     const ownedShoots = Shoots.filter(
       s => s.venueId === venueId || s.venue?.venueId === venueId
     )
 
     setMyShoots(ownedShoots)
-  }, [user, Shoots])
+  }, [host, Shoots])
 
   // Handler for pushing/removing checked facility enums from state array
   const handleFacilityChange = facilityEnum => {
@@ -91,228 +98,299 @@ const Profile = ({ user, data }) => {
   }
 
   // Options matching your exact gatsby-node.js Facility Enum strings
-  const facilityOptions = [
-    { label: "3D Course", value: "THREE_D_COURSE" },
-    { label: "Indoor Range", value: "INDOOR_RANGE" },
-    { label: "Outdoor Range", value: "OUTDOOR_RANGE" },
-    { label: "Pro Shop on Site", value: "PRO_SHOP" },
-    { label: "Kitchen / Food Prep", value: "KITCHEN" },
-    { label: "Campground Available", value: "CAMPING" },
-  ]
+  // const facilityOptions = [
+  //   { label: "3D Course", value: "THREE_D_COURSE" },
+  //   { label: "Indoor Range", value: "INDOOR_RANGE" },
+  //   { label: "Outdoor Range", value: "OUTDOOR_RANGE" },
+  //   { label: "Pro Shop on Site", value: "PRO_SHOP" },
+  //   { label: "Kitchen / Food Prep", value: "KITCHEN" },
+  //   { label: "Campground Available", value: "CAMPING" },
+  // ]
 
   return (
     <div>
       {/* View Header */}
-      <header className="mb-4 pb-3 border-bottom">
-        <h3 className="fw-bold text-dark m-0">Edit Public Profile Content</h3>
-        <p className="text-muted small m-0 mt-1">
-          This data links directly to your public Spotlight listing layout.
-        </p>
-      </header>
+      {/* ========== VENUE SUMMARY (always visible) ========== */}
+      <div className="card border-primary mb-4" style={{ maxWidth: "32rem" }}>
+        <div className="card-header d-flex justify-content-between align-items-center">
+          <div>
+            <h4 className="h5 fw-bold mb-0">My Venue</h4>
+            <p className="text-muted small mb-0">Tap Edit to update details</p>
+          </div>
+          <button
+            className="btn btn-sm btn-primary"
+            onClick={() => setShowVenueSheet(true)}
+          >
+            Edit
+          </button>
+        </div>
 
-      {/* Sync Status Banner notification */}
-      {saveStatus && (
+        <div className="card-body">
+          <div className="row">
+            <div className="col-12">
+              <p className="mb-1">
+                <strong>{venue?.name || "No name"}</strong>
+              </p>
+              <p className="mb-1 text-muted small">
+                {venue?.address}, {venue?.city}, {venue?.state} {venue?.zip}
+              </p>
+              <p className="mb-0 text-muted small">
+                {venue?.email} • {venue?.phone}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ========== SHOOTS LIST (always visible) ========== */}
+      <div className="card border mb-4">
+        <div className="card-header d-flex justify-content-between align-items-center">
+          <div>
+            <h4 className="h5 fw-bold mb-0">My Shoot Events</h4>
+            <p className="text-muted small mb-0">
+              Tap any row to edit or claim
+            </p>
+          </div>
+          <button
+            className="btn btn-sm btn-outline-primary"
+            onClick={() => {
+              setSelectedShoot({
+                id: `new-${Date.now()}`,
+                name: "",
+                date: "",
+                venueId: venue?.venueId || venue?.venue?.venueId,
+                isVerified: false,
+              })
+              setShowShootSheet(true)
+            }}
+          >
+            + Add Shoot
+          </button>
+        </div>
+
+        <div className="card-body p-0">
+          {myShoots.length === 0 ? (
+            <p className="p-3 text-muted">No shoots yet.</p>
+          ) : (
+            <div className="table-responsive">
+              <table className="table table-hover mb-0">
+                <thead className="table-light">
+                  <tr>
+                    <th>Date</th>
+                    <th>Name</th>
+                    <th>Status</th>
+                    <th>Verified</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {myShoots.map(shoot => (
+                    <tr
+                      key={shoot.id}
+                      style={{ cursor: "pointer" }}
+                      onClick={() => {
+                        setSelectedShoot(shoot)
+                        setShowShootSheet(true)
+                      }}
+                    >
+                      <td>{shoot.date || "—"}</td>
+                      <td>{shoot.name || "Untitled"}</td>
+                      <td>{shoot.status || "—"}</td>
+                      <td>
+                        {shoot.isVerified ? (
+                          <span className="badge bg-success">Verified</span>
+                        ) : (
+                          <span className="badge bg-secondary">Unclaimed</span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* ========== VENUE EDIT BOTTOM SHEET ========== */}
+      {showVenueSheet && (
         <div
-          className={`alert text-center fw-bold py-2 mb-4 ${
-            saveStatus.includes("✅") ? "alert-success" : "alert-info"
-          }`}
+          className="position-fixed bottom-0 start-0 end-0 bg-white border-top shadow-lg"
+          style={{ zIndex: 1050, maxHeight: "70vh", overflowY: "auto" }}
         >
-          {saveStatus}
+          <div className="p-3">
+            <div className="mb-3">
+              <label className="form-label small fw-bold">Venue Name</label>
+              <input
+                type="text"
+                className="form-control"
+                name="name"
+                value={formData.name}
+                onChange={handleTopLevelChange}
+              />
+            </div>
+
+            <div className="row g-3">
+              <div className="col-md-6">
+                <label className="form-label small fw-bold">Email</label>
+                <input
+                  type="email"
+                  className="form-control"
+                  name="email"
+                  value={formData.contact.email}
+                  onChange={e => handleNestedChange("contact", e)}
+                />
+              </div>
+              <div className="col-md-6">
+                <label className="form-label small fw-bold">Phone</label>
+                <input
+                  type="tel"
+                  className="form-control"
+                  name="phone"
+                  value={formData.contact.phone}
+                  onChange={e => handleNestedChange("contact", e)}
+                />
+              </div>
+            </div>
+
+            <div className="mt-3">
+              <label className="form-label small fw-bold">Address</label>
+              <input
+                type="text"
+                className="form-control"
+                name="address"
+                value={formData.location.address}
+                onChange={e => handleNestedChange("location", e)}
+              />
+            </div>
+
+            <div className="row g-3 mt-1">
+              <div className="col-md-5">
+                <label className="form-label small fw-bold">City</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="city"
+                  value={formData.location.city}
+                  onChange={e => handleNestedChange("location", e)}
+                />
+              </div>
+              <div className="col-md-3">
+                <label className="form-label small fw-bold">State</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="state"
+                  value={formData.location.state}
+                  onChange={e => handleNestedChange("location", e)}
+                />
+              </div>
+              <div className="col-md-4">
+                <label className="form-label small fw-bold">Zip</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="zip"
+                  value={formData.location.zip}
+                  onChange={e => handleNestedChange("location", e)}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="p-3">
+            {/* TODO: paste your venue form fields here */}
+            <p className="text-muted">Venue edit form goes here…</p>
+          </div>
+
+          <div className="p-3 border-top d-flex gap-2">
+            <button
+              className="btn btn-primary flex-fill"
+              onClick={() => {
+                // TODO: send formData to your backend / WP
+                console.log("Saving venue:", formData)
+                setShowVenueSheet(false)
+              }}
+            >
+              Save Changes
+            </button>
+
+            <button
+              className="btn btn-outline-secondary flex-fill"
+              onClick={() => setShowVenueSheet(false)}
+            >
+              Cancel
+            </button>
+          </div>
         </div>
       )}
 
-      {/* ==================== MY SHOOTS ACCORDION ==================== */}
-      <div className="mt-5">
-        <h4 className="fw-bold text-dark mb-3">My Venue Shoots</h4>
-
-        {myShoots.length === 0 ? (
-          <p className="text-muted">You have no shoots yet.</p>
-        ) : (
-          <div
-            className="accordion accordion-flush border"
-            id="venueShootsAccordion"
-          >
-            {myShoots.map((shoot, index) => {
-              const isOpen = editingShoot?.id === shoot.id
-              const headerId = `shoot-header-${shoot.id}`
-              const bodyId = `shoot-body-${shoot.id}`
-
-              return (
-                <div className="accordion-item" key={shoot.id}>
-                  {/* Header */}
-                  <h2 className="accordion-header" id={headerId}>
-                    <button
-                      className={`accordion-button ${
-                        isOpen ? "" : "collapsed"
-                      }`}
-                      type="button"
-                      data-bs-toggle="collapse"
-                      data-bs-target={`#${bodyId}`}
-                      aria-expanded={isOpen}
-                      aria-controls={bodyId}
-                      onClick={() => setEditingShoot(shoot)}
-                    >
-                      Shoot #{shoot.shootId} – {shoot.name || "Untitled Shoot"}
-                    </button>
-                  </h2>
-
-                  {/* Body / Edit Form */}
-                  <div
-                    id={bodyId}
-                    className={`accordion-collapse collapse ${
-                      isOpen ? "show" : ""
-                    }`}
-                    aria-labelledby={headerId}
-                    data-bs-parent="#venueShootsAccordion"
-                  >
-                    <div className="accordion-body">
-                      <form
-                        onSubmit={e => {
-                          e.preventDefault()
-                          // TODO: send updated shoot data to your backend / WP API
-                          console.log("Saving shoot", editingShoot)
-                        }}
-                      >
-                        <div className="row g-3">
-                          <div className="col-md-6">
-                            <label className="form-label small fw-bold">
-                              Shoot Name
-                            </label>
-                            <input
-                              type="text"
-                              className="form-control"
-                              value={editingShoot?.name || ""}
-                              onChange={e =>
-                                setEditingShoot({
-                                  ...editingShoot,
-                                  name: e.target.value,
-                                })
-                              }
-                            />
-                          </div>
-
-                          <div className="col-md-6">
-                            <label className="form-label small fw-bold">
-                              Date
-                            </label>
-                            <input
-                              type="date"
-                              className="form-control"
-                              value={editingShoot?.date || ""}
-                              onChange={e =>
-                                setEditingShoot({
-                                  ...editingShoot,
-                                  date: e.target.value,
-                                })
-                              }
-                            />
-                          </div>
-
-                          {/* Add any other fields you need: description, format, entryFee, etc. */}
-                        </div>
-
-                        <div className="d-flex gap-2 mt-4">
-                          <button type="submit" className="btn btn-primary">
-                            Save Changes
-                          </button>
-
-                          <button
-                            type="button"
-                            className="btn btn-success"
-                            onClick={() => {
-                              // Mark as verified
-                              const updated = {
-                                ...editingShoot,
-                                isVerified: true,
-                              }
-                              setEditingShoot(updated)
-                              // TODO: persist the verification change
-                              console.log("Verified shoot", updated)
-                            }}
-                          >
-                            Verify Shoot
-                          </button>
-                        </div>
-                      </form>
-                    </div>
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-        )}
-      </div>
-      {/* ==================== ADD NEW SHOOT (always visible) ==================== */}
-      <div className="mt-4">
-        <button
-          type="button"
-          className="btn btn-outline-primary fw-bold"
-          onClick={() => setShowAddForm(!showAddForm)}
+      {/* ========== SHOOT EDIT / CLAIM BOTTOM SHEET ========== */}
+      {showShootSheet && selectedShoot && (
+        <div
+          className="position-fixed bottom-0 start-0 end-0 bg-white border-top shadow-lg"
+          style={{ zIndex: 1050, maxHeight: "75vh", overflowY: "auto" }}
         >
-          {showAddForm ? "Cancel" : "+ Add New Shoot"}
-        </button>
+          <div className="p-3 border-bottom d-flex justify-content-between align-items-center">
+            <h5 className="mb-0">Edit Shoot</h5>
+            <button
+              className="btn-close"
+              onClick={() => setShowShootSheet(false)}
+            />
+          </div>
 
-        {showAddForm && (
-          <div className="card border mt-3 p-4 shadow-sm">
-            <h5 className="fw-bold mb-3 text-secondary">Create New Shoot</h5>
-
-            <form
-              onSubmit={e => {
-                e.preventDefault()
-                const newShoot = {
-                  ...(editingShoot || {}),
-                  id: `new-${Date.now()}`,
-                  venueId: user?.venueId || user?.venue?.venueId,
-                  isVerified: false,
+          <div className="p-3">
+            <div className="mb-3">
+              <label className="form-label small fw-bold">Shoot Name</label>
+              <input
+                type="text"
+                className="form-control"
+                value={selectedShoot.name || ""}
+                onChange={e =>
+                  setSelectedShoot({ ...selectedShoot, name: e.target.value })
                 }
-                console.log("Creating new shoot:", newShoot)
+              />
+            </div>
 
-                setMyShoots(prev => [...prev, newShoot])
-                setShowAddForm(false)
-                setEditingShoot(null)
+            {/* Add any other fields you need (date, location, spots, etc.) */}
+          </div>
+
+          <div className="p-3 border-top d-grid gap-2">
+            <button
+              className="btn btn-success"
+              onClick={() => {
+                const updatedShoot = { ...selectedShoot, isVerified: true }
+
+                // update the array that powers the table
+                setMyShoots(prev =>
+                  prev.map(s => (s.id === updatedShoot.id ? updatedShoot : s))
+                )
+
+                setShowShootSheet(false)
+                setSelectedShoot(null)
               }}
             >
-              <div className="row g-3">
-                <div className="col-md-6">
-                  <label className="form-label small fw-bold">Shoot Name</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    value={editingShoot?.name || ""}
-                    onChange={e =>
-                      setEditingShoot({
-                        ...(editingShoot || {}),
-                        name: e.target.value,
-                      })
-                    }
-                    required
-                  />
-                </div>
+              Claim &amp; Verify
+            </button>
 
-                <div className="col-md-6">
-                  <label className="form-label small fw-bold">Date</label>
-                  <input
-                    type="date"
-                    className="form-control"
-                    value={editingShoot?.date || ""}
-                    onChange={e =>
-                      setEditingShoot({
-                        ...(editingShoot || {}),
-                        date: e.target.value,
-                      })
-                    }
-                    required
-                  />
-                </div>
-              </div>
+            <button className="btn btn-primary">Save Changes</button>
+            <button
+              className="btn btn-outline-secondary"
+              onClick={() => {
+                if (!selectedShoot) return
 
-              <button type="submit" className="btn btn-success mt-4">
-                Create Shoot
-              </button>
-            </form>
+                setMyShoots(prev =>
+                  prev.map(s => (s.id === selectedShoot.id ? selectedShoot : s))
+                )
+
+                setShowShootSheet(false)
+                setSelectedShoot(null)
+              }}
+            >
+              Cancel
+            </button>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   )
 }

@@ -17,10 +17,10 @@ const LoginPage = () => {
 
     // Simulate network delay
     setTimeout(() => {
-      // 1. Look for a mock user previously created during registration
-      const registeredUserString = localStorage.getItem("mock_venue_user")
+      // 1. Look for a mock host previously created during registration
+      const registeredhostString = localStorage.getItem("mock_venue_host")
 
-      if (!registeredUserString) {
+      if (!registeredhostString) {
         setError(
           "No registered venue found. Please go to the pricing page to sign up first!"
         )
@@ -28,15 +28,15 @@ const LoginPage = () => {
         return
       }
 
-      const registeredUser = JSON.parse(registeredUserString)
+      const registeredhost = JSON.parse(registeredhostString)
 
       // 2. Validate the email (Case-insensitive check)
       if (
-        email.toLowerCase().trim() === registeredUser.email.toLowerCase().trim()
+        email.toLowerCase().trim() === registeredhost.email.toLowerCase().trim()
       ) {
-        // Update the cached user session to mark them as actively logged in
-        registeredUser.isLoggedIn = true
-        localStorage.setItem("mock_venue_user", JSON.stringify(registeredUser))
+        // Update the cached host session to mark them as actively logged in
+        registeredhost.isLoggedIn = true
+        localStorage.setItem("mock_venue_host", JSON.stringify(registeredhost))
 
         // 3. Send them straight into their working dashboard!
         navigate("/portal")
