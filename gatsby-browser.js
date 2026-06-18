@@ -11,3 +11,14 @@ export const onClientEntry = () => {
   jq.crossOrigin = "anonymous"
   document.head.appendChild(jq)
 }
+
+if (typeof window !== "undefined") {
+  window.Snipcart = window.Snipcart || []
+  window.Snipcart.subscribe("order.completed", data => {
+    const planId = data.items[0]?.plan?.id
+    if (planId) {
+      localStorage.setItem("claimed_plan", planId)
+      localStorage.setItem("venue_claimed", "true")
+    }
+  })
+}

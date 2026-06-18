@@ -245,7 +245,7 @@ const PricingPage = () => {
                       <button
                         className={`snipcart-add-item btn btn-sm ${tier.buttonClass} py-2 mt-auto fw-bold`}
                         data-item-id={`${tier.name
-                          .toUpperCase()
+                          .toLowerCase()
                           .replace(" ", "-")}-MONTHLY`}
                         data-item-name={`${tier.name} - Monthly Subscription`}
                         data-item-url="/"
@@ -265,7 +265,7 @@ const PricingPage = () => {
                       <button
                         className={`snipcart-add-item btn btn-sm ${tier.buttonClass} py-2 mt-auto fw-bold`}
                         data-item-id={`${tier.name
-                          .toUpperCase()
+                          .toLowerCase()
                           .replace(" ", "-")}-YEARLY`}
                         data-item-name={`${tier.name} - Yearly Subscription`}
                         data-item-price={tier.priceY}
