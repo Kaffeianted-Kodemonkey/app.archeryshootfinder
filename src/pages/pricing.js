@@ -241,12 +241,12 @@ const PricingPage = () => {
                     </div>
                   ) : (
                     <div className="d-flex gap-2">
-                      {/* SNIPCART MONTHLY CHECKOUT BUTTON */}
+                      {/* SNIPCART MONTHLY CHECKOUT BUTTO N */}
                       <button
                         className={`snipcart-add-item btn btn-sm ${tier.buttonClass} py-2 mt-auto fw-bold`}
                         data-item-id={`${tier.name
                           .toLowerCase()
-                          .replace(" ", "-")}-MONTHLY`}
+                          .replace(" ", "-")}-monthly`}
                         data-item-name={`${tier.name} - Monthly Subscription`}
                         data-item-url="/"
                         data-item-price={tier.priceM}
@@ -266,7 +266,7 @@ const PricingPage = () => {
                         className={`snipcart-add-item btn btn-sm ${tier.buttonClass} py-2 mt-auto fw-bold`}
                         data-item-id={`${tier.name
                           .toLowerCase()
-                          .replace(" ", "-")}-YEARLY`}
+                          .replace(" ", "-")}-yearly`}
                         data-item-name={`${tier.name} - Yearly Subscription`}
                         data-item-price={tier.priceY}
                         data-item-url="/"
