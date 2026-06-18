@@ -245,19 +245,16 @@ const PricingPage = () => {
                       <button
                         className={`snipcart-add-item btn btn-sm ${tier.buttonClass} py-2 mt-auto fw-bold`}
                         data-item-id={`${tier.name
-                          .toLowerCase()
-                          .replace(" ", "-")}-monthly`}
+                          .toUpperCase()
+                          .replace(" ", "-")}-MONTHLY`}
                         data-item-name={`${tier.name} - Monthly Subscription`}
                         data-item-url="/"
                         data-item-price={tier.priceM}
                         data-item-plan-id={tier.snipcartIdM}
                         data-item-description={`Billed monthly at $${tier.priceM}/mo.`}
-                        data-item-selected-plan={`${tier.name
-                          .toLowerCase()
-                          .replace(" ", "-")}-monthly`}
-                        data-plan-id="local-monthly"
-                        data-plan-name="Local Monthly"
-                        data-plan-frequency="monlty"
+                        data-plan-id="Monthly"
+                        data-plan-name={`${tier.name}-Monthly`}
+                        data-plan-frequency="Monthly"
                         data-plan-interval="1"
                         data-item-plan-price={tier.priceM}
                       >
@@ -268,15 +265,15 @@ const PricingPage = () => {
                       <button
                         className={`snipcart-add-item btn btn-sm ${tier.buttonClass} py-2 mt-auto fw-bold`}
                         data-item-id={`${tier.name
-                          .toLowerCase()
-                          .replace(" ", "-")}-yearly`}
+                          .toUpperCase()
+                          .replace(" ", "-")}-YEARLY`}
                         data-item-name={`${tier.name} - Yearly Subscription`}
                         data-item-price={tier.priceY}
                         data-item-url="/"
                         data-item-description={`Billed yearly at $${tier.priceY}/yr.`}
-                        data-plan-id="local-yearly"
-                        data-plan-name="Local Yearly"
-                        data-plan-frequency="monlty"
+                        data-plan-id="Yearly"
+                        data-plan-name={`${tier.name}-Yearly`}
+                        data-plan-frequency="Yearly"
                         data-plan-interval="1"
                         data-item-plan-price={tier.priceY}
                       >
