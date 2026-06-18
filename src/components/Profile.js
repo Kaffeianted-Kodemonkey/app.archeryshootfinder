@@ -6,22 +6,22 @@ import PropTypes from "prop-types"
 import Layout from "../components/layout/Layout"
 import Seo from "../components/seo"
 
-const Profile = ({ host, data }) => {
+const Profile = ({ user, data }) => {
   // 1. Setup local form state mirroring your custom WordPress schema
-  const [formData, setFormData] = useState({
-    name: host?.name || "",
+  const [formData, setFormData] = useState.React({
+    name: user?.name || "",
     venueType: "CLUB", // Matches your VenueType Enum
     description: "",
     location: {
-      address: host?.location || "",
-      city: host?.city || "",
-      state: host?.state || "",
-      zip: host?.zip || "",
+      address: user?.location || "",
+      city: user?.city || "",
+      state: user?.state || "",
+      zip: user?.zip || "",
     },
     contact: {
-      phone: host?.phone || "",
-      email: host?.email || "",
-      website: host?.url || "",
+      phone: user?.phone || "",
+      email: user?.email || "",
+      website: user?.url || "",
     },
     facilities: [], // Holds selected Facility Enums
   })
@@ -41,7 +41,7 @@ const Profile = ({ host, data }) => {
   const [showShootSheet, setShowShootSheet] = useState(false)
   const [selectedShoot, setSelectedShoot] = useState(null)
 
-  const venue = host
+  const venue = user
 
   // Handler for top-level text inputs
   const handleTopLevelChange = e => {
@@ -60,17 +60,17 @@ const Profile = ({ host, data }) => {
   }
 
   useEffect(() => {
-    if (!host || !Shoots.length) return
+    if (!user || !Shoots.length) return
 
-    // The host owns exactly one venue – get its ID
-    const venueId = host.venueId || host.venue?.venueId
+    // The user owns exactly one venue – get its ID
+    const venueId = user.venueId || user.venue?.venueId
 
     const ownedShoots = Shoots.filter(
       s => s.venueId === venueId || s.venue?.venueId === venueId
     )
 
     setMyShoots(ownedShoots)
-  }, [host, Shoots])
+  }, [user, Shoots])
 
   // Handler for pushing/removing checked facility enums from state array
   const handleFacilityChange = facilityEnum => {
@@ -417,114 +417,114 @@ const Profile = ({ host, data }) => {
 
 export default Profile
 
-export const query = graphql`
-  query AllData {
-    # 1. Fetch the Venues
-    allVenuesJson {
-      nodes {
-        id
-        venueId
-        slug
-        name
-        description
-        venueType
-        subscription
-        icon
-        iconColor
-        location {
-          address
-          city
-          state
-          zip
-          lat
-          lng
-        }
-        contact {
-          phone
-          email
-          website
-          facebook
-          instagram
-        }
-        facilities
-        amenities
-        equipmentAllowed
-        customEquipmentRules
-        hours {
-          day
-          open
-          closed
-        }
-        membership
-        hostedShoots {
-          id
-          # name
-          date
-          # shootFormat
-        }
-        imageUrl
-        isClaimed
-      }
-    }
+// export const query = graphql`
+//   query AllData {
+//     # 1. Fetch the Venues
+//     allVenuesJson {
+//       nodes {
+//         id
+//         venueId
+//         slug
+//         name
+//         description
+//         venueType
+//         subscription
+//         icon
+//         iconColor
+//         location {
+//           address
+//           city
+//           state
+//           zip
+//           lat
+//           lng
+//         }
+//         contact {
+//           phone
+//           email
+//           website
+//           facebook
+//           instagram
+//         }
+//         facilities
+//         amenities
+//         equipmentAllowed
+//         customEquipmentRules
+//         hours {
+//           day
+//           open
+//           closed
+//         }
+//         membership
+//         useredShoots {
+//           id
+//           # name
+//           date
+//           # shootFormat
+//         }
+//         imageUrl
+//         isClaimed
+//       }
+//     }
 
-    # 2. ADD THIS: Fetch the Shoots
-    allShootsJson {
-      nodes {
-        id
-        shootId
-        name
-        description
-        date
-        endDate
-        time
-        amenities
-        useVenueLocation
-        shootLocation {
-          lat
-          lng
-          city
-          state
-        }
-        shootFormat
-        shootClass
-        terrain
-        bowTypes
-        skillLevel
-        entryFee
-        pricing {
-          tier
-          note
-          options {
-            days
-            cost
-            currency
-          }
-        }
+//     # 2. ADD THIS: Fetch the Shoots
+//     allShootsJson {
+//       nodes {
+//         id
+//         shootId
+//         name
+//         description
+//         date
+//         endDate
+//         time
+//         amenities
+//         useVenueLocation
+//         shootLocation {
+//           lat
+//           lng
+//           city
+//           state
+//         }
+//         shootFormat
+//         shootClass
+//         terrain
+//         bowTypes
+//         skillLevel
+//         entryFee
+//         pricing {
+//           tier
+//           note
+//           options {
+//             days
+//             cost
+//             currency
+//           }
+//         }
 
-        prizes
-        isVerified
-        isRegistration
-        isDestination
-        # Link back to venue for your "shootsWithVenues" logic
-        venueId
-        venue {
-          venueId
-          isClaimed
-          name
-          contact {
-            phone
-            email
-          }
-          location {
-            address
-            city
-            state
-            lat
-            lng
-          }
-          subscription
-        }
-      }
-    }
-  }
-`
+//         prizes
+//         isVerified
+//         isRegistration
+//         isDestination
+//         # Link back to venue for your "shootsWithVenues" logic
+//         venueId
+//         venue {
+//           venueId
+//           isClaimed
+//           name
+//           contact {
+//             phone
+//             email
+//           }
+//           location {
+//             address
+//             city
+//             state
+//             lat
+//             lng
+//           }
+//           subscription
+//         }
+//       }
+//     }
+//   }
+// `
