@@ -252,6 +252,14 @@ const PricingPage = () => {
                         data-item-price={tier.priceM}
                         data-item-plan-id={tier.snipcartIdM}
                         data-item-description={`Billed monthly at $${tier.priceM}/mo.`}
+                        data-item-selected-plan={`${tier.name
+                          .toLowerCase()
+                          .replace(" ", "-")}-monthly`}
+                        data-plan-id="local-monthly"
+                        data-plan-name="Local Monthly"
+                        data-plan-frequency="monlty"
+                        data-plan-interval="1"
+                        data-item-plan-price={tier.priceM}
                       >
                         {tier.buttonTextM}
                       </button>
@@ -265,8 +273,12 @@ const PricingPage = () => {
                         data-item-name={`${tier.name} - Yearly Subscription`}
                         data-item-price={tier.priceY}
                         data-item-url="/"
-                        data-item-plan-id={tier.snipcartIdY}
-                        data-item-description={`Billed annually at $${tier.priceY}/yr.`}
+                        data-item-description={`Billed yearly at $${tier.priceY}/yr.`}
+                        data-plan-id="local-yearly"
+                        data-plan-name="Local Yearly"
+                        data-plan-frequency="monlty"
+                        data-plan-interval="1"
+                        data-item-plan-price={tier.priceY}
                       >
                         {tier.buttonTextY}
                       </button>
