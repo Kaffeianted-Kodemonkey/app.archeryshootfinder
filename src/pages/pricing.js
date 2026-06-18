@@ -12,8 +12,8 @@ const venueTiers = [
     borderClass: "border-success",
     badgeText: "Non-Profit",
     headline: "Unlimited shoots within 50 mi of business location",
-    addShootL: "Outside 50 mile radius of Business $15",
-    addShootR: "Outside registered state $20",
+    addShootL: "50 miles outside Bus. Locaiotion $15",
+    addShootR: "Outside Bus. Locaiotion state $20",
     description:
       "Perfect for volunteer-run clubs, local leagues, and grassroots 3D shoots. Get discovered by hometown archers and keep your range busy.",
     features: [
@@ -38,8 +38,8 @@ const venueTiers = [
     borderClass: "border-success",
     badgeText: "Local",
     headline: "Unlimited shoots within 50 mi. of business location",
-    addShootL: "Outside 50 mile radius of Business $15",
-    addShootR: "Outside registered state $20",
+    addShootL: "50 miles outside Bus. Locaiotion $15",
+    addShootR: "Outside Bus. Locaiotion state $20",
     description:
       "Perfect for volunteer-run clubs, local leagues, and grassroots 3D shoots. Get discovered by hometown archers and keep your range busy.",
     features: [
@@ -65,7 +65,7 @@ const venueTiers = [
     borderClass: "border-success",
     badgeText: "Regional",
     headline: "Unlimited shoots statewide of business location",
-    addShootR: "Outside registered state $45",
+    addShootR: "Outside Bus. Locaiotion state $45",
     description:
       "Designed for state associations and regional clubs hosting multi-day tournaments or championship shoots that draw a traveling crowd.",
     features: [
@@ -94,7 +94,7 @@ const venueTiers = [
     headline: "Drive Foot Traffic and Increase Sales",
     addShootR: "Outside Bus. Locaiotion state $45",
     description:
-      "Built for commercial brick-and-mortar archery retailers looking to turn local hosts into paying customers at their tech counters and lanes.",
+      "Built for commercial brick-and-mortar archery retailers looking to turn local users into paying customers at their tech counters and lanes.",
     features: [
       "Green 'Verified' badge",
       "Directory Listing with pre-generated non-verified shoots",
@@ -118,7 +118,7 @@ const venueTiers = [
     borderClass: "border-warning border-2 shadow",
     badgeText: "National",
     headline: "National Tournaments & Competitions",
-    addShootL: "Inculde all states at no additional cost",
+    addShootL: "Inculde all states at not additional cost",
     description:
       "The ultimate package for major multi-state touring circuits and massive national competitive organizations running unlimited events.",
     features: [
@@ -145,13 +145,11 @@ const PricingPage = () => {
       {/* pt-5 pushes content below sticky navbars. pb-5 forces a bottom buffer area. */}
       <main className="container pt-5 pb-5 my-5">
         <div className="text-center mb-5">
-          <h1 className="mb-3">Get Your Venue and Shoots Listed</h1>
+          <h1 className="mb-3">Claim or Upgrade Your Venue Listing</h1>
           <p className="lead mx-auto" style={{ maxWidth: "800px" }}>
-            Take control of your shooting events and guarantee data accuracy,
-            build local trust, or scale a national event circuit. We scower the
-            internet for shooting events and added them free in the directory.
-            Before selecting a subscrition chekout our venue tab on the main
-            page to see is you have alreay been prelisted and claim you venue.
+            Basic scraped listings are free in the directory. Take control of
+            your venue to guarantee data accuracy, build local trust, or scale a
+            national event circuit.
           </p>
         </div>
 
@@ -251,13 +249,9 @@ const PricingPage = () => {
                           .replace(" ", "-")}-monthly`}
                         data-item-name={`${tier.name} - Monthly Subscription`}
                         data-item-url="/"
+                        data-item-price={tier.priceM}
+                        data-item-plan-id={tier.snipcartIdM}
                         data-item-description={`Billed monthly at $${tier.priceM}/mo.`}
-                        data-item-selected-plan="Monthly"
-                        data-plan-id="local-monthly"
-                        data-plan-name="Local Monthly"
-                        data-plan-frequency="monlty"
-                        data-plan-interval="1"
-                        data-item-plan-price={tier.priceM}
                       >
                         {tier.buttonTextM}
                       </button>
@@ -269,14 +263,10 @@ const PricingPage = () => {
                           .toLowerCase()
                           .replace(" ", "-")}-yearly`}
                         data-item-name={`${tier.name} - Yearly Subscription`}
+                        data-item-price={tier.priceY}
                         data-item-url="/"
-                        data-item-description={`Billed yearly at $${tier.priceY}/yr.`}
-                        data-item-selected-plan="yearly"
-                        data-plan-id="local-yearly"
-                        data-plan-name="Local Yearly"
-                        data-plan-frequency="monlty"
-                        data-plan-interval="1"
-                        data-item-plan-price={tier.priceY}
+                        data-item-plan-id={tier.snipcartIdY}
+                        data-item-description={`Billed annually at $${tier.priceY}/yr.`}
                       >
                         {tier.buttonTextY}
                       </button>
