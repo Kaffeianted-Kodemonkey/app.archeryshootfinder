@@ -357,12 +357,18 @@ const Profile = ({ host, data }) => {
           <div className="p-3 border-top d-grid gap-2">
             <button
               className="btn btn-success"
+              o
               onClick={() => {
+                if (!selectedShoot) return
                 const updatedShoot = { ...selectedShoot, isVerified: true }
+                const isNew = updatedShoot.id.startsWith("new-")
 
-                // update the array that powers the table
                 setMyShoots(prev =>
-                  prev.map(s => (s.id === updatedShoot.id ? updatedShoot : s))
+                  isNew
+                    ? [...prev, updatedShoot]
+                    : prev.map(s =>
+                        s.id === updatedShoot.id ? updatedShoot : s
+                      )
                 )
 
                 setShowShootSheet(false)
@@ -372,16 +378,30 @@ const Profile = ({ host, data }) => {
               Claim &amp; Verify
             </button>
 
-            <button className="btn btn-primary">Save Changes</button>
+            <button
+              className="btn btn-primary"
+              onClick={() => {
+                if (!selectedShoot) return
+                const isNew = selectedShoot.id.startsWith("new-")
+
+                setMyShoots(prev =>
+                  isNew
+                    ? [...prev, selectedShoot]
+                    : prev.map(s =>
+                        s.id === selectedShoot.id ? selectedShoot : s
+                      )
+                )
+
+                setShowShootSheet(false)
+                setSelectedShoot(null)
+              }}
+            >
+              Save Changes
+            </button>
+
             <button
               className="btn btn-outline-secondary"
               onClick={() => {
-                if (!selectedShoot) return
-
-                setMyShoots(prev =>
-                  prev.map(s => (s.id === selectedShoot.id ? selectedShoot : s))
-                )
-
                 setShowShootSheet(false)
                 setSelectedShoot(null)
               }}
