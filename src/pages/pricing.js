@@ -248,7 +248,7 @@ const PricingPage = () => {
                           .toLowerCase()
                           .replace(" ", "-")}-monthly`}
                         data-item-name={`${tier.name} - Monthly Subscription`}
-                        data-item-url="/"
+                        data-item-url="/pricing"
                         data-item-price={tier.priceM}
                         data-item-plan-id={tier.snipcartIdM}
                         data-item-description={`Billed monthly at $${tier.priceM}/mo.`}
@@ -269,7 +269,7 @@ const PricingPage = () => {
                           .replace(" ", "-")}-yearly`}
                         data-item-name={`${tier.name} - Yearly Subscription`}
                         data-item-price={tier.priceY}
-                        data-item-url="/"
+                        data-item-url="/pricing"
                         data-item-description={`Billed yearly at $${tier.priceY}/yr.`}
                         data-plan-id={`${tier.name}-Yearly`}
                         data-plan-name={`${tier.name} - Yearly Subscription`}
