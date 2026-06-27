@@ -1,26 +1,76 @@
 // src/pages/register.js
 import * as React from "react"
-import { useState, useEffect } from "react"
-import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js"
+import { useState } from "react"
 import { navigate } from "gatsby"
 import Layout from "../components/layout/Layout"
 import Seo from "../components/seo"
 
 const RegisterPage = ({ location }) => {
-  // 1. Get the Plan ID from the URL query parameter (?plan=...)
-  const params = new URLSearchParams(location.search)
-  const selectedPlanId = params.get("plan")
+  // const params = new URLSearchParams(location.search)
 
-  // 2. Track form inputs and errors
-  const [formData, setFormData] = useState({ venueName: "", contactEmail: "" })
+  const params = new URLSearchParams(window.location.search)
+  const selectedPlanId = params.get("plan")
+  const initialVenueName =
+    params.get("venueName") || params.get("company") || ""
+  const initialEmail = params.get("email") || ""
+
+  const [formData, setFormData] = useState({
+    venueName: initialVenueName,
+    contactEmail: initialEmail,
+  })
   const [formError, setFormError] = useState("")
 
   const handleInputChange = e => {
-    setFormData({ ...formData, [e.target.name]: e.target.value })
-    if (formError) setFormError("") // Clear error when typing
+    const { name, value } = e.target
+    setFormData(prev => ({ ...prev, [name]: value }))
   }
 
-  // Fallback check: If someone lands on /register without picking a plan, send them back
+  const handleCreateAccount = e => {
+    e.preventDefault()
+    if (!formData.venueName || !formData.contactEmail) {
+      setFormError("Please fill out all fields before submitting.")
+      return
+    }
+
+    const urlParams = new URLSearchParams(window.location.search)
+    const plan = urlParams.get("plan") || "free"
+    const claimVenueId = urlParams.get("claimVenueId")
+
+    // 1. Create the user session (already doing this)
+    const mockUser = {
+      name: formData.venueName,
+      email: formData.contactEmail,
+      planId: plan,
+      isLoggedIn: true,
+      venueId: claimVenueId ? Number(claimVenueId) : null,
+    }
+    localStorage.setItem("mock_venue_user", JSON.stringify(mockUser))
+
+    // 2. NEW: Also store a venue record that includes isClaimed: true
+    const venueRecord = {
+      id: claimVenueId ? `claimed_${claimVenueId}` : `new_${Date.now()}`,
+      name: formData.venueName,
+      tier: plan.includes("regional")
+        ? "Regional"
+        : plan.includes("pro")
+        ? "Pro Shops"
+        : "Local",
+      isClaimed: true, // ← matches your venues.json schema
+      planId: plan,
+      claimedAt: new Date().toISOString(),
+    }
+    localStorage.setItem("mock_venue", JSON.stringify(venueRecord))
+
+    // 3. Keep the existing claim flags (for backward compatibility)
+    if (claimVenueId) {
+      localStorage.setItem("claimed_venue_id", claimVenueId)
+      localStorage.setItem("venue_claimed", "true")
+      localStorage.setItem("claimed_plan", plan)
+    }
+
+    navigate("/portal")
+  }
+
   if (!selectedPlanId) {
     return (
       <Layout>
@@ -44,10 +94,10 @@ const RegisterPage = ({ location }) => {
     )
   }
 
-  // Determine user friendly label for the selected tier
   const isFree =
     selectedPlanId ===
     "Af-85E7wXeddzdG2BnpJC7aVh71hDAzDdOuDmmbZNREZoPtZFtw8hTYV7wgXVFAk70fRgOX3QdfRCQc1"
+
   const planLabel = isFree
     ? "Freemium Tier"
     : selectedPlanId.includes("DESTINATION")
@@ -58,28 +108,6 @@ const RegisterPage = ({ location }) => {
     ? "Pro Shop / Premium Tier"
     : "Premium Tier"
 
-  // Handle Free/Freemium signups without loading PayPal
-  const handleFreeSignup = e => {
-    e.preventDefault()
-    if (!formData.venueName || !formData.contactEmail) {
-      setFormError("Please fill out all fields before submitting.")
-      return
-    }
-
-    // Save mock user to local storage for our draft portal
-    const mockuser = {
-      name: formData.venueName,
-      email: formData.contactEmail,
-      subscriptionId: "FREE-ACCOUNT",
-      planId: "free",
-      isLoggedIn: true,
-    }
-    localStorage.setItem("mock_venue_user", JSON.stringify(mockuser))
-
-    alert("Non-Profit account drafted successfully!")
-    navigate("/portal/")
-  }
-
   return (
     <Layout>
       <Seo title={`Register - ${planLabel}`} />
@@ -87,7 +115,6 @@ const RegisterPage = ({ location }) => {
         <div className="row justify-content-center">
           <div className="col-lg-6 col-md-8">
             <div className="card shadow-sm border">
-              {/* Card Header showing selected plan */}
               <div className="card-header bg-dark text-white py-3">
                 <h4 className="mb-0 fs-5 fw-bold">Venue Registration</h4>
                 <small className="text-light-50">
@@ -103,10 +130,7 @@ const RegisterPage = ({ location }) => {
                   </div>
                 )}
 
-                {/* Step A: Gather Venue Account Info */}
-                <form
-                  onSubmit={isFree ? handleFreeSignup : e => e.preventDefault()}
-                >
+                <form onSubmit={handleCreateAccount}>
                   <div className="mb-3">
                     <label className="form-label fw-bold small text-muted">
                       Venue Name
@@ -139,90 +163,12 @@ const RegisterPage = ({ location }) => {
 
                   <hr className="my-4" />
 
-                  {/* Step B: Checkout Area */}
-                  {isFree ? (
-                    // Button for Freemium users
-                    <button
-                      type="submit"
-                      className="btn btn-success w-100 py-2 fw-bold"
-                    >
-                      Complete Free Verification Setup
-                    </button>
-                  ) : (
-                    // PayPal SDK Integration for Paid Subscriptions
-                    <div>
-                      <h5 className="fs-6 fw-bold mb-3 text-secondary">
-                        Complete Your Secure PayPal Subscription
-                      </h5>
-
-                      {/* PayPal Script Wrapper: Replace "test" with your real Client ID later */}
-                      <PayPalScriptProvider
-                        options={{
-                          "client-id":
-                            "Af-85E7wXeddzdG2BnpJC7aVh71hDAzDdOuDmmbZNREZoPtZFtw8hTYV7wgXVFAk70fRgOX3QdfRCQc1",
-                          vault: true,
-                          intent: "subscription",
-                        }}
-                      >
-                        <PayPalButtons
-                          style={{
-                            layout: "vertical",
-                            shape: "rect",
-                            label: "subscribe",
-                          }}
-                          // Block payment if form inputs are blank
-                          onClick={(data, actions) => {
-                            if (!formData.venueName || !formData.contactEmail) {
-                              setFormError(
-                                "Please fill out your Venue Name and Email first."
-                              )
-                              return actions.reject()
-                            }
-                            return actions.resolve()
-                          }}
-                          // Tells PayPal which automated plan to attach to this payment
-                          createSubscription={(data, actions) => {
-                            return actions.subscription.create({
-                              plan_id: selectedPlanId,
-                            })
-                          }}
-                          // Fires immediately after the user finishes approving the PayPal popup windows
-                          onApprove={async (data, actions) => {
-                            console.log(
-                              "PayPal Approved Subscription Data:",
-                              data
-                            )
-
-                            // Mock Session Data: Store in local browser cache to simulate a real user database
-                            const mockuser = {
-                              name: formData.venueName,
-                              email: formData.contactEmail,
-                              subscriptionId: data.subscriptionID,
-                              planId: selectedPlanId,
-                              isLoggedIn: true,
-                            }
-                            localStorage.setItem(
-                              "mock_venue_user",
-                              JSON.stringify(mockuser)
-                            )
-
-                            alert(
-                              "Subscription Authorized! Redirecting to your venue portal dashboard..."
-                            )
-
-                            // Push user straight to their brand new dashboard layout
-                            navigate("/portal")
-                          }}
-                          onError={err => {
-                            console.error("PayPal Subscription SDK Error:", err)
-                            setFormError(
-                              "PayPal transaction encountered an error. Please try again."
-                            )
-                          }}
-                        />
-                      </PayPalScriptProvider>
-                    </div>
-                  )}
+                  <button
+                    type="submit"
+                    className="btn btn-success w-100 py-2 fw-bold"
+                  >
+                    Create Account &amp; Continue to Portal
+                  </button>
                 </form>
               </div>
             </div>

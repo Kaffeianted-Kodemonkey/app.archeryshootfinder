@@ -15,54 +15,39 @@ const LoginPage = () => {
     setError("")
     setLoading(true)
 
-    // Simulate network delay
     setTimeout(() => {
-      // 1. Look for a mock user previously created during registration
-      const registereduserString = localStorage.getItem("mock_venue_user")
-
-      if (!registereduserString) {
-        setError(
-          "No registered venue found. Please go to the pricing page to sign up first!"
-        )
+      if (!email.trim()) {
+        setError("Please enter the email you used at checkout.")
         setLoading(false)
         return
       }
 
-      const registereduser = JSON.parse(registereduserString)
-
-      // 2. Validate the email (Case-insensitive check)
-      if (
-        email.toLowerCase().trim() === registereduser.email.toLowerCase().trim()
-      ) {
-        // Update the cached user session to mark them as actively logged in
-        registereduser.isLoggedIn = true
-        localStorage.setItem("mock_venue_user", JSON.stringify(registereduser))
-
-        // 3. Send them straight into their working dashboard!
-        navigate("/portal")
-      } else {
-        setError(
-          "Invalid email address. (Hint: Use the exact email you registered with!)"
-        )
-        setLoading(false)
+      // Create or restore the session record
+      const user = {
+        name: "Venue Owner",
+        email: email.trim(),
+        isLoggedIn: true,
+        venue: {
+          name: "Venue",
+          email: email.trim(),
+        },
       }
-    }, 1000)
+
+      localStorage.setItem("mock_venue_user", JSON.stringify(user))
+      navigate("/portal")
+    }, 400)
   }
 
   return (
     <Layout>
-      <Seo title="Venue Portal Login" />
+      <Seo title="Login" />
       <main className="container pt-5 pb-5 my-5">
         <div className="row justify-content-center">
           <div className="col-lg-5 col-md-7">
             <div className="card shadow-sm border">
               <div className="card-header bg-dark text-white py-3 text-center">
                 <h4 className="mb-0 fs-5 fw-bold">Venue Portal Sign In</h4>
-                <small className="text-light-50">
-                  Manage your subscription and spotlight data
-                </small>
               </div>
-
               <div className="card-body p-4">
                 {error && (
                   <div
@@ -72,54 +57,28 @@ const LoginPage = () => {
                     {error}
                   </div>
                 )}
-
                 <form onSubmit={handleLogin}>
                   <div className="mb-4">
-                    <label className="form-label fw-bold small text-muted mb-1">
-                      Account Email Address
+                    <label className="form-label small fw-bold">
+                      Account Email
                     </label>
                     <input
                       type="email"
                       className="form-control form-control-lg"
-                      placeholder="e.g., manager@venue.com"
+                      placeholder="email you used at checkout"
                       value={email}
                       onChange={e => setEmail(e.target.value)}
-                      disabled={loading}
                       required
+                      disabled={loading}
                     />
                   </div>
-
                   <button
                     type="submit"
-                    className="btn btn-primary w-100 py-2 fw-bold mb-3 shadow-sm d-flex align-items-center justify-content-center"
+                    className="btn btn-primary w-100 py-2 fw-bold"
                     disabled={loading}
                   >
-                    {loading ? (
-                      <>
-                        <span
-                          className="spinner-border spinner-border-sm me-2"
-                          role="status"
-                          aria-hidden="true"
-                        ></span>
-                        Verifying Session...
-                      </>
-                    ) : (
-                      "Sign In to Dashboard"
-                    )}
+                    {loading ? "Signing in..." : "Sign In"}
                   </button>
-
-                  <div className="text-center mt-3">
-                    <p className="small text-muted mb-0">
-                      Need to list a new venue?{" "}
-                      <button
-                        type="button"
-                        onClick={() => navigate("/pricing")}
-                        className="btn btn-link p-0 small fw-bold text-decoration-none"
-                      >
-                        View Subscription Tiers
-                      </button>
-                    </p>
-                  </div>
                 </form>
               </div>
             </div>

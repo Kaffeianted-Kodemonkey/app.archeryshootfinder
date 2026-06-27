@@ -8,9 +8,9 @@ import Seo from "../components/seo"
 
 const Profile = ({ user, data }) => {
   // 1. Setup local form state mirroring your custom WordPress schema
-  const [formData, setFormData] = useState.React({
+  const [formData, setFormData] = useState({
     name: user?.name || "",
-    venueType: "CLUB", // Matches your VenueType Enum
+    venueType: user?.venueType, // Matches your VenueType Enum
     description: "",
     location: {
       address: user?.location || "",
@@ -110,36 +110,114 @@ const Profile = ({ user, data }) => {
   return (
     <div>
       {/* View Header */}
-      {/* ========== VENUE SUMMARY (always visible) ========== */}
-      <div className="card border-primary mb-4" style={{ maxWidth: "32rem" }}>
-        <div className="card-header d-flex justify-content-between align-items-center">
-          <div>
-            <h4 className="h5 fw-bold mb-0">My Venue</h4>
-            <p className="text-muted small mb-0">Tap Edit to update details</p>
-          </div>
-          <button
-            className="btn btn-sm btn-primary"
-            onClick={() => setShowVenueSheet(true)}
-          >
-            Edit
-          </button>
-        </div>
+      {/* ========== VENUE DETAILS FORM (no card, no slide) ========== */}
+      <div className="mb-4 mt-5 p-5">
+        <h4 className="h5 fw-bold mb-3">Venue Details</h4>
 
-        <div className="card-body">
-          <div className="row">
+        <form>
+          <div className="row g-3">
+            {/* Venue Name */}
+            <div className="col-md-12">
+              <label htmlFor="venueName" className="form-label">
+                Venue/Company Name
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                id="venueName"
+                defaultValue={user?.venue?.name || user?.name || ""}
+              />
+            </div>
+
+            {/* Phone */}
+            <div className="col-md-6">
+              <label htmlFor="venuePhone" className="form-label">
+                Phone
+              </label>
+              <input
+                type="tel"
+                className="form-control"
+                id="venuePhone"
+                defaultValue={user?.venue?.phone || user?.phone || ""}
+              />
+            </div>
+
+            {/* Email */}
+            <div className="col-md-6">
+              <label htmlFor="venueEmail" className="form-label">
+                Email
+              </label>
+              <input
+                type="email"
+                className="form-control"
+                id="venueEmail"
+                defaultValue={user?.venue?.email || user?.email || ""}
+              />
+            </div>
+
+            {/* Address */}
             <div className="col-12">
-              <p className="mb-1">
-                <strong>{venue?.name || "No name"}</strong>
-              </p>
-              <p className="mb-1 text-muted small">
-                {venue?.address}, {venue?.city}, {venue?.state} {venue?.zip}
-              </p>
-              <p className="mb-0 text-muted small">
-                {venue?.email} • {venue?.phone}
-              </p>
+              <label htmlFor="venueAddress" className="form-label">
+                Address
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                id="venueAddress"
+                defaultValue={user?.address || ""}
+              />
+            </div>
+
+            {/* City */}
+            <div className="col-md-6">
+              <label htmlFor="venueCity" className="form-label">
+                City
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                id="venueCity"
+                defaultValue={user?.city || ""}
+              />
+            </div>
+
+            {/* State */}
+            <div className="col-md-4">
+              <label htmlFor="venueState" className="form-label">
+                State
+              </label>
+              <select
+                id="venueState"
+                className="form-select"
+                defaultValue={user?.state || ""}
+              >
+                <option value="">Choose...</option>
+                <option value="AL">Alabama</option>
+                <option value="AK">Alaska</option>
+                {/* Add the rest of the states as needed */}
+              </select>
+            </div>
+
+            {/* Zip */}
+            <div className="col-md-2">
+              <label htmlFor="venueZip" className="form-label">
+                Zip
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                id="venueZip"
+                defaultValue={user?.zip || ""}
+              />
             </div>
           </div>
-        </div>
+
+          <div className="mt-4">
+            <button type="button" className="btn btn-primary fw-bold">
+              Save Venue Details
+            </button>
+          </div>
+        </form>
       </div>
 
       {/* ========== SHOOTS LIST (always visible) ========== */}

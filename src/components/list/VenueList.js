@@ -327,7 +327,9 @@ const VenueList = ({
                       <i className="bi bi-question-circle"></i> Unclaimed
                     </span>
                     <Link
-                      to="/pricing"
+                      to={`/pricing?claimVenueId=${
+                        venue.venueId
+                      }&venueName=${encodeURIComponent(venue.name)}`}
                       className="btn btn-sm btn-outline-warning"
                     >
                       Claim Listing

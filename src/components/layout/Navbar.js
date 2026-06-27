@@ -7,38 +7,43 @@ import InstallButton from "../InstallButton"
 const Navbar = ({ siteTitle, siteDesc, view, setView }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false) // Track the dashboard dropdown state
-  const [loggedInhost, setLoggedInhost] = useState(null)
+  const [loggedInuser, setLoggedInuser] = useState(null)
 
   // Dynamic Session Monitor: Look for the portal's active login token
   useEffect(() => {
-    const checkhostSession = () => {
-      const savedhost = localStorage.getItem("mock_venue_host")
-      if (savedhost) {
-        setLoggedInhost(JSON.parse(savedhost))
-      } else {
-        setLoggedInhost(null)
+    const check = async () => {
+      if (window.Snipcart?.api?.user?.current) {
+        try {
+          const c = await window.Snipcart.api.user.current()
+          if (c?.email) {
+            setLoggedInuser({
+              email: c.email,
+              name: c.billingAddress?.company || "",
+            })
+            return
+          }
+        } catch (_) {}
       }
+      const saved = localStorage.getItem("mock_venue_user")
+      setLoggedInuser(saved ? JSON.parse(saved) : null)
     }
-
-    checkhostSession()
-
-    if (typeof window !== "undefined") {
-      window.addEventListener("storage", checkhostSession)
-      return () => window.removeEventListener("storage", checkhostSession)
-    }
+    check()
+    window.addEventListener("storage", check)
+    return () => window.removeEventListener("storage", check)
   }, [])
+
+  const handleLogoutClick = async () => {
+    if (window.Snipcart?.api?.user?.logout) {
+      await window.Snipcart.api.user.logout()
+    }
+    localStorage.removeItem("mock_venue_user")
+    setLoggedInuser(null)
+    window.location.href = "/pricing"
+  }
 
   const handleLinkClick = () => {
     setIsMenuOpen(false)
     setIsDropdownOpen(false)
-  }
-
-  const handleLogoutClick = () => {
-    setIsMenuOpen(false)
-    setIsDropdownOpen(false)
-    localStorage.removeItem("mock_venue_host")
-    setLoggedInhost(null)
-    navigate("/pricing")
   }
 
   return (
@@ -93,7 +98,7 @@ const Navbar = ({ siteTitle, siteDesc, view, setView }) => {
             </li>
 
             {/* NESTED VENUE PORTAL MENU SECTION */}
-            {loggedInhost ? (
+            {loggedInuser ? (
               /* If Logged In: Render a nested dropdown menu labeled "Venue Portal" */
               <li
                 className={`nav-item dropdown ${isDropdownOpen ? "show" : ""}`}
@@ -116,7 +121,7 @@ const Navbar = ({ siteTitle, siteDesc, view, setView }) => {
                       className="dropdown-item d-flex align-items-center gap-2"
                       onClick={handleLinkClick}
                     >
-                      <span>Dashboard Home</span>
+                      <span>Admin Dashboard</span>
                     </Link>
                   </li>
                   <li>
@@ -125,7 +130,7 @@ const Navbar = ({ siteTitle, siteDesc, view, setView }) => {
                       className="dropdown-item d-flex align-items-center gap-2"
                       onClick={handleLinkClick}
                     >
-                      <span>Edit Public Profile</span>
+                      <span>Edit Profile</span>
                     </Link>
                   </li>
                   <li>
@@ -136,7 +141,7 @@ const Navbar = ({ siteTitle, siteDesc, view, setView }) => {
                       onClick={handleLogoutClick}
                       className="dropdown-item text-danger d-flex align-items-center gap-2 fw-bold"
                     >
-                      <span>❌ Disconnect Session</span>
+                      <span>❌ Logout</span>
                     </button>
                   </li>
                 </ul>
@@ -177,9 +182,9 @@ const Navbar = ({ siteTitle, siteDesc, view, setView }) => {
 
           <div className="d-flex align-items-center gap-2">
             {/* Displaying an active logged-in badge on the right edge */}
-            {loggedInhost && (
+            {loggedInuser && (
               <div className="d-none d-lg-block text-white bg-dark bg-opacity-25 rounded px-3 py-1 small fw-semibold">
-                {loggedInhost.name}
+                {loggedInuser.name}
               </div>
             )}
             <InstallButton />

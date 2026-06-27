@@ -3,6 +3,7 @@ import * as React from "react"
 import { Link } from "gatsby"
 import Layout from "../components/layout/Layout"
 import Seo from "../components/seo"
+import { useEffect, useState } from "react"
 
 const venueTiers = [
   {
@@ -27,8 +28,7 @@ const venueTiers = [
     verification: "EIN required for verification of your 501(c) status.",
     buttonText: "Verify Local Status (Free)",
     buttonClass: "btn-outline-success",
-    buttonLink:
-      "/register?plan=Af-85E7wXeddzdG2BnpJC7aVh71hDAzDdOuDmmbZNREZoPtZFtw8hTYV7wgXVFAk70fRgOX3QdfRCQc1",
+    snipcartIdM: "Non-Profit",
   },
   {
     name: "Local",
@@ -139,18 +139,50 @@ const venueTiers = [
 ]
 
 const PricingPage = () => {
+  const [claimInfo, setClaimInfo] = useState(null)
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search)
+      const claimVenueId = params.get("claimVenueId")
+      const venueName = params.get("venueName")
+
+      // Only set claimInfo when a venue is actually being claimed
+      if (claimVenueId) {
+        setClaimInfo({
+          id: claimVenueId,
+          name: venueName ? decodeURIComponent(venueName) : "this venue",
+        })
+      } else {
+        setClaimInfo(null) // new venue → no message
+      }
+    }
+  }, [])
+
   return (
     <Layout>
       <Seo title="Pricing - Claim or Upgrade Your Venue" />
       {/* pt-5 pushes content below sticky navbars. pb-5 forces a bottom buffer area. */}
       <main className="container pt-5 pb-5 my-5">
         <div className="text-center mb-5">
-          <h1 className="mb-3">Claim or Upgrade Your Venue Listing</h1>
-          <p className="lead mx-auto" style={{ maxWidth: "800px" }}>
+          <h1 className="fs-2 mb-3 lead text-center">
+            {claimInfo && (
+              <div className="alert alert-info text-center mb-4">
+                <strong>You are claiming {claimInfo.name}</strong>
+                <br />
+                <small>
+                  Complete your subscription below to activate management
+                  access.
+                </small>
+              </div>
+            )}
+          </h1>
+
+          {/* <p className="lead mx-auto" style={{ maxWidth: "800px" }}>
             Basic scraped listings are free in the directory. Take control of
             your venue to guarantee data accuracy, build local trust, or scale a
             national event circuit.
-          </p>
+          </p>*/}
         </div>
 
         {/* mb-5 ensures the row container itself keeps a safe space from the layout bottom */}
@@ -254,8 +286,8 @@ const PricingPage = () => {
                         data-item-description={`Billed monthly at $${tier.priceM}/mo.`}
                         data-plan-id={`${tier.name}-Monthly`}
                         data-plan-name={`${tier.name} - Monthly Subscription`}
-                        data-plan-frequency="Monthly"
-                        data-plan-interval="1"
+                        data-item-payment-interval="Month"
+                        data-item-payment-interval-count="1"
                         data-item-plan-price={tier.priceM}
                       >
                         {tier.buttonTextM}
@@ -273,8 +305,8 @@ const PricingPage = () => {
                         data-item-description={`Billed yearly at $${tier.priceY}/yr.`}
                         data-plan-id={`${tier.name}-Yearly`}
                         data-plan-name={`${tier.name} - Yearly Subscription`}
-                        data-plan-frequency="Yearly"
-                        data-plan-interval="1"
+                        data-item-payment-interval="Year"
+                        data-plan-payment-count="1"
                         data-item-plan-price={tier.priceY}
                       >
                         {tier.buttonTextY}

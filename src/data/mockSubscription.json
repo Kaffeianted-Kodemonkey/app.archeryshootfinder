@@ -1,0 +1,43 @@
+[
+  {
+    "totalItems": 2,
+    "offset": 0,
+    "limit": 50,
+    "items": [
+      {
+        "id": "sub_84983d03-775a-4e79-804a-af807f509700",
+        "creationDate": "2026-06-15T14:20:00Z",
+        "status": "Active",
+        "amount": 25.0,
+        "user": {
+          "id": "usr_9921a-2210",
+          "email": "active-subscriber@example.com"
+        },
+        "plan": {
+          "id": "monthly-premium",
+          "name": "Local - Monthly Subscription",
+          "frequency": "Monthly",
+          "interval": 1
+        },
+        "nextBillingDate": "2026-07-15T14:20:00Z"
+      },
+      {
+        "id": "sub_11203b82-990a-11ee-b9d1-0242ac120002",
+        "creationDate": "2026-01-10T09:15:00Z",
+        "status": "Cancelled",
+        "amount": 149.0,
+        "user": {
+          "id": "usr_7718b-8812",
+          "email": "cancelled-buyer@example.com"
+        },
+        "plan": {
+          "id": "annual-basic",
+          "name": "Annual Developer Tier",
+          "frequency": "Yearly",
+          "interval": 1
+        },
+        "nextBillingDate": null
+      }
+    ]
+  }
+]

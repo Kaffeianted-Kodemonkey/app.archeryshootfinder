@@ -32,12 +32,13 @@ export const onRenderBody = ({ setHeadComponents, setPostBodyComponents }) => {
       integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
       crossOrigin="anonymous"
     />,
-    // Snipcart v2 (correct CDN + API key from .env)
+    // Snipcart v2
     <script
       key="snipcart-js"
       src="https://cdn.snipcart.com/scripts/2.0/snipcart.js"
       data-api-key="ZDY2ZThjZmMtYTQzYS00YTVjLWFhMTQtYTMyOTE3NWEyNmJkNjM2ODAyNjEzODcxNDY5NTQ3"
       id="snipcart"
+      data-api-allowed-checkout-options="registered"
     />,
   ])
 }
