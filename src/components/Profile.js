@@ -111,7 +111,7 @@ const Profile = ({ user, data }) => {
     <div>
       {/* View Header */}
       {/* ========== VENUE DETAILS FORM (no card, no slide) ========== */}
-      <div className="mb-4 mt-5 p-5">
+      <div className="mb-4">
         <h4 className="h5 fw-bold mb-3">Venue Details</h4>
 
         <form>

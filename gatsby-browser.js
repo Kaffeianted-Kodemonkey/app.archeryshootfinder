@@ -20,10 +20,10 @@ if (typeof window !== "undefined") {
     const email = data.email
 
     const user = {
-      name: companyName,
+      companyName,
       email,
       isLoggedIn: true,
-      venue: { name: companyName, email },
+      // venue: { name: companyName, email },
     }
     localStorage.setItem("mock_venue_user", JSON.stringify(user))
 

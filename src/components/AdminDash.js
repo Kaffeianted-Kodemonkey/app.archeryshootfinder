@@ -108,7 +108,7 @@ const Dashboard = ({ user }) => {
   return (
     <div>
       {/* 1. INTERACTION CHART: Right underneath the welcome line header */}
-      <div className="bg-light rounded border p-4 shadow-sm mb-4 mt-5">
+      <div className="bg-light rounded border p-4 shadow-sm mb-4">
         <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
           <div>
             <h5 className="fw-bold text-dark m-0">

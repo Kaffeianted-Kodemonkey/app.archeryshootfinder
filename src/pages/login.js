@@ -22,17 +22,23 @@ const LoginPage = () => {
         return
       }
 
-      // Create or restore the session record
-      const user = {
-        name: "Venue Owner",
-        email: email.trim(),
-        isLoggedIn: true,
-        venue: {
-          name: "Venue",
+      // Preserve the real company name from the original Snipcart checkout if it exists
+      const existing = localStorage.getItem("mock_venue_user")
+      let user = existing ? JSON.parse(existing) : null
+
+      if (!user || user.email.toLowerCase() !== email.toLowerCase().trim()) {
+        user = {
+          name: "Venue Name will Go Here",
           email: email.trim(),
-        },
+          isLoggedIn: true,
+          venue: {
+            name: "Venue",
+            email: email.trim(),
+          },
+        }
       }
 
+      user.isLoggedIn = true
       localStorage.setItem("mock_venue_user", JSON.stringify(user))
       navigate("/portal")
     }, 400)
