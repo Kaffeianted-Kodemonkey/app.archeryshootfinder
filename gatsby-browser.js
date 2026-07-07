@@ -25,7 +25,6 @@ if (typeof window !== "undefined") {
       isLoggedIn: true,
       // venue: { name: companyName, email },
     }
-    localStorage.setItem("mock_venue_user", JSON.stringify(user))
 
     setTimeout(() => {
       window.location.href = "/portal"

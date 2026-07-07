@@ -9,7 +9,7 @@ const Navbar = ({ siteTitle, siteDesc, view, setView }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false) // Track the dashboard dropdown state
   const [loggedInuser, setLoggedInuser] = useState(null)
 
-  // Dynamic Session Monitor: Look for the portal's active login token
+  // Only use real Snipcart data — no role, no mock fallback
   useEffect(() => {
     const check = async () => {
       if (window.Snipcart?.api?.user?.current) {
@@ -17,15 +17,14 @@ const Navbar = ({ siteTitle, siteDesc, view, setView }) => {
           const c = await window.Snipcart.api.user.current()
           if (c?.email) {
             setLoggedInuser({
+              name: c.billingAddress?.company || c.email.split("@")[0],
               email: c.email,
-              name: c.billingAddress?.company || "",
             })
             return
           }
         } catch (_) {}
       }
-      const saved = localStorage.getItem("mock_venue_user")
-      setLoggedInuser(saved ? JSON.parse(saved) : null)
+      setLoggedInuser(null)
     }
     check()
     window.addEventListener("storage", check)
@@ -36,7 +35,6 @@ const Navbar = ({ siteTitle, siteDesc, view, setView }) => {
     if (window.Snipcart?.api?.user?.logout) {
       await window.Snipcart.api.user.logout()
     }
-    localStorage.removeItem("mock_venue_user")
     setLoggedInuser(null)
     window.location.href = "/pricing"
   }
@@ -99,7 +97,7 @@ const Navbar = ({ siteTitle, siteDesc, view, setView }) => {
 
             {/* NESTED VENUE PORTAL MENU SECTION */}
             {loggedInuser ? (
-              /* If Logged In: Render a nested dropdown menu labeled "Venue Portal" */
+              // LOGGED IN
               <li
                 className={`nav-item dropdown ${isDropdownOpen ? "show" : ""}`}
               >
@@ -109,7 +107,61 @@ const Navbar = ({ siteTitle, siteDesc, view, setView }) => {
                   aria-expanded={isDropdownOpen}
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 >
-                  Venue Portal
+                  Account Login
+                </button>
+                <ul
+                  className={`dropdown-menu ${isDropdownOpen ? "show" : ""}`}
+                  data-bs-theme="light"
+                >
+                  {/* Venue role items */}
+                  {(loggedInuser.role || "venue") === "venue" && (
+                    <li>
+                      <Link
+                        to="/portal/"
+                        className="dropdown-item"
+                        onClick={handleLinkClick}
+                      >
+                        <span class="snipcart-user-email">Dashboard</span>
+                      </Link>
+                    </li>
+                  )}
+
+                  {/* Common items */}
+                  <li>
+                    <Link
+                      to="/portal/profile"
+                      className="dropdown-item"
+                      onClick={handleLinkClick}
+                    >
+                      Profile
+                    </Link>
+                  </li>
+                  <li>
+                    <hr className="dropdown-divider" />
+                  </li>
+                  <li>
+                    <a
+                      href="#"
+                      onClick={handleLogoutClick}
+                      className="dropdown-item text-danger fw-bold"
+                    >
+                      Logout
+                    </a>
+                  </li>
+                </ul>
+              </li>
+            ) : (
+              // LOGGED OUT
+              <li
+                className={`nav-item dropdown ${isDropdownOpen ? "show" : ""}`}
+              >
+                <button
+                  className="nav-link dropdown-toggle btn btn-link fw-bold text-warning border-0"
+                  type="button"
+                  aria-expanded={isDropdownOpen}
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                >
+                  Account Login
                 </button>
                 <ul
                   className={`dropdown-menu ${isDropdownOpen ? "show" : ""}`}
@@ -117,45 +169,23 @@ const Navbar = ({ siteTitle, siteDesc, view, setView }) => {
                 >
                   <li>
                     <Link
-                      to="/portal/"
-                      className="dropdown-item d-flex align-items-center gap-2"
+                      to="#"
+                      className="dropdown-item snipcart-user-profile"
                       onClick={handleLinkClick}
                     >
-                      <span>Admin Dashboard</span>
+                      Venue
                     </Link>
                   </li>
                   <li>
                     <Link
-                      to="/portal/profile"
-                      className="dropdown-item d-flex align-items-center gap-2"
+                      to="#"
+                      className="dropdown-item"
                       onClick={handleLinkClick}
                     >
-                      <span>Edit Profile</span>
+                      Shooter
                     </Link>
                   </li>
-                  <li>
-                    <hr className="dropdown-divider" />
-                  </li>
-                  <li>
-                    <button
-                      onClick={handleLogoutClick}
-                      className="dropdown-item text-danger d-flex align-items-center gap-2 fw-bold"
-                    >
-                      <span>❌ Logout</span>
-                    </button>
-                  </li>
                 </ul>
-              </li>
-            ) : (
-              /* If Logged Out: Render a standard link straight to the login screen */
-              <li className="nav-item">
-                <Link
-                  to="/login"
-                  className="nav-link"
-                  onClick={handleLinkClick}
-                >
-                  Venue Portal
-                </Link>
               </li>
             )}
 
