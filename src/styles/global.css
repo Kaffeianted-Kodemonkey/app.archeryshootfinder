@@ -614,3 +614,48 @@ main.map-view .list-scroll-container {
     display: table-header-group !important;
   }
 }
+/* ==========================================================================
+   SNIPCART V2 CONTEXTUAL OVERRIDES & STRUCTURAL INTEGRATION
+   ========================================================================== */
+
+/* 1. LAYER HEIGHT ADAPTATION: Fix overlapping by positioning right beneath navbar */
+#snipcart {
+  position: fixed !important;
+  top: 8vw !important; /* Matches your layout template navbar width constraint height */
+  z-index: 1060 !important; /* Forces it over fixed elements */
+  height: calc(100vh - 8vw) !important;
+}
+
+/* 2. INVOICE OVERRIDE: Block guest checkouts to safeguard database accounts */
+#snipcart-guest-checkout-container {
+  display: none !important;
+}
+
+/* 3. CONTEXT A: STANDALONE PORTAL BUTTON (Hides registration panel) */
+[data-login="login"] #snipcart-sub-content #snipcart-newaccount-form-container {
+  display: none !important;
+}
+
+[data-login="login"] #snipcart-sub-content #snipcart-login-form-container {
+  width: 100% !important;
+  max-width: 100% !important;
+  flex: 0 0 100% !important;
+  border-right: none !important;
+}
+
+[data-login="login"]
+  #snipcart-sub-content
+  #snipcart-login-form-container
+  .snip-static__title {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+/* 4. CONTEXT B: SUBSCRIPTION CHECKOUT CONFLICT FIX (Restores registration inline) */
+.snipcart-step-login #snipcart-newaccount-form-container {
+  display: block !important;
+}
+
+.snipcart-step-login #snipcart-login-form-container {
+  border-right: 1px solid #e2e2e2 !important;
+}

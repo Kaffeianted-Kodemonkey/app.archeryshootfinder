@@ -182,6 +182,7 @@ const Dashboard = ({ user }) => {
       {/* 3. BILLING SETTINGS & UPGRADE PANEL AREA */}
       <div className="row g-4">
         {/* Snipcart Subscription Manager (Mock) */}
+        <hr />
         <div className="col-md-7">
           <div className="card shadow-sm border p-4 h-100 bg-white">
             <div className="d-flex justify-content-between align-items-center mb-2">
@@ -239,39 +240,13 @@ const Dashboard = ({ user }) => {
                     to="/pricing"
                     className="btn btn-sm btn-outline-primary fw-bold"
                   >
-                    Change plan
+                    Update Plan
                   </Link>
-                  <button
-                    className="btn btn-sm btn-outline-secondary fw-bold"
-                    onClick={() =>
-                      alert(
-                        "Mock: Update payment method modal would open here (for testing)"
-                      )
-                    }
-                  >
-                    Update payment
+                  <button className="btn btn-sm btn-outline-secondary fw-bold snipcart-edit-profile">
+                    Update Billing Information
                   </button>
-                  <button
-                    className="btn btn-sm btn-outline-warning fw-bold"
-                    onClick={() => {
-                      const newStatus =
-                        subscription.status === "Paused" ? "Active" : "Paused"
-                      const updated = { ...subscription, status: newStatus }
-                      setSubscription(updated)
-                      localStorage.setItem("subscription_status", newStatus)
-                    }}
-                  >
-                    {subscription.status === "Paused" ? "Resume" : "Pause"}
-                  </button>
-                  <button
-                    className="btn btn-sm btn-outline-danger fw-bold"
-                    onClick={() => {
-                      const updated = { ...subscription, status: "Cancelled" }
-                      setSubscription(updated)
-                      localStorage.setItem("subscription_status", "Cancelled")
-                    }}
-                  >
-                    Cancel
+                  <button className="btn btn-sm btn-outline-secondary fw-bold snipcart-user-profile">
+                    Manage Subscription
                   </button>
                 </div>
               </>

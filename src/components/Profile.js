@@ -353,24 +353,3 @@ Profile.propTypes = {
 }
 
 export default Profile
-
-export const query = graphql`
-  query ProfileQuery {
-    allShootsJson {
-      nodes {
-        id
-        name
-        date
-        venueId
-        isVerified
-      }
-    }
-    allVenuesJson {
-      nodes {
-        id
-        name
-        venueId
-      }
-    }
-  }
-`

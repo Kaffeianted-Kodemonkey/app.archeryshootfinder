@@ -3,6 +3,70 @@ const path = require("path")
 /**
  * @type {import('gatsby').GatsbyNode['createPages']}
  */
+
+const { MongoClient } = require("mongodb")
+
+/**
+ * SOURCE NODES HOOK: Connect to Atlas and feed documents to GraphQL
+ */
+exports.sourceNodes = async ({
+  actions,
+  createNodeId,
+  createContentDigest,
+}) => {
+  const { createNode } = actions
+
+  // 1. Replace with your connection string (or use process.env.MONGODB_URI)
+  const uri =
+    "mongodb+srv://kodemonkey:Girlz4x42!@cluster0.9kztbpj.mongodb.net/?appName=Cluster0"
+  const client = new MongoClient(uri)
+
+  try {
+    await client.connect()
+    const db = client.db("ASFinder") // Change to your exact DB name
+
+    // 2. Fetch data from your collections
+    const venuesData = await db.collection("venues").find({}).toArray()
+    const shootsData = await db.collection("shoots").find({}).toArray()
+
+    // 3. Process Venues
+    venuesData.forEach(venue => {
+      const nodeMeta = {
+        id: createNodeId(`mongo-venue-${venue._id}`),
+        parent: null,
+        children: [],
+        internal: {
+          type: `VenuesJson`, // Keeps the exact type name your app already expects
+          contentDigest: createContentDigest(venue),
+        },
+      }
+      createNode(Object.assign({}, venue, nodeMeta))
+    })
+
+    // 4. Process Shoots
+    shootsData.forEach(shoot => {
+      const nodeMeta = {
+        id: createNodeId(`mongo-shoot-${shoot._id}`),
+        parent: null,
+        children: [],
+        internal: {
+          type: `ShootsJson`, // Keeps the exact type name your app already expects
+          contentDigest: createContentDigest(shoot),
+        },
+      }
+      createNode(Object.assign({}, shoot, nodeMeta))
+    })
+
+    console.log(
+      `Successfully sourced ${venuesData.length} Venues and ${shootsData.length} Shoots from MongoDB.`
+    )
+  } catch (error) {
+    console.error("Critical error connecting or fetching from MongoDB:", error)
+  } finally {
+    await client.close()
+  }
+}
+
 exports.createPages = async ({ graphql, actions, reporter }) => {
   const { createPage } = actions
 

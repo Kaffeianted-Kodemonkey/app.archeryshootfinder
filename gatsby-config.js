@@ -24,20 +24,20 @@ module.exports = {
 
     // Nodes: allDataJson; filter by name for specific files (e.g., {name: {eq: "shoots"}})
     // Separate sourcing for venues and shoots to create dedicated allVenuesJson and allShootsJson types
-    {
-      resolve: `gatsby-source-filesystem`,
-      options: {
-        name: `venues`,
-        path: `${__dirname}/src/data/venues.json`,
-      },
-    },
-    {
-      resolve: `gatsby-source-filesystem`,
-      options: {
-        name: `shoots`,
-        path: `${__dirname}/src/data/shoots.json`,
-      },
-    },
+    // {
+    //   resolve: `gatsby-source-filesystem`,
+    //   options: {
+    //     name: `venues`,
+    //     path: `${__dirname}/src/data/venues.json`,
+    //   },
+    // },
+    // {
+    //   resolve: `gatsby-source-filesystem`,
+    //   options: {
+    //     name: `shoots`,
+    //     path: `${__dirname}/src/data/shoots.json`,
+    //   },
+    // },
     `gatsby-transformer-sharp`,
     `gatsby-plugin-sharp`,
     {

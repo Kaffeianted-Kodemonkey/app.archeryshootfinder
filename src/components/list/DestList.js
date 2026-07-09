@@ -117,25 +117,36 @@ const DestList = ({
                   aria-expanded={isOpen}
                   aria-controls={`collapse-${vIndex}`}
                 >
-                  <div className="d-flex w-100 justify-content-between align-items-start">
-                    <div>
-                      {/* Line 1: Venue name */}
-                      <strong className="fs-5">{venue.name}</strong>
-
-                      {/* Line 2: Date + total shoots count */}
-                      <div>
-                        {formatDateShort(first.date, first.endDate)} — Total
-                        Shoots in Series ({venueShoots.length})
-                      </div>
-
-                      {/* Line 3: Badges across the bottom */}
-                      <div className="mt-1">
-                        <span className="me-2 badge bg-secondary">
+                  <div className="w-100">
+                    {/* Row 1: Badges (left) + Venue name (right) — name slides under on mobile */}
+                    <div className="row align-items-center mb-1">
+                      <div className="col-12 col-md-auto d-flex gap-2 mb-1 mb-md-0">
+                        <span className="badge bg-secondary">
                           {humanizeEnum(first.shootFormat?.[0])}
                         </span>
                         <span className={`badge ${status.className}`}>
                           {status.label}
                         </span>
+                        {/* <span className="fs-4 fw-bold mt-1 valign-middle">
+                          {venueShoots.length} Total Shoot
+                          {venueShoots.length === 1 ? "" : "s"}
+                        </span>*/}
+                      </div>
+                    </div>
+                    {/* Row 2: Total shoots (left) + Date / City / Distance (right) */}
+                    <div className="row mt-2 small text-muted">
+                      <div className="col-12 md-2">
+                        <strong className="fs-5">
+                          {venue.name || "Unknown Venue"}
+                        </strong>
+                      </div>
+                    </div>
+
+                    {/* Line 2: Date + total shoots count */}
+                    <div className="row mt-2 small text-muted">
+                      <div className="col-12 col-md-auto mb-1 mb-md-0">
+                        {formatDateShort(first.date, first.endDate)} — Total
+                        Shoots in Series ({venueShoots.length})
                       </div>
                     </div>
                   </div>
