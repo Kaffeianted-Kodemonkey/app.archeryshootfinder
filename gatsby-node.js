@@ -145,19 +145,17 @@ exports.createSchemaCustomization = ({ actions }) => {
       hours: [BusinessHours]
       location: Location  # access as venue.location.city in components
       contact: Contact   # Raw JSON; access as venue.contact.phone in components
-      facilities: [Facility] # not shoot spacifice as a venue may have [3D_COURSE, INDOOR_RANGE, OUTDOOR_RANGE, PRO_SHOP_ON_SITE, KITCHEN, CAMPGROUND]
-      amenities: [Amenities]
-      equipmentAllowed: [EquipmentType]
+      facilities: [String] # not shoot spacifice as a venue may have [3D_COURSE, INDOOR_RANGE, OUTDOOR_RANGE, PRO_SHOP_ON_SITE, KITCHEN, CAMPGROUND]
+      equipmentAllowed: [String]
       customEquipmentRules: [String]
       membership: String # URL to mebership registration/signup
       hostedShoots: [ShootsJson] @link(by: "venueId", from: "venueId")
       imageUrl: String
       isClaimed: Boolean!
-      sanctioning: [Association]
-      terrain: [Terrain]
-      amenities: [Amenities]
-      equipmentAllowed: [EquipmentType]
-      bowTypes: [BowTypes]
+      sanctioning: [String]
+      terrain: [String]
+      amenities: [String]
+      bowTypes: [String]
     }
 
     type ShootsJson implements Node {
@@ -172,17 +170,17 @@ exports.createSchemaCustomization = ({ actions }) => {
       useVenueLocation: Boolean # if true then the shoot uses the Venue Location
       shootLocation: Location
       isVerified: Boolean # shows if a shoot has been verified by a claimed venue
-      shootFormat: [ShootFormat]
-      eventType: [EventType]
+      shootFormat: [String]
+      eventType: [String]
       customFormat: [String]      # For events not in list this adds them to other
-      shootClass: [ShootClass]
+      shootClass: [String]
       customClass: [String]
-      bowTypes: [BowTypes]
-      skillLevel: [SkillLevel]
-      terrain: [Terrain]
+      bowTypes: [String]
+      skillLevel: [String]
+      terrain: [String]
       pricing: [ShootPrice]
       prizes: String
-      amenities: [Amenities]
+      amenities: [String]
       isDestination: Boolean!
       isMember: Boolean # some may require a membership to sign up
       isRegistration: Boolean # this lets shooters know they have to sign up or can walk in. Exp: TAC must reg online before event
@@ -228,59 +226,59 @@ exports.createSchemaCustomization = ({ actions }) => {
     }
 
     # Enums for validation
-    enum VenueType {
-      CLUB
-      ASSOCIATION
-      PRO_SHOP
-      RANGE
-      ORGANIZATION
-    }
+    // enum VenueType {
+    //   CLUB
+    //   ASSOCIATION
+    //   PRO_SHOP
+    //   RANGE
+    //   ORGANIZATION
+    // }
 
-    enum Amenities {
-      RESTROOMS
-      FOOD
-      CAMPING
-      PET_FRIENDLY
-      WHEELCHAIR_ACCESSIBLE
-      PARKING
-      PICNIC_AREA
-      WIFI
-      KITCHEN
-    }
+    // enum Amenities {
+    //   RESTROOMS
+    //   FOOD
+    //   CAMPING
+    //   PET_FRIENDLY
+    //   WHEELCHAIR_ACCESSIBLE
+    //   PARKING
+    //   PICNIC_AREA
+    //   WIFI
+    //   KITCHEN
+    // }
 
-    enum VenueTier {
-      BASIC       # Scraped
-      FREEMIUM    # Claimed (Non-Profit)
-      PREMIUM     # Paid
-      DESTINATION # Top Tier
-    }
+    // enum VenueTier {
+    //   BASIC       # Scraped
+    //   FREEMIUM    # Claimed (Non-Profit)
+    //   PREMIUM     # Paid
+    //   DESTINATION # Top Tier
+    // }
 
-    enum Services {
-      BOW_TUNING_STATION
-      CUSTOM_TUNING
-      EQUIPMENT_RENTAL
-      EQUIPMENT_SALES
-      LESSONS
-    }
+    // enum Services {
+    //   BOW_TUNING_STATION
+    //   CUSTOM_TUNING
+    //   EQUIPMENT_RENTAL
+    //   EQUIPMENT_SALES
+    //   LESSONS
+    // }
 
-    enum Facility {
-      THREE_D_COURSE
-      INDOOR_RANGE
-      OUTDOOR_RANGE
-      ARENA_FAIR_GROUNDS
-    }
+    // enum Facility {
+    //   THREE_D_COURSE
+    //   INDOOR_RANGE
+    //   OUTDOOR_RANGE
+    //   ARENA_FAIR_GROUNDS
+    // }
 
-    enum Sanctioning {
-      ASA
-      IBO
-      NFAA
-      S3DA
-      USA_ARCHERY
-      TAC
-      CBA
-      UAA
-      RMAA
-    }
+    // enum Association {
+    //   ASA
+    //   IBO
+    //   NFAA
+    //   S3DA
+    //   USA_ARCHERY
+    //   TAC
+    //   CBA
+    //   UAA
+    //   RMAA
+    // }
 
     enum EquipmentType {
       COMPOUND
