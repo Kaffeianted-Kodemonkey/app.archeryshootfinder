@@ -280,97 +280,97 @@ exports.createSchemaCustomization = ({ actions }) => {
     //   RMAA
     // }
 
-    enum EquipmentType {
-      COMPOUND
-      RECURVE
-      LONGBOW
-      CROSSBOW
-      TARGET_ARROWS_ONLY
-      MAX_SPEED_LIMIT # e.g., 300fps
-    }
+    // enum EquipmentType {
+    //   COMPOUND
+    //   RECURVE
+    //   LONGBOW
+    //   CROSSBOW
+    //   TARGET_ARROWS_ONLY
+    //   MAX_SPEED_LIMIT # e.g., 300fps
+    // }
 
-    enum DayOfWeek {
-      MONDAY
-      TUESDAY
-      WEDNESDAY
-      THURSDAY
-      FRIDAY
-      SATURDAY
-      SUNDAY
-    }
+    // enum DayOfWeek {
+    //   MONDAY
+    //   TUESDAY
+    //   WEDNESDAY
+    //   THURSDAY
+    //   FRIDAY
+    //   SATURDAY
+    //   SUNDAY
+    // }
 
-    enum ShootClass {
-      CUB
-      YOUTH
-      ADULT
-      SENIOR_50
-      MASTER_60
-      BOWHUNTER
-      BOWHUNTER_PIN
-      OPEN_FREESTYLE
-      TRADITIONAL
-      PROFESSIONAL
-      CAMP
-      CLINIC
-      FLIGHTS
-      CHAMPIONSHIP
-      NONSHOOTER
-      TARGET
-      ALL_PARTICIPANTS
-    }
+    // enum ShootClass {
+    //   CUB
+    //   YOUTH
+    //   ADULT
+    //   SENIOR_50
+    //   MASTER_60
+    //   BOWHUNTER
+    //   BOWHUNTER_PIN
+    //   OPEN_FREESTYLE
+    //   TRADITIONAL
+    //   PROFESSIONAL
+    //   CAMP
+    //   CLINIC
+    //   FLIGHTS
+    //   CHAMPIONSHIP
+    //   NONSHOOTER
+    //   TARGET
+    //   ALL_PARTICIPANTS
+    // }
 
-    enum ShootFormat {
-      THREE_D
-      TARGET
-      FIELD_ARCHERY
-      INDOOR
-      OUTDOOR
-      SMOKER_ROUND
-      FIVE_SPOT
-      VEGAS
-      LONG_DISTANCE_CHALLENGE
-      NOVELTY # Good catch-all for "Fun Shoots" or "Iron Man" rounds
-    }
+    // enum ShootFormat {
+    //   THREE_D
+    //   TARGET
+    //   FIELD_ARCHERY
+    //   INDOOR
+    //   OUTDOOR
+    //   SMOKER_ROUND
+    //   FIVE_SPOT
+    //   VEGAS
+    //   LONG_DISTANCE_CHALLENGE
+    //   NOVELTY # Good catch-all for "Fun Shoots" or "Iron Man" rounds
+    // }
 
-    enum EventType {
-      TOURNAMENT
-      LEAGUE
-      CLINIC
-      WORKSHOP
-      CERTIFICATION
-      CAMP
-      FUN_SHOOT
-      EDUCATIONAL
-      WEEKLY_SHOOT
-    }
+    // enum EventType {
+    //   TOURNAMENT
+    //   LEAGUE
+    //   CLINIC
+    //   WORKSHOP
+    //   CERTIFICATION
+    //   CAMP
+    //   FUN_SHOOT
+    //   EDUCATIONAL
+    //   WEEKLY_SHOOT
+    // }
 
-    enum SkillLevel {
-      BEGINNER
-      INTERMEDIATE
-      EXPERT
-    }
+    // enum SkillLevel {
+    //   BEGINNER
+    //   INTERMEDIATE
+    //   EXPERT
+    // }
 
-    enum BowTypes {
-      TRADITIONAL
-      COMPOUND
-      RECURVE
-      LONGBOW
-      BAREBOW
-      CROSSBOW
-    }
+    // enum BowTypes {
+    //   TRADITIONAL
+    //   COMPOUND
+    //   RECURVE
+    //   LONGBOW
+    //   BAREBOW
+    //   CROSSBOW
+    // }
 
-    enum Terrain {
-      WOODED
-      FLAT
-      ROCKY
-      MOUNTAIN
-      DESERT
-      FIELD
-      URBAN
-      HILLS
-      INDOOR
-      OUTDOOR
-    }
+    // enum Terrain {
+    //   WOODED
+    //   FLAT
+    //   ROCKY
+    //   MOUNTAIN
+    //   DESERT
+    //   FIELD
+    //   URBAN
+    //   HILLS
+    //   INDOOR
+    //   OUTDOOR
+    // }
 
 
   `
