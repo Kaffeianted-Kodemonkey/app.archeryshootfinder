@@ -270,7 +270,7 @@ exports.createSchemaCustomization = ({ actions }) => {
       ARENA_FAIR_GROUNDS
     }
 
-    enum Association {
+    enum Sanctioning {
       ASA
       IBO
       NFAA
