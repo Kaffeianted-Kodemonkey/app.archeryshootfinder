@@ -277,6 +277,9 @@ exports.createSchemaCustomization = ({ actions }) => {
       S3DA
       USA_ARCHERY
       TAC
+      CBA
+      UAA
+      RMAA
     }
 
     enum EquipmentType {

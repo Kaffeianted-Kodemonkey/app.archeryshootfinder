@@ -239,7 +239,6 @@ const PricingPage = () => {
                           data-item-price="0.00"
                           data-item-url="/pricing"
                           data-item-metadata={getSnipcartMetadata()}
-                          data-autopop="false"
                         >
                           {tier.buttonText}
                         </button>
@@ -259,7 +258,6 @@ const PricingPage = () => {
                           data-item-price={tier.priceM.toFixed(2)}
                           data-item-url="/pricing"
                           data-item-metadata={getSnipcartMetadata()}
-                          data-autopop="false"
                         >
                           {tier.buttonTextM}
                         </button>
@@ -271,9 +269,8 @@ const PricingPage = () => {
                           data-item-price={tier.priceY.toFixed(2)}
                           data-item-url="/pricing"
                           data-item-metadata={getSnipcartMetadata()}
-                          data-autopop="false"
                         >
-                          >{tier.buttonTextY}
+                          {tier.buttonTextY}
                         </button>
                         {tier.billing && (
                           <span
