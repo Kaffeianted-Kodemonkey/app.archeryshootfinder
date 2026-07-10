@@ -344,7 +344,8 @@ export const query = graphql`
         name
         date
         endDate
-        time
+        startTime
+        endTime
         amenities
         useVenueLocation
         shootLocation {
@@ -371,7 +372,6 @@ export const query = graphql`
 
         prizes
         isVerified
-        isRegistration
         isDestination
         # Link back to venue for your "shootsWithVenues" logic
         venueId

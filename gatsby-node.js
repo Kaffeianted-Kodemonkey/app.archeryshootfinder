@@ -1,9 +1,4 @@
 const path = require("path")
-
-/**
- * @type {import('gatsby').GatsbyNode['createPages']}
- */
-
 const { MongoClient } = require("mongodb")
 
 /**
@@ -16,9 +11,17 @@ exports.sourceNodes = async ({
 }) => {
   const { createNode } = actions
 
-  // 1. Replace with your connection string (or use process.env.MONGODB_URI)
-  const uri =
-    "mongodb+srv://kodemonkey:Girlz4x42!@cluster0.9kztbpj.mongodb.net/?appName=Cluster0"
+  // Read URI from environment variable (Netlify) or fallback
+  const uri = process.env.MONGO_URI || process.env.MONGODB_URI
+
+  // Skip MongoDB connection during Netlify builds if no URI is set
+  if (!uri) {
+    console.log(
+      "No MongoDB URI provided — skipping sourceNodes (safe for CI builds)."
+    )
+    return
+  }
+
   const client = new MongoClient(uri)
 
   try {
@@ -50,16 +53,12 @@ exports.sourceNodes = async ({
         parent: null,
         children: [],
         internal: {
-          type: `ShootsJson`, // Keeps the exact type name your app already expects
+          type: `ShootsJson`,
           contentDigest: createContentDigest(shoot),
         },
       }
       createNode(Object.assign({}, shoot, nodeMeta))
     })
-
-    console.log(
-      `Successfully sourced ${venuesData.length} Venues and ${shootsData.length} Shoots from MongoDB.`
-    )
   } catch (error) {
     console.error("Critical error connecting or fetching from MongoDB:", error)
   } finally {
@@ -111,6 +110,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     })
   })
 }
+
 /**
  * NEW HOOK: Tell Gatsby to treat /portal/ as a client-side route dashboard
  */
@@ -141,6 +141,7 @@ exports.createSchemaCustomization = ({ actions }) => {
       bio: String
       rulesGuidlines: String
       subscription: String
+      membership: String
       tier: String
       img: String
       alt: String
@@ -166,16 +167,25 @@ exports.createSchemaCustomization = ({ actions }) => {
       venue: VenuesJson @link(by: "venueId")
       shootLocation: Location
       useVenueLocation: Boolean
-      dates: [Date]
+      date: Date
+      endDate: Date
+      startTime: String
+      endTime: String
       shootFormat: [String]
       shootClass: [String]
-      customClass: [String]
+      #customClass: [String]
       bowTypes: [String]
       skillLevel: [String]
       terrain: [String]
-      cost: Float
+      entryFee: String
+      pricing: [ShootPrice]
       currency: String
+      prizes: String
       registrationUrl: String
+      amenities: [String]
+      isDestination: Boolean
+      isVerified: Boolean
+
     }
 
     type Location {
@@ -206,155 +216,17 @@ exports.createSchemaCustomization = ({ actions }) => {
       isClosed: Boolean
     }
 
+    type ShootPrice {
+      tier: String     # Fixed: Changed from missing 'ShootClass' enum to flat String
+      note: String
+      options: [PriceOption]
+    }
 
-    # Enums for validation
-    # enum VenueType {
-    #   CLUB
-    #   ASSOCIATION
-    #   PRO_SHOP
-    #   RANGE
-    #   ORGANIZATION
-    # }
-
-    # enum Amenities {
-    #   RESTROOMS
-    #   FOOD
-    #   CAMPING
-    #   PET_FRIENDLY
-    #   WHEELCHAIR_ACCESSIBLE
-    #   PARKING
-    #   PICNIC_AREA
-    #   WIFI
-    #   KITCHEN
-    # }
-
-    # enum VenueTier {
-    #   BASIC       # Scraped
-    #   FREEMIUM    # Claimed (Non-Profit)
-    #   PREMIUM     # Paid
-    #   DESTINATION # Top Tier
-    # }
-
-    # enum Services {
-    #   BOW_TUNING_STATION
-    #   CUSTOM_TUNING
-    #   EQUIPMENT_RENTAL
-    #   EQUIPMENT_SALES
-    #   LESSONS
-    # }
-
-    # enum Facility {
-    #   THREE_D_COURSE
-    #   INDOOR_RANGE
-    #   OUTDOOR_RANGE
-    #   ARENA_FAIR_GROUNDS
-    # }
-
-    # enum Association {
-    #   ASA
-    #   IBO
-    #   NFAA
-    #   S3DA
-    #   USA_ARCHERY
-    #   TAC
-    #   CBA
-    #   UAA
-    #   RMAA
-    # }
-
-    # enum EquipmentType {
-    #   COMPOUND
-    #   RECURVE
-    #   LONGBOW
-    #   CROSSBOW
-    #   TARGET_ARROWS_ONLY
-    #   MAX_SPEED_LIMIT # e.g., 300fps
-    # }
-
-    # enum DayOfWeek {
-    #   MONDAY
-    #   TUESDAY
-    #   WEDNESDAY
-    #   THURSDAY
-    #   FRIDAY
-    #   SATURDAY
-    #   SUNDAY
-    # }
-
-    # enum ShootClass {
-    #   CUB
-    #   YOUTH
-    #   ADULT
-    #   SENIOR_50
-    #   MASTER_60
-    #   BOWHUNTER
-    #   BOWHUNTER_PIN
-    #   OPEN_FREESTYLE
-    #   TRADITIONAL
-    #   PROFESSIONAL
-    #   CAMP
-    #   CLINIC
-    #   FLIGHTS
-    #   CHAMPIONSHIP
-    #   NONSHOOTER
-    #   TARGET
-    #   ALL_PARTICIPANTS
-    # }
-
-    # enum ShootFormat {
-    #   THREE_D
-    #   TARGET
-    #   FIELD_ARCHERY
-    #   INDOOR
-    #   OUTDOOR
-    #   SMOKER_ROUND
-    #   FIVE_SPOT
-    #   VEGAS
-    #   LONG_DISTANCE_CHALLENGE
-    #   NOVELTY # Good catch-all for "Fun Shoots" or "Iron Man" rounds
-    # }
-
-    # enum EventType {
-    #   TOURNAMENT
-    #   LEAGUE
-    #   CLINIC
-    #   WORKSHOP
-    #   CERTIFICATION
-    #   CAMP
-    #   FUN_SHOOT
-    #   EDUCATIONAL
-    #   WEEKLY_SHOOT
-    # }
-
-    # enum SkillLevel {
-    #   BEGINNER
-    #   INTERMEDIATE
-    #   EXPERT
-    # }
-
-    # enum BowTypes {
-    #   TRADITIONAL
-    #   COMPOUND
-    #   RECURVE
-    #   LONGBOW
-    #   BAREBOW
-    #   CROSSBOW
-    # }
-
-    # enum Terrain {
-    #   WOODED
-    #   FLAT
-    #   ROCKY
-    #   MOUNTAIN
-    #   DESERT
-    #   FIELD
-    #   URBAN
-    #   HILLS
-    #   INDOOR
-    #   OUTDOOR
-    # }
-
-
+    type PriceOption {
+      days: Int
+      cost: Float
+      currency: String
+    }
   `
   createTypes(typeDefs)
 }
