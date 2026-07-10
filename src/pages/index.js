@@ -302,8 +302,8 @@ export const query = graphql`
         description
         venueType
         subscription
-        icon
-        iconColor
+        img
+        alt
         location {
           address
           city
@@ -316,26 +316,22 @@ export const query = graphql`
           phone
           email
           website
-          facebook
-          instagram
+          socials {
+            name
+            url
+          }
         }
         facilities
         amenities
         equipmentAllowed
-        customEquipmentRules
+        rulesGuidlines
         hours {
           day
           open
-          closed
+          close
+          isClosed
         }
         membership
-        hostedShoots {
-          id
-          # name
-          date
-          # shootFormat
-        }
-        imageUrl
         isClaimed
       }
     }

@@ -556,13 +556,10 @@ export const query = graphql`
         phone
         email
         website
-        facebook
-        instagram
-      }
-      hostedShoots {
-        name
-        date
-        isDestination
+        socials {
+          name
+          url
+        }
       }
     }
   }
