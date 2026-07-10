@@ -531,38 +531,39 @@ const SpotlightTemplate = ({ data }) => {
 }
 
 // FULL ENUM-SAFE INJECTION PAGE QUERY
-export const query = graphql`
-  query GetVersatileSpotlightVenue($id: String!) {
-    venuesJson(id: { eq: $id }) {
-      name
-      venueType
-      slug
-      description
-      subscription
-      isClaimed
-      sanctioning
-      facilities
-      amenities
-      equipmentAllowed
-      terrain
-      bowTypes
-      location {
-        address
-        city
-        state
-        zip
-      }
-      contact {
-        phone
-        email
-        website
-        socials {
-          name
-          url
-        }
-      }
-    }
-  }
-`
+// export const query = graphql`
+//   query GetVersatileSpotlightVenue($id: String!) {
+//     venuesJson(id: { eq: $id }) {
+//       name
+//       venueType
+//       slug
+//       description
+//       bio
+//       subscription
+//       isClaimed
+//       sanctioning
+//       facilities
+//       amenities
+//       equipmentAllowed
+//       terrain
+//       bowTypes
+//       location {
+//         address
+//         city
+//         state
+//         zip
+//       }
+//       contact {
+//         phone
+//         email
+//         website
+//         socials {
+//           name
+//           url
+//         }
+//       }
+//     }
+//   }
+// `
 
 export default SpotlightTemplate

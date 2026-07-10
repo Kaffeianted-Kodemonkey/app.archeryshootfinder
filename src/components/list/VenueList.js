@@ -74,7 +74,7 @@ const VenueList = ({
         getDistance(location, a.location) - getDistance(location, b.location)
     )
   } else {
-    venues.sort((a, b) => a.name.localeCompare(b.name))
+    venues.sort((a, b) => a.vname.localeCompare(b.vname))
   }
 
   const getVenueShootCounts = venueId => {
@@ -161,7 +161,7 @@ const VenueList = ({
                   <i className={`bi ${venue.icon || mapping.icon} me-1`}></i>
                   {venue.venueType}
                 </span>{" "}
-                <h2 className="card-title fs-3 mt-2 mb-0">{venue.name}</h2>
+                <h2 className="card-title fs-3 mt-2 mb-0">{venue.vname}</h2>
                 <p className="fs-6 mt-2">
                   <i className="bi bi-geo-alt"></i> {distance} | {cityState}
                 </p>

@@ -164,18 +164,18 @@ const IndexPage = ({ data }) => {
     getUserLocation()
   }, [computedCurrentShoots, computedUpcomingShoots /* , allPublishedShoots */])
 
-  const venueShootCounts = useMemo(() => {
-    return Venues.reduce((acc, venue) => {
-      // venue.hostedShoots is now an array of objects, not strings
-      const validShoots = (venue.hostedShoots || []).filter(shoot => {
-        const shootDate = new Date(shoot.date)
-        return shootDate > now
-      })
+  // const venueShootCounts = useMemo(() => {
+  //   return Venues.reduce((acc, venue) => {
+  //     // venue.hostedShoots is now an array of objects, not strings
+  //     const validShoots = (venue.hostedShoots || []).filter(shoot => {
+  //       const shootDate = new Date(shoot.date)
+  //       return shootDate > now
+  //     })
 
-      acc[venue.id] = validShoots.length
-      return acc
-    }, {})
-  }, [Venues, now])
+  //     acc[venue.id] = validShoots.length
+  //     return acc
+  //   }, {})
+  // }, [Venues, now])
 
   // Map view props (dynamic based on activeTab)
   const mapProps = useMemo(() => {
@@ -297,7 +297,7 @@ export const query = graphql`
         id
         venueId
         slug
-        name
+        vname
         bio
         description
         venueType
@@ -341,7 +341,7 @@ export const query = graphql`
       nodes {
         id
         shootId
-        name
+        sname
         date
         endDate
         startTime
@@ -378,7 +378,7 @@ export const query = graphql`
         venue {
           venueId
           isClaimed
-          name
+          vname
           description
           slug
           contact {

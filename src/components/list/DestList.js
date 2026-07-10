@@ -137,7 +137,7 @@ const DestList = ({
                     <div className="row mt-2 small text-muted">
                       <div className="col-12 md-2">
                         <strong className="fs-5">
-                          {venue.name || "Unknown Venue"}
+                          {venue.vname || "Unknown Venue"}
                         </strong>
                       </div>
                     </div>
@@ -292,7 +292,7 @@ const DestList = ({
                                   colSpan={3}
                                   className="fw-bold bg-info-subtle"
                                 >
-                                  {s.name}
+                                  {s.sname}
                                 </td>
                               </tr>
 

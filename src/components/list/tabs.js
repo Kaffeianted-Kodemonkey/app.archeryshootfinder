@@ -81,8 +81,8 @@ const Tabs = ({
       let aVal, bVal
       switch (venueSortField) {
         case "name":
-          aVal = a.name.toLowerCase()
-          bVal = b.name.toLowerCase()
+          aVal = a.vname.toLowerCase()
+          bVal = b.vname.toLowerCase()
           break
         case "location":
           aVal = `${a.location?.city || ""}, ${

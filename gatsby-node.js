@@ -1,3 +1,7 @@
+require("dotenv").config({
+  path: `.env.${process.env.NODE_ENV}`,
+})
+
 const path = require("path")
 const { MongoClient } = require("mongodb")
 
@@ -39,11 +43,19 @@ exports.sourceNodes = async ({
         parent: null,
         children: [],
         internal: {
-          type: `VenuesJson`, // Keeps the exact type name your app already expects
+          type: `VenuesJson`,
           contentDigest: createContentDigest(venue),
         },
       }
-      createNode(Object.assign({}, venue, nodeMeta))
+
+      createNode(
+        Object.assign(
+          {},
+          venue,
+          { vname: venue.vname || venue.name }, // ← this makes vname actually exist on the node
+          nodeMeta
+        )
+      )
     })
 
     // 4. Process Shoots
@@ -132,8 +144,8 @@ exports.createSchemaCustomization = ({ actions }) => {
   const typeDefs = `
     type VenuesJson implements Node {
       id: ID!
-      venueId: Int!
-      name: String
+      venueId: String!
+      vname: String
       venueType: String
       slug: String
       description: String
@@ -161,10 +173,10 @@ exports.createSchemaCustomization = ({ actions }) => {
     type ShootsJson implements Node {
       id: ID!
       shootId: Int
-      name: String
+      sname: String
       slug: String
-      venueId: Int
-      venue: VenuesJson @link(by: "venueId")
+      venueId: String!
+      venue: VenuesJson @link(by: "venueId", from: "venueId")
       shootLocation: Location
       useVenueLocation: Boolean
       date: Date

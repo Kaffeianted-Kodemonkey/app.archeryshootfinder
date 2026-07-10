@@ -2,7 +2,7 @@
   {
     "id": "1",
     "venueId": 1,
-    "name": "Uintah Basin Bowhunters",
+    "vname": "Uintah Basin Bowhunters",
     "venueType": "CLUB",
     "slug": "uintah-basin-bowhunters",
     "img": "/static/images/logo-sticker-pop.png",
@@ -40,7 +40,7 @@
   {
     "id": "3",
     "venueId": 3,
-    "name": "Mile High Archery Pro Shop",
+    "vname": "Mile High Archery Pro Shop",
     "venueType": "PRO_SHOP",
     "slug": "mile-high-archery",
     "img": "/static/images/logo-sticker-pop.png",
@@ -74,7 +74,7 @@
   {
     "id": "4",
     "venueId": 4,
-    "name": "Total Archery Challenge",
+    "vname": "Total Archery Challenge",
     "venueType": "ORGANIZATION",
     "slug": "total-archery-challenge",
     "img": "/static/images/logo-sticker-pop.png",
@@ -109,7 +109,7 @@
   {
     "id": "5",
     "venueId": 5,
-    "name": "Archery Shooters Association",
+    "vname": "Archery Shooters Association",
     "venueType": "ORGANIZATION",
     "slug": "archery-shooters-association-asa",
     "img": "/static/images/logo-sticker-pop.png",
@@ -144,7 +144,7 @@
   {
     "id": "6",
     "venueId": 6,
-    "name": "International Bowhunting Organization",
+    "vname": "International Bowhunting Organization",
     "venueType": "ORGANIZATION",
     "slug": "international-bowhunting-organization-ibo",
     "img": "/static/images/logo-sticker-pop.png",
@@ -179,7 +179,7 @@
   {
     "id": "7",
     "venueId": 7,
-    "name": "Lancaster Archery Supply Center",
+    "vname": "Lancaster Archery Supply Center",
     "venueType": "PRO_SHOP",
     "slug": "lancaster-archery-supply-center",
     "img": "/static/images/logo-sticker-pop.png",
@@ -214,7 +214,7 @@
   {
     "id": "8",
     "venueId": 8,
-    "name": "NFAA Easton Yankton Archery Center",
+    "vname": "NFAA Easton Yankton Archery Center",
     "venueType": "RANGE",
     "slug": "nfaa-easton-yankton-archery-center",
     "img": "/static/images/logo-sticker-pop.png",
@@ -249,7 +249,7 @@
   {
     "id": "9",
     "venueId": 9,
-    "name": "The Vegas Shoot (NFAA)",
+    "vname": "The Vegas Shoot (NFAA)",
     "venueType": "ORGANIZATION",
     "slug": "the-vegas-shoot-nfaa",
     "img": "/static/images/logo-sticker-pop.png",
@@ -284,7 +284,7 @@
   {
     "id": "10",
     "venueId": 10,
-    "name": "Mountain Archery Fest",
+    "vname": "Mountain Archery Fest",
     "venueType": "ORGANIZATION",
     "slug": "mountain-archery-fest",
     "img": "/static/images/logo-sticker-pop.png",
@@ -319,7 +319,7 @@
   {
     "id": "11",
     "venueId": 11,
-    "name": "Straight Defense / S3DA National Trails",
+    "vname": "Straight Defense / S3DA National Trails",
     "venueType": "ORGANIZATION",
     "slug": "s3da-national-championships",
     "img": "/static/images/logo-sticker-pop.png",
@@ -355,7 +355,7 @@
   {
     "id": "12",
     "venueId": 12,
-    "name": "KStraight Archery National Events",
+    "vname": "KStraight Archery National Events",
     "venueType": "ORGANIZATION",
     "slug": "kstraight-archery-events",
     "img": "/static/images/logo-sticker-pop.png",
@@ -389,7 +389,7 @@
   {
     "id": "13",
     "venueId": 13,
-    "name": "Coastal Archers Association",
+    "vname": "Coastal Archers Association",
     "venueType": "ASSOCIATION",
     "slug": "coastal-archers-ca",
     "img": "/static/images/logo-sticker-pop.png",
@@ -423,7 +423,7 @@
   {
     "id": "14",
     "venueId": 14,
-    "name": "Midwest Youth Archery Center",
+    "vname": "Midwest Youth Archery Center",
     "venueType": "ORGANIZATION",
     "slug": "midwest-youth-archery",
     "img": "/static/images/logo-sticker-pop.png",
@@ -456,10 +456,10 @@
     "sanctioning": ["S3DA"]
   },
   {
-    "id": "red_rock_archery_venue",
-    "venueId": 105,
+    "id": "15",
+    "venueId": 15,
     "venueType": "PRO_SHOP",
-    "name": "Red Rock Archery",
+    "vname": "Red Rock Archery",
     "slug": "red-rock-archery-grand-junction",
     "tagline": "Grand Junction's premier indoor archery range and full-service pro shop.",
     "bio": "Red Rock Archery is a dedicated full-service archery pro shop and indoor shooting lane facility located in Grand Junction, Colorado. We specialize in top-tier bow tuning, custom arrow building, and equipment sales for bowhunters and target archers alike. Our climate-controlled indoor range hosts weekly competitive leagues, spot rounds, and instructional classes for shooters of all ages and skill levels.",

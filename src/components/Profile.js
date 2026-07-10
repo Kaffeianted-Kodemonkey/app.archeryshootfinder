@@ -44,7 +44,7 @@ const Profile = ({ user: propUser, data }) => {
     venue: { ...snipUser?.venue, ...propUser?.venue },
   }
 
-  // 1. Setup local form state mirroring your custom WordPress schema
+  // 1. Setup local form state mirroring
   const [formData, setFormData] = useState({
     name: user?.name || "",
     venueType: user?.venueType, // Matches your VenueType Enum
@@ -162,7 +162,7 @@ const Profile = ({ user: propUser, data }) => {
                 type="text"
                 className="form-control"
                 id="venueName"
-                defaultValue={user?.venue?.name || user?.name || ""}
+                defaultValue={user?.venue?.vname || user?.vname || ""}
               />
             </div>
 
@@ -307,7 +307,7 @@ const Profile = ({ user: propUser, data }) => {
                       setShowShootSheet(true)
                     }}
                   >
-                    <td>{shoot.name}</td>
+                    <td>{shoot.sname}</td>
                     <td>{shoot.date}</td>
                     <td>
                       {shoot.isVerified ? (
