@@ -16,7 +16,7 @@ exports.sourceNodes = async ({
   const { createNode } = actions
 
   // Read URI from environment variable (Netlify) or fallback
-  const uri = process.env.MONGO_URI || process.env.MONGODB_URI
+  const uri = process.env.GATSBY_MONGO_URI || process.env.GATSBY_MONGODB_URI
 
   // Skip MongoDB connection during Netlify builds if no URI is set
   if (!uri) {
