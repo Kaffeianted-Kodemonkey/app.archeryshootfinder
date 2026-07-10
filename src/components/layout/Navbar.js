@@ -176,7 +176,9 @@ const Navbar = ({ siteTitle, siteDesc }) => {
               </Link>
             )}
 
-            <InstallButton />
+            <React.Suspense fallback={null}>
+              <InstallButton />
+            </React.Suspense>
           </div>
         </div>
       </div>

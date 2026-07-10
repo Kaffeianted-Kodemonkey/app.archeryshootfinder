@@ -1,14 +1,14 @@
-// src/components/InstallButton.js
 import * as React from "react"
 import { useState, useEffect } from "react"
 
 const InstallButton = () => {
+  if (typeof window === "undefined") return null
+
   const [deferredPrompt, setDeferredPrompt] = useState(null)
   const [showInstall, setShowInstall] = useState(false)
 
   useEffect(() => {
     const handler = e => {
-      // Prevent the default mini-infobar from appearing on mobile
       e.preventDefault()
       setDeferredPrompt(e)
       setShowInstall(true)
@@ -16,16 +16,15 @@ const InstallButton = () => {
 
     window.addEventListener("beforeinstallprompt", handler)
 
-    return () => window.removeEventListener("beforeinstallprompt", handler)
+    return () => {
+      window.removeEventListener("beforeinstallprompt", handler)
+    }
   }, [])
 
   const handleInstallClick = async () => {
     if (!deferredPrompt) return
 
-    // Show the install prompt
     deferredPrompt.prompt()
-
-    // Wait for the user to respond to the prompt
     const { outcome } = await deferredPrompt.userChoice
 
     if (outcome === "accepted") {
@@ -34,12 +33,10 @@ const InstallButton = () => {
       console.log("User dismissed the install prompt")
     }
 
-    // Clear the deferredPrompt so it can only be used once
     setDeferredPrompt(null)
     setShowInstall(false)
   }
 
-  // Don't show the button if the app is already installed or prompt isn't available
   if (!showInstall) return null
 
   return (
