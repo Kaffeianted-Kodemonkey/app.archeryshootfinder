@@ -1,4 +1,6 @@
-require("dotenv").config({ path: ".env.development" }
+require("dotenv").config({
+  path: `.env.${process.env.NODE_ENV}`,
+})
 
 const path = require("path")
 const { MongoClient } = require("mongodb")
