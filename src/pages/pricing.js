@@ -147,25 +147,17 @@ const PricingPage = () => {
       const claimVenueId = params.get("claimVenueId")
       const venueName = params.get("venueName")
 
-      // Only set claimInfo when a venue is actually being claimed via a URL query string
+      // Only set claimInfo when a venue is actually being claimed
       if (claimVenueId) {
         setClaimInfo({
           id: claimVenueId,
           name: venueName ? decodeURIComponent(venueName) : "this venue",
         })
       } else {
-        setClaimInfo(null) // new venue layout → no message banner
+        setClaimInfo(null) // new venue → no message
       }
     }
   }, [])
-
-  // Custom helper to dynamically generate consistent metadata flags for Snipcart v2
-  const getSnipcartMetadata = () => {
-    return JSON.stringify({
-      claimVenueId: claimInfo ? claimInfo.id : "new",
-      checkoutMode: claimInfo ? "login_or_register" : "register_only",
-    })
-  }
 
   return (
     <Layout>
@@ -185,6 +177,12 @@ const PricingPage = () => {
               </div>
             )}
           </h1>
+
+          {/* <p className="lead mx-auto" style={{ maxWidth: "800px" }}>
+            Basic scraped listings are free in the directory. Take control of
+            your venue to guarantee data accuracy, build local trust, or scale a
+            national event circuit.
+          </p>*/}
         </div>
 
         {/* mb-5 ensures the row container itself keeps a safe space from the layout bottom */}
@@ -206,83 +204,115 @@ const PricingPage = () => {
                       {tier.badgeText}
                     </span>
                   </div>
+                  {/* <h5 className="card-title mb-0 fw-bold">{tier.name}</h5>*/}
                   <p className="fw-bold fs-3 text-primary mb-0">
-                    ${tier.priceM}/mo
+                    {tier.name === "Non-Profit" ? (
+                      <>
+                        ${tier.priceM}/mo <br />
+                        <small className="fs-6 text-muted fw-normal">
+                          Free Forever!
+                        </small>
+                      </>
+                    ) : (
+                      <>
+                        ${tier.priceM}mo / ${tier.priceY}yr <br />
+                        <small className="fs-6 text-muted fw-normal">
+                          Yearly billing includes 2 mo free
+                        </small>
+                      </>
+                    )}
                   </p>
-                  <h5 className="card-title mt-2 mb-0 fw-bold">{tier.name}</h5>
                 </div>
-
-                <div className="card-body p-4 d-flex flex-column justify-content-between">
+                <div className="card-body d-flex flex-column justify-content-between">
                   <div>
-                    <p className="small fw-bold text-dark mb-2">
+                    <h2 className="card-text text-muted mb-3 fs-6">
                       {tier.headline}
-                    </p>
-                    <p className="text-muted small mb-4">{tier.description}</p>
+                    </h2>
                     <hr />
-                    <ul className="list-unstyled small text-muted mb-4">
-                      {tier.features.map((feat, idx) => (
-                        <li key={idx} className="mb-2 d-flex align-items-start">
-                          <span className="text-success me-2">✓</span>
-                          <span>{feat}</span>
+                    <p className="card-text text-muted mb-3">
+                      {tier.description}
+                    </p>
+                    {tier.verification && (
+                      <div className="alert alert-warning small mb-3 p-2">
+                        <i className="bi bi-info-circle me-1"></i>
+                        {tier.verification}
+                      </div>
+                    )}
+                    <ul className="list-unstyled mb-4">
+                      {tier.features?.map((feature, fIndex) => (
+                        <li
+                          key={fIndex}
+                          className="mb-2 d-flex align-items-start"
+                        >
+                          <i
+                            className={`bi bi-check-circle text-${
+                              tier.themeColor || "success"
+                            } me-2 mt-1`}
+                          ></i>
+                          <span>{feature}</span>
                         </li>
                       ))}
                     </ul>
                   </div>
+                  <p>
+                    <strong>Cost Per shoot: </strong>
+                    <br />
+                    {tier.addShootL}
+                    <br />
+                    {tier.addShootR}
+                  </p>
 
-                  <div className="mt-auto pt-3">
-                    {tier.name === "Non-Profit" ? (
-                      <>
-                        <button
-                          className="snipcart-add-item btn w-100 fw-bold btn-success"
-                          data-item-id={tier.snipcartIdM}
-                          data-item-name={`${tier.name} Plan - Free Verification`}
-                          data-item-price="0.00"
-                          data-item-url="/pricing"
-                          data-item-metadata={getSnipcartMetadata()}
-                        >
-                          {tier.buttonText}
-                        </button>
-                        <p
-                          className="text-center text-muted small mt-2 mb-0"
-                          style={{ fontSize: "0.75rem" }}
-                        >
-                          {tier.verification}
-                        </p>
-                      </>
-                    ) : (
-                      <div className="d-grid gap-2">
-                        <button
-                          className={`snipcart-add-item btn ${tier.buttonClass} fw-bold`}
-                          data-item-id={tier.snipcartIdM}
-                          data-item-name={`${tier.name} Plan - Monthly`}
-                          data-item-price={tier.priceM.toFixed(2)}
-                          data-item-url="/pricing"
-                          data-item-metadata={getSnipcartMetadata()}
-                        >
-                          {tier.buttonTextM}
-                        </button>
+                  {tier.name === "Non-Profit" ? (
+                    <div className="d-flex gap-2">
+                      <Link
+                        to={tier.buttonLink}
+                        className={`btn btn-sm ${tier.buttonClass}  py-2 mt-auto fw-bold`}
+                      >
+                        {tier.buttonText}
+                      </Link>
+                    </div>
+                  ) : (
+                    <div className="d-flex gap-2">
+                      {/* SNIPCART MONTHLY CHECKOUT BUTTO N */}
+                      <button
+                        className={`snipcart-add-item btn btn-sm ${tier.buttonClass} py-2 mt-auto fw-bold`}
+                        data-item-id={`${tier.name
+                          .toLowerCase()
+                          .replace(" ", "-")}-monthly`}
+                        data-item-name={`${tier.name} - Monthly Subscription`}
+                        data-item-url="/pricing"
+                        data-item-price={tier.priceM}
+                        data-item-plan-id={tier.snipcartIdM}
+                        data-item-description={`Billed monthly at $${tier.priceM}/mo.`}
+                        data-plan-id={`${tier.name}-Monthly`}
+                        data-plan-name={`${tier.name} - Monthly Subscription`}
+                        data-item-payment-interval="Month"
+                        data-item-payment-interval-count="1"
+                        data-item-plan-price={tier.priceM}
+                      >
+                        {tier.buttonTextM}
+                      </button>
 
-                        <button
-                          className="snipcart-add-item btn btn-dark fw-bold"
-                          data-item-id={tier.snipcartIdY}
-                          data-item-name={`${tier.name} Plan - Yearly`}
-                          data-item-price={tier.priceY.toFixed(2)}
-                          data-item-url="/pricing"
-                          data-item-metadata={getSnipcartMetadata()}
-                        >
-                          {tier.buttonTextY}
-                        </button>
-                        {tier.billing && (
-                          <span
-                            className="text-center text-muted small d-block mt-1"
-                            style={{ fontSize: "0.75rem" }}
-                          >
-                            {tier.billing}
-                          </span>
-                        )}
-                      </div>
-                    )}
-                  </div>
+                      {/* SNIPCART YEARLY CHECKOUT BUTTON */}
+                      <button
+                        className={`snipcart-add-item btn btn-sm ${tier.buttonClass} py-2 mt-auto fw-bold`}
+                        data-item-id={`${tier.name
+                          .toLowerCase()
+                          .replace(" ", "-")}-yearly`}
+                        data-item-name={`${tier.name} - Yearly Subscription`}
+                        data-item-price={tier.priceY}
+                        data-item-url="/pricing"
+                        data-item-description={`Billed yearly at $${tier.priceY}/yr.`}
+                        data-plan-id={`${tier.name}-Yearly`}
+                        data-plan-name={`${tier.name} - Yearly Subscription`}
+                        data-item-payment-interval="Year"
+                        data-plan-payment-count="1"
+                        data-item-plan-price={tier.priceY}
+                      >
+                        {tier.buttonTextY}
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

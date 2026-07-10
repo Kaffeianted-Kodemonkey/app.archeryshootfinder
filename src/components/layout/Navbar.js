@@ -2,7 +2,7 @@
 import * as React from "react"
 import { useState, useEffect } from "react"
 import { Link } from "gatsby"
-import InstallButton from "../InstallButton"
+// import InstallButton from "../InstallButton"
 
 const Navbar = ({ siteTitle, siteDesc }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -176,9 +176,9 @@ const Navbar = ({ siteTitle, siteDesc }) => {
               </Link>
             )}
 
-            <React.Suspense fallback={null}>
+            {/* <React.Suspense fallback={null}>
               <InstallButton />
-            </React.Suspense>
+            </React.Suspense>*/}
           </div>
         </div>
       </div>
