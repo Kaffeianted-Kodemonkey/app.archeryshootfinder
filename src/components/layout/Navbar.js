@@ -1,14 +1,15 @@
-// src/components/layout/Navbar.js
 import * as React from "react"
 import { useState, useEffect } from "react"
 import { Link } from "gatsby"
-// import InstallButton from "../InstallButton"
 
 const Navbar = ({ siteTitle, siteDesc }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [loggedInuser, setLoggedInuser] = useState(null)
 
   const checkSnipcartUser = async () => {
+    // Guard clause: Exit early if window does not exist (Server-Side Rendering)
+    if (typeof window === "undefined") return
+
     // Snipcart v2 global object checks
     if (window.Snipcart?.api?.user?.current) {
       try {
@@ -26,24 +27,30 @@ const Navbar = ({ siteTitle, siteDesc }) => {
   }
 
   useEffect(() => {
-    checkSnipcartUser()
+    // Only run this code if window is fully available in the browser
+    if (typeof window !== "undefined") {
+      checkSnipcartUser()
 
-    const handleLogin = () => checkSnipcartUser()
-    window.addEventListener("snipcart:user-logged-in", handleLogin)
-    window.addEventListener("storage", checkSnipcartUser)
+      const handleLogin = () => checkSnipcartUser()
+      window.addEventListener("snipcart:user-logged-in", handleLogin)
+      window.addEventListener("storage", checkSnipcartUser)
 
-    return () => {
-      window.removeEventListener("snipcart:user-logged-in", handleLogin)
-      window.removeEventListener("storage", checkSnipcartUser)
+      return () => {
+        window.removeEventListener("snipcart:user-logged-in", handleLogin)
+        window.removeEventListener("storage", checkSnipcartUser)
+      }
     }
   }, [])
 
   const handleLogoutClick = async () => {
-    if (window.Snipcart?.api?.user?.logout) {
-      await window.Snipcart.api.user.logout()
+    // Guard clause: Ensure window exists before running browser logic
+    if (typeof window !== "undefined") {
+      if (window.Snipcart?.api?.user?.logout) {
+        await window.Snipcart.api.user.logout()
+      }
+      setLoggedInuser(null)
+      window.location.href = "/"
     }
-    setLoggedInuser(null)
-    window.location.href = "/"
   }
 
   const handleLinkClick = () => setIsMenuOpen(false)
@@ -175,10 +182,6 @@ const Navbar = ({ siteTitle, siteDesc }) => {
                 Login
               </Link>
             )}
-
-            {/* <React.Suspense fallback={null}>
-              <InstallButton />
-            </React.Suspense>*/}
           </div>
         </div>
       </div>

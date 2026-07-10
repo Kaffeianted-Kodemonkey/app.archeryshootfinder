@@ -1,24 +1,33 @@
 // src/pages/register.js
 import * as React from "react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { navigate } from "gatsby"
 import Layout from "../components/layout/Layout"
 import Seo from "../components/seo"
 
 const RegisterPage = ({ location }) => {
-  // const params = new URLSearchParams(location.search)
-
-  const params = new URLSearchParams(window.location.search)
-  const selectedPlanId = params.get("plan")
-  const initialVenueName =
-    params.get("venueName") || params.get("company") || ""
-  const initialEmail = params.get("email") || ""
-
+  // 1. Initialize state values as safely empty for server-side building
+  const [selectedPlanId, setSelectedPlanId] = useState(null)
   const [formData, setFormData] = useState({
-    venueName: initialVenueName,
-    contactEmail: initialEmail,
+    venueName: "",
+    contactEmail: "",
   })
   const [formError, setFormError] = useState("")
+  const [isLoading, setIsLoading] = useState(true)
+
+  // 2. Safely parse URL parameters once the page runs inside a real browser
+  useEffect(() => {
+    if (typeof window !== "undefined" && location) {
+      const params = new URLSearchParams(location.search)
+
+      setSelectedPlanId(params.get("plan"))
+      setFormData({
+        venueName: params.get("venueName") || params.get("company") || "",
+        contactEmail: params.get("email") || "",
+      })
+      setIsLoading(false)
+    }
+  }, [location])
 
   const handleInputChange = e => {
     const { name, value } = e.target
@@ -32,43 +41,60 @@ const RegisterPage = ({ location }) => {
       return
     }
 
-    const urlParams = new URLSearchParams(window.location.search)
-    const plan = urlParams.get("plan") || "free"
-    const claimVenueId = urlParams.get("claimVenueId")
+    // Guard clause to ensure localStorage and window only run on client runtime
+    if (typeof window !== "undefined") {
+      const urlParams = new URLSearchParams(location.search)
+      const plan = urlParams.get("plan") || "free"
+      const claimVenueId = urlParams.get("claimVenueId")
 
-    // 1. Create the user session (already doing this)
-    const mockUser = {
-      name: formData.venueName,
-      email: formData.contactEmail,
-      planId: plan,
-      isLoggedIn: true,
-      venueId: claimVenueId ? Number(claimVenueId) : null,
+      // 1. Create the user session
+      const mockUser = {
+        name: formData.venueName,
+        email: formData.contactEmail,
+        planId: plan,
+        isLoggedIn: true,
+        venueId: claimVenueId ? Number(claimVenueId) : null,
+      }
+      localStorage.setItem("mock_venue_user", JSON.stringify(mockUser))
+
+      // 2. Store a venue record that includes isClaimed: true
+      const venueRecord = {
+        id: claimVenueId ? `claimed_${claimVenueId}` : `new_${Date.now()}`,
+        name: formData.venueName,
+        tier: plan.includes("regional")
+          ? "Regional"
+          : plan.includes("pro")
+          ? "Pro Shops"
+          : "Local",
+        isClaimed: true,
+        planId: plan,
+        claimedAt: new Date().toISOString(),
+      }
+      localStorage.setItem("mock_venue", JSON.stringify(venueRecord))
+
+      // 3. Keep the existing claim flags (for backward compatibility)
+      if (claimVenueId) {
+        localStorage.setItem("claimed_venue_id", claimVenueId)
+        localStorage.setItem("venue_claimed", "true")
+        localStorage.setItem("claimed_plan", plan)
+      }
+
+      navigate("/portal")
     }
-    localStorage.setItem("mock_venue_user", JSON.stringify(mockUser))
+  }
 
-    // 2. NEW: Also store a venue record that includes isClaimed: true
-    const venueRecord = {
-      id: claimVenueId ? `claimed_${claimVenueId}` : `new_${Date.now()}`,
-      name: formData.venueName,
-      tier: plan.includes("regional")
-        ? "Regional"
-        : plan.includes("pro")
-        ? "Pro Shops"
-        : "Local",
-      isClaimed: true, // ← matches your venues.json schema
-      planId: plan,
-      claimedAt: new Date().toISOString(),
-    }
-    localStorage.setItem("mock_venue", JSON.stringify(venueRecord))
-
-    // 3. Keep the existing claim flags (for backward compatibility)
-    if (claimVenueId) {
-      localStorage.setItem("claimed_venue_id", claimVenueId)
-      localStorage.setItem("venue_claimed", "true")
-      localStorage.setItem("claimed_plan", plan)
-    }
-
-    navigate("/portal")
+  // Show a blank or loading state while compiling on the server or reading URL hooks
+  if (isLoading) {
+    return (
+      <Layout>
+        <Seo title="Loading Registration..." />
+        <div className="container py-5 my-5 text-center">
+          <div className="spinner-border text-primary" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+        </div>
+      </Layout>
+    )
   }
 
   if (!selectedPlanId) {
