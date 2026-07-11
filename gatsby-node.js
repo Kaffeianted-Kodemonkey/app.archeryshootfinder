@@ -26,7 +26,14 @@ exports.sourceNodes = async ({
     return
   }
 
-  const client = new MongoClient(uri)
+  const client = new MongoClient(uri, {
+    tls: true,
+    ssl: true,
+    // This prevents the underlying OpenSSL layer from throwing "alert 80"
+    // during dynamic server selection on cloud runners
+    connectTimeoutMS: 30000,
+    socketTimeoutMS: 30000,
+  })
 
   try {
     await client.connect()
