@@ -6,7 +6,7 @@ import Layout from "../components/layout/Layout"
 import Seo from "../components/seo"
 
 const SpotlightTemplate = ({ data }) => {
-  const venue = data.venuesJson
+  const venue = data?.venuesJson
 
   if (!venue) return null
 
