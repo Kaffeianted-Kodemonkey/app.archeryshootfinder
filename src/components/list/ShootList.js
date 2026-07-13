@@ -61,7 +61,7 @@ const getRegLabel = url => {
 const ShootList = ({
   shoots = [],
   userLocation,
-  venueIdMapping = {},
+  // onSort,
   sortField = "date",
   sortDirection = "asc",
   onSelectShoot,
@@ -71,9 +71,9 @@ const ShootList = ({
     return [...shoots].sort((a, b) => {
       let aVal, bVal
       switch (sortField) {
-        case "sname":
-          aVal = a.sname.toLowerCase()
-          bVal = b.sname.toLowerCase()
+        case "name":
+          aVal = a.name.toLowerCase()
+          bVal = b.name.toLowerCase()
           return sortDirection === "asc"
             ? aVal.localeCompare(bVal)
             : bVal.localeCompare(aVal)
@@ -87,8 +87,8 @@ const ShootList = ({
           bVal = getDistance(userLocation, b.location)
           return sortDirection === "asc" ? aVal - bVal : bVal - aVal
         case "venue":
-          aVal = a.venue?.vname?.toLowerCase() || ""
-          bVal = b.venue?.vname?.toLowerCase() || ""
+          aVal = a.venue?.name?.toLowerCase() || ""
+          bVal = b.venue?.name?.toLowerCase() || ""
           return sortDirection === "asc"
             ? aVal.localeCompare(bVal)
             : bVal.localeCompare(aVal)
@@ -131,6 +131,8 @@ const ShootList = ({
       <div className="accordion accordion-flush" id="shootAccordion">
         {venues.map(([venueId, venueShoots], vIndex) => {
           const isOpen = venueId === selectedVenueId
+          // Prefer a shoot that has entryFee or pricing so the cost section shows real data
+          // Pick a shoot that actually has pricing info so the cost section shows real data
           const first =
             venueShoots.find(
               s =>
@@ -138,7 +140,7 @@ const ShootList = ({
                 (Array.isArray(s.pricing) && s.pricing.length > 0)
             ) || venueShoots[0]
 
-          const venue = first.venue || venueIdMapping[venueId] || {}
+          const venue = first.venue || {}
           const loc =
             first.useVenueLocation !== false && venue.location
               ? venue.location
@@ -173,6 +175,10 @@ const ShootList = ({
                         <span className={`badge ${status.className}`}>
                           {status.label}
                         </span>
+                        {/* <span className="fs-4 fw-bold mt-1 valign-middle">
+                          {venueShoots.length} Total Shoot
+                          {venueShoots.length === 1 ? "" : "s"}
+                        </span>*/}
                       </div>
                     </div>
 
@@ -331,7 +337,7 @@ const ShootList = ({
                                   colSpan={4}
                                   className="fw-bold bg-info-subtle"
                                 >
-                                  {s.name}
+                                  {s.sname}
                                 </td>
                               </tr>
 
