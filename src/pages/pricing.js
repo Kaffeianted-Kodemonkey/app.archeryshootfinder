@@ -164,6 +164,11 @@ const PricingPage = () => {
       <Seo title="Pricing - Claim or Upgrade Your Venue" />
       {/* pt-5 pushes content below sticky navbars. pb-5 forces a bottom buffer area. */}
       <main className="container pt-5 pb-5 my-5">
+        <div class="alert alert-warning" role="alert">
+          App is in Development using Mock Data!
+          <br />
+          Subcriptions do not work in <strong>TEST MODE</strong>!
+        </div>
         <div className="text-center mb-5">
           <h1 className="fs-2 mb-3 lead text-center">
             {claimInfo && (

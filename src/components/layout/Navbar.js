@@ -146,7 +146,7 @@ const Navbar = ({ siteTitle, siteDesc }) => {
                     Admin Dashboard
                   </Link>
                 </li>
-                <li className="nav-item">
+                {/* <li className="nav-item">
                   <Link
                     to="/portal/profile"
                     className="btn btn-outline-light btn-sm px-3"
@@ -154,7 +154,7 @@ const Navbar = ({ siteTitle, siteDesc }) => {
                   >
                     Venue Profile
                   </Link>
-                </li>
+                </li>*/}
                 <li className="nav-item">
                   <button
                     className="btn btn-outline-light btn-sm px-3 snipcart-edit-profile"

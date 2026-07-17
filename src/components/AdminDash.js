@@ -141,6 +141,12 @@ const Dashboard = ({ user }) => {
 
   return (
     <div>
+      <div class="alert alert-warning" role="alert">
+        App is in Development using Mock Data!
+        <br />
+        Subcriptions do not work in <strong>TEST MODE</strong>!
+      </div>
+
       {/* 1. INTERACTION CHART: Right underneath the welcome line header */}
       <div className="bg-light rounded border p-4 shadow-sm mb-4">
         <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
@@ -302,7 +308,17 @@ const Dashboard = ({ user }) => {
                         <label for="img" className="col-form-label fw-bold">
                           Enter Logo or Banner image:
                         </label>
-                        <input type="file" className="form-control" id="img" />
+                        <input
+                          type="file"
+                          className="form-control"
+                          id="img"
+                          value={venue.image || ""}
+                          onChange={e => {
+                            // later: update your state here
+                            console.log("New tagline:", e.target.value)
+                          }}
+                          placeholder="Enter Logo"
+                        />
                       </div>
                     </div>
                     <div className="row">
@@ -311,7 +327,17 @@ const Dashboard = ({ user }) => {
                         <label for="alt" className="col-form-label fw-bold">
                           Image/Logo Name for alt tag:
                         </label>
-                        <input type="text" className="form-control" id="alt" />
+                        <input
+                          type="text"
+                          className="form-control"
+                          id="alt"
+                          value={venue.alt || ""}
+                          onChange={e => {
+                            // later: update your state here
+                            console.log("New tagline:", e.target.value)
+                          }}
+                          placeholder="Enter image/logo name"
+                        />
                       </div>
                     </div>
                   </div>
