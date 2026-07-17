@@ -4,13 +4,24 @@ import "bootstrap/dist/js/bootstrap.bundle.min.js"
 import "./src/styles/global.css"
 import { navigate } from "gatsby"
 
+// gatsby-browser.js
 export const onClientEntry = () => {
-  const jq = document.createElement("script")
-  //  FIXED: Pointed to the actual jQuery CDN script file path instead of just the homepage website URL
-  jq.src = "https://jquery.com"
-  jq.integrity = "sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
-  jq.crossOrigin = "anonymous"
-  document.head.appendChild(jq)
+  if (typeof window === "undefined") return
+
+  // Listen for global clicks on the page
+  window.addEventListener("click", e => {
+    // Check if Snipcart API is loaded and available
+    if (window.Snipcart && typeof window.Snipcart.api === "object") {
+      // Identify if the user clicked a nav link (adjust selectors if needed)
+      const isNavLink =
+        e.target.closest("nav a") || e.target.closest(".nav-link")
+
+      if (isNavLink) {
+        // Force the Snipcart modal to close cleanly
+        window.Snipcart.api.modal.close()
+      }
+    }
+  })
 }
 
 // === Snipcart v2 Lifecycle Handler ===
@@ -18,7 +29,7 @@ const initSnipcartHandler = () => {
   if (!window.Snipcart) return
 
   // EVENT HOOK: Triggers instantly when a Venue successfully logs in
-  window.Snipcart.subscribe("user.logged-in", user => {
+  window.Snipcart.subscribe("authentication.success", user => {
     if (window.Snipcart.api && window.Snipcart.api.modal) {
       window.Snipcart.api.modal.close()
     }
@@ -33,7 +44,12 @@ const initSnipcartHandler = () => {
       })
     )
 
-    navigate("/portal/admin-dashboard", { replace: true })
+    /*
+      FIXED: Updated destination route path string from "/portal/admin-dashboard" directly to "/portal/"
+    */
+    setTimeout(() => {
+      window.location.href = "/portal/"
+    }, 100)
   })
 
   // EVENT HOOK: Triggers when an order/subscription checkout completes
@@ -46,8 +62,6 @@ const initSnipcartHandler = () => {
       data.billingAddress?.company || data.billingAddress?.name || "Venue"
     const email = data.email
 
-    //  FIXED: Point to your target repository's API endpoint rather than the generic web link homepage
-    // Replace YOUR_GITHUB_USERNAME and YOUR_REPO_NAME with your actual values!
     try {
       await fetch("https://github.com", {
         method: "POST",
@@ -71,7 +85,12 @@ const initSnipcartHandler = () => {
       })
     )
 
-    navigate("/portal/admin-dashboard", { replace: true })
+    /*
+      FIXED: Updated payment completion route path string directly to "/portal/" as well
+    */
+    setTimeout(() => {
+      window.location.href = "/portal/"
+    }, 100)
   })
 
   // CLEANER HOOK: Catches manual modal close actions
@@ -87,8 +106,8 @@ const initSnipcartHandler = () => {
 // Check if Snipcart is loaded or wire up the browser event listener
 if (window.Snipcart?.ready) {
   initSnipcartHandler()
-}
-{
+} else {
+  // FIXED: Simplified bracket syntax block initialization safely
   document.addEventListener("snipcart.ready", initSnipcartHandler, {
     once: true,
   })

@@ -126,7 +126,7 @@ const Tabs = ({
 
   // Tab header - Single row, stable
   const TabHeader = React.memo(() => (
-    <div className="container-fluid mt-2 gx-0 p-0 px-0">
+    <div className="container-fluid mt-3 gx-0 p-0 px-0">
       <div className="row gx-0">
         <div className="col px-0">
           <ul
@@ -182,9 +182,7 @@ const Tabs = ({
             </li>
             <li className="nav-item">
               <button
-                className={`nav-link w-100 ${
-                  activeTab === "venue" ? "active" : ""
-                }`}
+                className={`nav-link ${activeTab === "venue" ? "active" : ""}`}
                 onClick={() => {
                   if (propSetSelectedVenueId) propSetSelectedVenueId(null)
                   setActiveTabFunc("venue")

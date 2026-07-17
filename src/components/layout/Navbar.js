@@ -96,6 +96,11 @@ const Navbar = ({ siteTitle, siteDesc }) => {
         >
           <ul className="navbar-nav me-auto">
             <li className="nav-item">
+              <Link to="/" className="nav-link" onClick={handleLinkClick}>
+                Home
+              </Link>
+            </li>
+            <li className="nav-item">
               <Link
                 to="/pricing"
                 className="nav-link"
@@ -123,66 +128,70 @@ const Navbar = ({ siteTitle, siteDesc }) => {
               </Link>
             </li>
           </ul>
-
           {/* RIGHT SIDE: Dynamic Auth Navigation Panel */}
-          <div className="d-flex align-items-center gap-2 ms-auto">
+          <ul className="navbar-nav ms-auto gap-2">
             {loggedInuser ? (
               <>
-                <span className="text-white small d-none d-md-inline me-2 fw-bold">
-                  {loggedInuser.name}
-                </span>
-
-                {/* Dashboard route matches our new landing page design */}
-                <Link
-                  to="/portal/"
-                  className="btn btn-outline-light btn-sm px-3"
-                  onClick={handleLinkClick}
-                >
-                  Admin Dashboard
-                </Link>
-
-                {/* Profiles pull dynamically straight out of MongoDB */}
-                <Link
-                  to="/portal/profile"
-                  className="btn btn-outline-light btn-sm px-3"
-                  onClick={handleLinkClick}
-                >
-                  Venue Profile
-                </Link>
-
-                {/* Uses native class tag so clicking immediately displays their invoices and logs */}
-                <button
-                  className="btn btn-outline-light btn-sm px-3 snipcart-edit-profile"
-                  onClick={handleLinkClick}
-                >
-                  Billing
-                </button>
-
-                <button
-                  className="btn btn-outline-light btn-sm px-3 snipcart-user-profile"
-                  onClick={handleLinkClick}
-                >
-                  Subscriptions
-                </button>
-
-                <button
-                  onClick={handleLogoutClick}
-                  className="btn btn-dark btn-sm px-3"
-                >
-                  Logout
-                </button>
+                <li className="nav-item d-none d-md-inline">
+                  <span className="text-white small fw-bold me-2">
+                    {loggedInuser.name}
+                  </span>
+                </li>
+                <li className="nav-item">
+                  <Link
+                    to="/portal/"
+                    className="btn btn-outline-light btn-sm px-3"
+                    onClick={handleLinkClick}
+                  >
+                    Admin Dashboard
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link
+                    to="/portal/profile"
+                    className="btn btn-outline-light btn-sm px-3"
+                    onClick={handleLinkClick}
+                  >
+                    Venue Profile
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <button
+                    className="btn btn-outline-light btn-sm px-3 snipcart-edit-profile"
+                    onClick={handleLinkClick}
+                  >
+                    Billing
+                  </button>
+                </li>
+                <li className="nav-item">
+                  <button
+                    className="btn btn-outline-light btn-sm px-3 snipcart-user-profile"
+                    onClick={handleLinkClick}
+                  >
+                    Subscriptions
+                  </button>
+                </li>
+                <li className="nav-item">
+                  <button
+                    onClick={handleLogoutClick}
+                    className="btn btn-dark btn-sm px-3"
+                  >
+                    Logout
+                  </button>
+                </li>
               </>
             ) : (
-              // Replaced plain pop-up trigger button with clean link routing to our split login layout page
-              <Link
-                to="/login"
-                className="btn btn-warning btn-sm px-4 fw-bold"
-                onClick={handleLinkClick}
-              >
-                Login
-              </Link>
+              <li className="nav-item">
+                <Link
+                  to="/login"
+                  className="btn btn-warning btn-sm px-4 fw-bold"
+                  onClick={handleLinkClick}
+                >
+                  Login
+                </Link>
+              </li>
             )}
-          </div>
+          </ul>
         </div>
       </div>
     </nav>
