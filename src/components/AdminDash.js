@@ -114,12 +114,15 @@ const Dashboard = ({ user }) => {
 
   return (
     <div>
+<<<<<<< HEAD
       <div className="alert alert-warning" role="alert">
         App is in Development using Mock Data!
         <br />
         Subcriptions do not work in <strong>TEST MODE</strong>!
       </div>
 
+=======
+>>>>>>> parent of c8ca13b (add alert for Test Mode.)
       {/* 1. INTERACTION CHART: Right underneath the welcome line header */}
       <div className="bg-light rounded border p-4 shadow-sm mb-4">
         <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
@@ -219,6 +222,7 @@ const Dashboard = ({ user }) => {
               data-bs-parent="#venueAccordion"
             >
               <div className="accordion-body">
+<<<<<<< HEAD
                 {/*  VName and AccOwner */}
                 <fieldset>
                   {/*  VName and AccOwner */}
@@ -268,6 +272,79 @@ const Dashboard = ({ user }) => {
                         }}
                         placeholder="Enter Account Owner name"
                       />
+=======
+                {/* Venue Name */}
+                <div className="row mb-3">
+                  <div className="col-10 col-md-6">
+                    <label for="vname" className="col-form-label fw-bold">
+                      Venue Name: <span className="text-danger">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="vname"
+                      value={venue.vname || ""}
+                      onChange={e => {
+                        // later: update your state here
+                        console.log("New tagline:", e.target.value)
+                      }}
+                      placeholder="Enter Company/Venue Name"
+                    />
+                  </div>
+                  {/* Venue Tagline */}
+                  <div className="col-10 col-md-6">
+                    <label for="tagline" className="col-form-label fw-bold">
+                      Venue Tagline: <span className="text-danger">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="tagline"
+                      value={venue.tagline || ""}
+                      onChange={e => {
+                        // later: update your state here
+                        console.log("New tagline:", e.target.value)
+                      }}
+                      placeholder="Enter short description for venue"
+                    />
+                  </div>
+                </div>
+                {/* Venue Bio & Image/Alt */}
+                <div className="row mb-3">
+                  <div className="col-10 col-md-6">
+                    <label for="bio" className="form-label fw-bold">
+                      About Facility:
+                    </label>
+                    <textarea
+                      className="form-control"
+                      id="bio"
+                      value={venue.bio || ""}
+                      onChange={e => {
+                        // later: update your state here
+                        console.log("New tagline:", e.target.value)
+                      }}
+                      placeholder="Enter short description for venue"
+                    />
+                  </div>
+                  <div className="col-10 col-md-6">
+                    {/* Log Banner image */}
+                    <div className="row mb-3">
+                      <div className="col">
+                        <label for="img" className="col-form-label fw-bold">
+                          Enter Logo or Banner image:
+                        </label>
+                        <input type="file" className="form-control" id="img" />
+                      </div>
+                    </div>
+                    <div className="row">
+                      {/* Alt tag for image */}
+                      <div className="col">
+                        <label for="alt" className="col-form-label fw-bold">
+                          Image/Logo Name for alt tag:
+                        </label>
+                        <input type="text" className="form-control" id="alt" />
+                      </div>
+>>>>>>> parent of c8ca13b (add alert for Test Mode.)
                     </div>
                   </div>
                   {/* Tagline & Venue Bio */}
