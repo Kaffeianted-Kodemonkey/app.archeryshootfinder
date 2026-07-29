@@ -149,103 +149,113 @@ exports.onCreatePage = async ({ page, actions }) => {
 exports.createSchemaCustomization = ({ actions }) => {
   const { createTypes } = actions
   const typeDefs = `
-    type VenuesJson implements Node {
-      id: ID!
-      venueId: String!
-      vname: String
-      venueType: String
-      slug: String
-      description: String
-      tagline: String
-      bio: String
-      rulesGuidlines: String
-      subscription: String
-      membership: String
-      tier: String
-      img: String
-      alt: String
-      isClaimed: Boolean!
-      sanctioning: [String]
-      terrain: [String]
-      amenities: [String]
-      equipmentAllowed: [String]
-      facilities: [String]
-      services: [String]
-      bowTypes: [String]
-      hours: [Hours]
-      location: Location
-      contact: Contact
-    }
+     type VenuesJson implements Node {
+       venueId: String!              # Your internal Venue Mongo ID mapping
+       vname: String                 # Passed from Snipcart (data-item-name or custom fields)
+       accOwner: String              # Account owner / Business name from Snipcart Billing
+       venueType: [String!]
+       isClaimed: Boolean!           # SET BY SYSTEM TO true ONCE SECURE WEBHOOK FIRES
+       isLeague: Boolean!
+       isClass: Boolean!
+       isMembership: Boolean!
+       slug: String
+       img: String
+       alt: String
+       tagline: String
+       bio: String
+       behavioralRules: [String]
+       gearControl: [String]
+       safteyEtiquette: [String]
+       location: Location            # Populated with Snipcart Billing Address data
+       contact: Contact              # Populated with Snipcart Customer Account data
+       hours: [Hours]
+       rangeType: [String]
+       targetType: [String]
+       arrowTuningIndoor: [String]
+       arrowTuningOutdoor: [String]
+       maxDistIndoor: String
+       maxDistOutdoor: String
+       laneCapIndoor: String
+       laneCapOutdoor: String
+       amenities: [String]
+       services: [String]
+       equipmentAllowed: [String]
+       sanctioning: [String]
+       bowTypes: [String]
 
-    type ShootsJson implements Node {
-      id: ID!
-      shootId: Int
-      sname: String
-      slug: String
-      venueId: String!
-      venue: VenuesJson @link(by: "venueId", from: "venueId")
-      shootLocation: Location
-      useVenueLocation: Boolean
-      date: Date
-      endDate: Date
-      startTime: String
-      endTime: String
-      shootFormat: [String]
-      shootClass: [String]
-      #customClass: [String]
-      bowTypes: [String]
-      skillLevel: [String]
-      terrain: [String]
-      entryFee: String
-      pricing: [ShootPrice]
-      currency: String
-      prizes: String
-      registrationUrl: String
-      amenities: [String]
-      isDestination: Boolean
-      isVerified: Boolean
+       # === NEW SNIPCART V2 FIELDS ADDED HERE ===
+       snipcartUserId: String        # Links the venue to their Snipcart Customer Profile ID
+       subscriptionId: String        # Tracks active Snipcart V2 Subscription Contract
+       subscriptionStatus: String    # e.g., "Active", "Paused", "Cancelled"
+       invoiceNumber: String         # Last successful transaction reference code
+     }
 
-    }
+     type ShootsJson implements Node {
+       shootId: Int
+       sname: String
+       slug: String
+       venueId: String!
+       venue: VenuesJson @link(by: "venueId", from: "venueId")
+       shootLocation: Location
+       useVenueLocation: Boolean
+       date: Date
+       endDate: Date
+       startTime: String
+       endTime: String
+       shootFormat: [String]
+       shootClass: [String]
+       bowTypes: [String]
+       skillLevel: [String]
+       terrain: [String]
+       entryFee: String
+       pricing: [ShootPrice]
+       currency: String
+       prizes: String
+       registrationUrl: String
+       amenities: [String]
+       isDestination: Boolean
+       isVerified: Boolean
+     }
 
-    type Location {
-      address: String
-      city: String
-      state: String
-      zip: String
-      lat: Float
-      lng: Float
-    }
+     type Location {
+       address: String               # Maps to Snipcart's address1 + address2
+       city: String                  # Maps to Snipcart's city
+       state: String                 # Maps to Snipcart's province
+       zip: String                   # Maps to Snipcart's postalCode
+       lat: Float
+       lng: Float
+     }
 
-    type Contact {
-      phone: String
-      email: String
-      website: String
-      socials: [Social]
-    }
+     type Contact {
+       phone: String                 # Maps to Snipcart's billingAddress.phone
+       email: String                 # Maps to Snipcart's customer order email
+       website: String
+       socials: Social
+     }
 
-    type Social {
-      name: String
-      url: String
-    }
+     type Social {
+       name: String
+       url: String
+     }
 
-    type Hours {
-      day: String
-      open: String
-      close: String
-      isClosed: Boolean
-    }
+     type Hours {
+       day: String
+       open: String
+       close: String
+       isClosed: Boolean
+     }
 
-    type ShootPrice {
-      tier: String     # Fixed: Changed from missing 'ShootClass' enum to flat String
-      note: String
-      options: [PriceOption]
-    }
+     type ShootPrice {
+       tier: String
+       note: String
+       options: [PriceOption]
+     }
 
-    type PriceOption {
-      days: Int
-      cost: Float
-      currency: String
-    }
-  `
+     type PriceOption {
+       days: Int
+       cost: Float
+       currency: String
+     }
+   `
   createTypes(typeDefs)
 }

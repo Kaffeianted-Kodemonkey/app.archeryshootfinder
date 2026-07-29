@@ -140,22 +140,13 @@ const venueTiers = [
 
 const PricingPage = () => {
   const [claimInfo, setClaimInfo] = useState(null)
+  //const [venueId, setVenueId] = useState("")
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search)
-      const claimVenueId = params.get("claimVenueId")
+      //const claimVenueId = params.get("claimVenueId")
       const venueName = params.get("venueName")
-
-      // Only set claimInfo when a venue is actually being claimed
-      if (claimVenueId) {
-        setClaimInfo({
-          id: claimVenueId,
-          name: venueName ? decodeURIComponent(venueName) : "this venue",
-        })
-      } else {
-        setClaimInfo(null) // new venue → no message
-      }
     }
   }, [])
 
