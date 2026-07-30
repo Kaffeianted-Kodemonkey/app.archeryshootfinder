@@ -34,45 +34,28 @@ const SpotlightTemplate = ({ data }) => {
       </button>
 
       <main className="container py-5 border border-2 border-warning-subtle bg-white rounded shadow-sm">
-        {/* HERO / LOGO IMAGE */}
-        <div className="row px-3 py-5 mb-4 text-body-emphasis">
-          <div className="col">
-            {venue.img ? (
-              <img
-                src={venue.img}
-                alt={venue.alt || venue.vname}
-                className="img-fluid rounded shadow-sm"
-                style={{
-                  maxHeight: "400px",
-                  width: "100%",
-                  objectFit: "cover",
-                }}
-              />
-            ) : (
-              <div className="bg-light border rounded p-5 text-center text-muted">
-                No image provided
-              </div>
-            )}
-          </div>
+        {/* TITLE AND TAGLINE & HERO IMAGE */}
+        <div className="row px-3 py-5 mb-4  text-body-emphasis">
+          <div className="col">[venue image here]</div>
         </div>
-
         {/* TITLE AND TAGLINE */}
         <div className="row px-3 pt-3 mb-4 text-body-emphasis border-top border-bottom border-2 border-success bg-success-subtle">
           <div className="col">
-            {/* venueType */}
+            {/* {venue.isClaimed && (
+              <span className="badge bg-success py-2 px-2 me-2 mb- fw-bold small">
+                <i className="bi bi-check-lg"></i> Verified Listing
+              </span>
+            )}*/}
             <span className="badge bg-primary mb-3 py-2 px-3 fw-bold small">
               <i className="bi bi-building-gear"></i>{" "}
               {venue.venueType?.replace("_", " ")}
             </span>
-            {/* vname */}
             <h1 className="display-6 fst-italic">{venue.vname}</h1>
-            {/* tagline */}
             <p className="lead my-3">{venue.tagline}</p>
           </div>
         </div>
         {/* CONTACT & lOCATION INFO */}
         <div className="row g-4 justify-content-center">
-          {/* contact */}
           <div className="col-md-6">
             <div className="p-3 border border-2 border-dark-subtle bg-body-tertiary rounded shadow-sm h-100">
               <h2 className="fs-2">Contact Info</h2>
@@ -96,12 +79,7 @@ const SpotlightTemplate = ({ data }) => {
           </div>
           <div className="col-md-6">
             <div className="p-3 border border-2 border-dark-subtle bg-body-tertiary rounded shadow-sm h-100">
-              <h2 className="fs-2 ">Hours & Location</h2>
-              {/* hours */}
-              <p className="fs-5">
-                <strong>Hours:</strong> {venue.hours || "TBD"}
-              </p>
-              {/* location */}
+              <h2 className="fs-2">Location & Directions</h2>
               <p className="fs-5">
                 <strong>Address:</strong>{" "}
                 {venue.location.address || "No Address listed"}
@@ -120,14 +98,12 @@ const SpotlightTemplate = ({ data }) => {
         </div>
         {/* ABOUT & AMENITIES*/}
         <div className="row mt-3">
-          {/* bio */}
           <div className="col-12 p-3">
             <h2 className="fw-bold text-dark border-bottom pb-2 mb-3">
               Our Facility
             </h2>
             <p>{venue.bio || "No Bio Listed"}</p>
           </div>
-          {/* amenities */}
           <div className="col p-3">
             <h3 className="fw-bold text-dark border-bottom pb-2 mb-3">
               Amenities
@@ -160,7 +136,7 @@ const SpotlightTemplate = ({ data }) => {
         </div>
         <hr />
 
-        {/* Standalone Equipment, Rentals & Tech Services Component - Pro Shops only */}
+        {/* Standalone Equipment, Rentals & Tech Services Component  */}
         <div className="row mt-3 mb-3">
           <h3 className="fs-4 fw-bold text-dark pb-2 mb-1">
             <i className="bi bi-tools text-primary me-1"></i> Equipment & Pro
@@ -580,7 +556,7 @@ export const query = graphql`
       rulesGuidlines
       subscription
       membership
-      # tier
+      tier
       img
       alt
       isClaimed
