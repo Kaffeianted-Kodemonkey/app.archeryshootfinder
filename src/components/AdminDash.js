@@ -142,7 +142,10 @@ const Dashboard = ({ user }) => {
   return (
     <div>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> parent of 1c4092b (update code to add snipcart data to the database)
       <div class="alert alert-warning" role="alert">
         App is in Development using Mock Data!
         <br />
@@ -253,6 +256,7 @@ const Dashboard = ({ user }) => {
               <div className="accordion-body">
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                 {/*  VName and AccOwner */}
                 <fieldset>
                   {/*  VName and AccOwner */}
@@ -303,6 +307,8 @@ const Dashboard = ({ user }) => {
                         placeholder="Enter Account Owner name"
                       />
 =======
+=======
+>>>>>>> parent of 1c4092b (update code to add snipcart data to the database)
 =======
 >>>>>>> parent of 1c4092b (update code to add snipcart data to the database)
                 {/* Venue Name */}
@@ -366,8 +372,11 @@ const Dashboard = ({ user }) => {
                           Enter Logo or Banner image:
                         </label>
 <<<<<<< HEAD
+<<<<<<< HEAD
                         <input type="file" className="form-control" id="img" />
 =======
+=======
+>>>>>>> parent of 1c4092b (update code to add snipcart data to the database)
                         <input
                           type="file"
                           className="form-control"
@@ -379,6 +388,9 @@ const Dashboard = ({ user }) => {
                           }}
                           placeholder="Enter Logo"
                         />
+<<<<<<< HEAD
+>>>>>>> parent of 1c4092b (update code to add snipcart data to the database)
+=======
 >>>>>>> parent of 1c4092b (update code to add snipcart data to the database)
                       </div>
                     </div>
@@ -389,8 +401,11 @@ const Dashboard = ({ user }) => {
                           Image/Logo Name for alt tag:
                         </label>
 <<<<<<< HEAD
+<<<<<<< HEAD
                         <input type="text" className="form-control" id="alt" />
 =======
+=======
+>>>>>>> parent of 1c4092b (update code to add snipcart data to the database)
                         <input
                           type="text"
                           className="form-control"
@@ -402,6 +417,9 @@ const Dashboard = ({ user }) => {
                           }}
                           placeholder="Enter image/logo name"
                         />
+<<<<<<< HEAD
+>>>>>>> parent of 1c4092b (update code to add snipcart data to the database)
+=======
 >>>>>>> parent of 1c4092b (update code to add snipcart data to the database)
                       </div>
                     </div>
