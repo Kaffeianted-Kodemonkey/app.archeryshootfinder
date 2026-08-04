@@ -149,66 +149,7 @@ exports.onCreatePage = async ({ page, actions }) => {
 exports.createSchemaCustomization = ({ actions }) => {
   const { createTypes } = actions
   const typeDefs = `
-<<<<<<< HEAD
     type VenuesJson implements Node {
-      id: ID!
-      venueId: String!
-      vname: String
-      venueType: String
-      slug: String
-      description: String
-      tagline: String
-      bio: String
-      rulesGuidlines: String
-      subscription: String
-      membership: String
-      tier: String
-      img: String
-      alt: String
-      isClaimed: Boolean!
-      sanctioning: [String]
-      terrain: [String]
-      amenities: [String]
-      equipmentAllowed: [String]
-      facilities: [String]
-      services: [String]
-      bowTypes: [String]
-      hours: [Hours]
-      location: Location
-      contact: Contact
-    }
-
-    type ShootsJson implements Node {
-      id: ID!
-      shootId: Int
-      sname: String
-      slug: String
-      venueId: String!
-      venue: VenuesJson @link(by: "venueId", from: "venueId")
-      shootLocation: Location
-      useVenueLocation: Boolean
-      date: Date
-      endDate: Date
-      startTime: String
-      endTime: String
-      shootFormat: [String]
-      shootClass: [String]
-      #customClass: [String]
-      bowTypes: [String]
-      skillLevel: [String]
-      terrain: [String]
-      entryFee: String
-      pricing: [ShootPrice]
-      currency: String
-      prizes: String
-      registrationUrl: String
-      amenities: [String]
-      isDestination: Boolean
-      isVerified: Boolean
-
-    }
-=======
-     type VenuesJson implements Node {
        venueId: String!              # Your internal Venue Mongo ID mapping
        vname: String                 # Passed from Snipcart (data-item-name or custom fields)
        accOwner: String              # Account owner / Business name from Snipcart Billing
@@ -277,7 +218,6 @@ exports.createSchemaCustomization = ({ actions }) => {
        isDestination: Boolean
        isVerified: Boolean
      }
->>>>>>> FixNodeJS
 
     type Location {
       address: String
@@ -288,42 +228,23 @@ exports.createSchemaCustomization = ({ actions }) => {
       lng: Float
     }
 
-<<<<<<< HEAD
-    type Contact {
-      phone: String
-      email: String
-      website: String
-      socials: [Social]
-    }
-=======
      type Contact {
        phone: String                 # Maps to Snipcart's billingAddress.phone
        email: String                 # Maps to Snipcart's customer order email
        website: String
        socials: [Social]
      }
->>>>>>> FixNodeJS
 
-    type Social {
+     type Social {
       name: String
       url: String
     }
 
-<<<<<<< HEAD
     type Hours {
       day: String
       open: String
       close: String
-      isClosed: Boolean
     }
-=======
-     type Hours {
-       day: String
-       open: String
-       close: String
-    #   isClosed: Boolean
-     }
->>>>>>> FixNodeJS
 
     type ShootPrice {
       tier: String     # Fixed: Changed from missing 'ShootClass' enum to flat String
