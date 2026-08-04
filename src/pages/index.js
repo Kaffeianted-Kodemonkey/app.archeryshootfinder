@@ -290,109 +290,54 @@ export const Head = () => <Seo title="Home" />
 export default IndexPage
 
 export const query = graphql`
-  query AllData {
-    # 1. Fetch the Venues
-    allVenuesJson {
-      nodes {
-        id
-        venueId
-        slug
-        vname
-        bio
-        description
-        venueType
-        subscription
-        img
-        alt
-        location {
-          address
-          city
-          state
-          zip
-          lat
-          lng
-        }
-        contact {
-          phone
-          email
-          website
-          socials {
-            name
-            url
-          }
-        }
-        facilities
-        amenities
-        equipmentAllowed
-        rulesGuidlines
-        hours {
-          day
-          open
-          close
-          isClosed
-        }
-        membership
-        isClaimed
-      }
-    }
-
-    # 2. ADD THIS: Fetch the Shoots
+  query IndexPageData {
     allShootsJson {
       nodes {
-        id
         shootId
         sname
+        slug
+        venueId
         date
         endDate
         startTime
         endTime
-        amenities
-        useVenueLocation
-        shootLocation {
-          lat
-          lng
-          city
-          state
-        }
         shootFormat
         shootClass
-        terrain
         bowTypes
         skillLevel
+        terrain
         entryFee
-        pricing {
-          tier
-          note
-          options {
-            days
-            cost
-            currency
-          }
+        description
+        useVenueLocation
+        shootLocation {
+          address
+          city
+          state
+          zip
         }
-
-        prizes
-        isVerified
-        isDestination
-        # Link back to venue for your "shootsWithVenues" logic
-        venueId
         venue {
-          venueId
-          isClaimed
           vname
-          description
-          slug
-          contact {
-            phone
-            email
-          }
+          venueType
+          isClaimed
           location {
-            address
             city
             state
-            lat
-            lng
           }
-          subscription
+        }
+      }
+    }
+    allVenuesJson {
+      nodes {
+        venueId
+        vname
+        slug
+        venueType
+        isClaimed
+        subscriptionPlan
+        bio
+        location {
+          city
+          state
         }
       }
     }

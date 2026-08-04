@@ -550,21 +550,26 @@ export const query = graphql`
       vname
       venueType
       slug
-      description
       tagline
       bio
+<<<<<<< HEAD
       rulesGuidlines
       subscription
       membership
       tier
+=======
+      behavioralRules
+      gearControl
+      safteyEtiquette
+      subscriptionStatus
+      isMembership
+      subscriptionPlan
+>>>>>>> FixNodeJS
       img
       alt
       isClaimed
       sanctioning
-      terrain
       amenities
-      equipmentAllowed
-      facilities
       services
       bowTypes
       hours {
