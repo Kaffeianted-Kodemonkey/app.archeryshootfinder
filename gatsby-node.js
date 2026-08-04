@@ -153,7 +153,7 @@ exports.createSchemaCustomization = ({ actions }) => {
        venueId: String!              # Your internal Venue Mongo ID mapping
        vname: String                 # Passed from Snipcart (data-item-name or custom fields)
        accOwner: String              # Account owner / Business name from Snipcart Billing
-       venueType: [String!]
+       venueType: String!
        isClaimed: Boolean!           # SET BY SYSTEM TO true ONCE SECURE WEBHOOK FIRES
        isLeague: Boolean!
        isClass: Boolean!
