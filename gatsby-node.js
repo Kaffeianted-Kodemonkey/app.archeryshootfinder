@@ -37,7 +37,7 @@ exports.sourceNodes = async ({
 
   try {
     await client.connect()
-    const db = client.db("ASFinder") // Change to your exact DB name
+    const db = client.db("ASFinder") // Change to your eact DB name
 
     // 2. Fetch data from your collections
     const venuesData = await db.collection("venues").find({}).toArray()
@@ -59,7 +59,7 @@ exports.sourceNodes = async ({
         Object.assign(
           {},
           venue,
-          { vname: venue.vname || venue.name }, // ← this makes vname actually exist on the node
+          { vname: venue.vname || venue.name }, // ← this makes vname actually eist on the node
           nodeMeta
         )
       )
@@ -101,7 +101,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     }
   `)
 
-  // Handle data query error exceptions safely
+  // Handle data query error eceptions safely
   if (result.errors) {
     reporter.panicOnBuild(
       `Error while running GraphQL query inside gatsby-node.js`,
@@ -115,13 +115,13 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
 
   // 2. Loop through every venue item and programmatically create their public URL
   venues.forEach(venue => {
-    // Generate an fallback slug configuration if one isn't explicitly defined in the file
+    // Generate an fallback slug configuration if one isn't eplicitly defined in the file
     const pathSlug = venue.slug ? venue.slug : `venue-${venue.venueId}`
 
     createPage({
       path: `/venues/${pathSlug}`, // The public URL path structure
       component: spotlightTemplate, // Target layout rendering template file
-      context: {
+      contet: {
         // Pass the internal Gatsby node ID to the template page-query as a variable
         id: venue.id,
         venueId: venue.venueId,
@@ -171,15 +171,15 @@ exports.createSchemaCustomization = ({ actions }) => {
        hours: [Hours]
        rangeType: [String]
        targetType: [String]
-       arrowTuningIndoor: [String]
-       arrowTuningOutdoor: [String]
-       maxDistIndoor: String
-       maxDistOutdoor: String
+       tuningIndoor: [String]
+       tuningOutdoor: [String]
+       maDistIndoor: String
+       maDistOutdoor: String
        laneCapIndoor: String
        laneCapOutdoor: String
        amenities: [String]
        services: [String]
-       equipmentAllowed: [String]
+    #   equipmentAllowed: [String]
        sanctioning: [String]
        bowTypes: [String]
 
@@ -187,7 +187,8 @@ exports.createSchemaCustomization = ({ actions }) => {
        snipcartUserId: String        # Links the venue to their Snipcart Customer Profile ID
        subscriptionId: String        # Tracks active Snipcart V2 Subscription Contract
        subscriptionStatus: String    # e.g., "Active", "Paused", "Cancelled"
-       invoiceNumber: String         # Last successful transaction reference code
+       subscriptionPlan: String
+    #   invoiceNumber: String         # Last successful transaction reference code
      }
 
      type ShootsJson implements Node {
@@ -196,6 +197,7 @@ exports.createSchemaCustomization = ({ actions }) => {
        slug: String
        venueId: String!
        venue: VenuesJson @link(by: "venueId", from: "venueId")
+       description: String
        shootLocation: Location
        useVenueLocation: Boolean
        date: Date
@@ -230,7 +232,7 @@ exports.createSchemaCustomization = ({ actions }) => {
        phone: String                 # Maps to Snipcart's billingAddress.phone
        email: String                 # Maps to Snipcart's customer order email
        website: String
-       socials: Social
+       socials: [Social]
      }
 
      type Social {
@@ -242,7 +244,7 @@ exports.createSchemaCustomization = ({ actions }) => {
        day: String
        open: String
        close: String
-       isClosed: Boolean
+    #   isClosed: Boolean
      }
 
      type ShootPrice {

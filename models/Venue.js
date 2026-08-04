@@ -1,74 +1,60 @@
 import mongoose from "mongoose"
 
 const VenueSchema = new mongoose.Schema({
-  // === Core / Webhook Fields ===
   venueId: { type: String, required: true, unique: true },
   vname: { type: String, default: "" },
   isClaimed: { type: Boolean, default: false },
   accOwner: { type: String, default: "" },
 
-  // === Location & Contact ===
   location: {
-    address: { type: String, default: "" },
-    city: { type: String, default: "" },
-    state: { type: String, default: "" },
-    zip: { type: String, default: "" },
+    address: String,
+    city: String,
+    state: String,
+    zip: String,
   },
   contact: {
-    phone: { type: String, default: "" },
-    email: { type: String, default: "" },
-    website: { type: String, default: "" },
+    phone: String,
+    email: String,
+    website: String,
     socials: [{ name: String, url: String }],
   },
 
-  // === Snipcart Tracking ===
   snipcartUserId: { type: String, default: null },
   subscriptionId: { type: String, default: null },
   subscriptionStatus: { type: String, default: "Inactive" },
 
-  // === Basic Info ===
-  tagline: { type: String, default: "" },
-  bio: { type: String, default: "" },
-  img: { type: String, default: "" },
-  alt: { type: String, default: "" },
+  tagline: String,
+  bio: String,
+  img: String,
+  alt: String,
+  venueType: String,
+  isMembership: String,
+  isLeague: String,
+  isClass: String,
 
-  // === Membership & Type ===
-  isMembership: { type: String, default: "No" },
-  venueType: { type: String, default: "" },
-  isLeague: { type: String, default: "No" },
-  isClass: { type: String, default: "No" },
-
-  // === Amenities & Sanctions ===
-  amenities: { type: [String], default: [] },
-  sanctioning: { type: [String], default: [] },
-
-  // === Hours of Operation ===
+  amenities: [String],
+  sanctioning: [String],
+  services: [String],
   hours: {
-    day: { type: [String], default: [] },
-    open: { type: String, default: "" },
-    close: { type: String, default: "" },
+    day: [String],
+    open: String,
+    close: String,
   },
 
-  // === Pro Shop Services ===
-  services: { type: [String], default: [] },
-
-  // === Rules & Regulations ===
-  behavioralRules: { type: [String], default: [] },
-  gearControl: { type: [String], default: [] },
-  safetyEtiquette: { type: [String], default: [] },
-
-  // === Range Specifications ===
-  bowTypes: { type: [String], default: [] },
-  tuningIndoors: { type: Boolean, default: false },
-  tuningOutdoors: { type: Boolean, default: false },
-
-  rangeType: { type: [String], default: [] },
-  targetType: { type: [String], default: [] },
-
-  laneCapIndoor: { type: String, default: "" },
-  laneCapOutdoor: { type: String, default: "" },
-  maxDistIndoor: { type: String, default: "" },
-  maxDistOutdoor: { type: String, default: "" },
+  behavioralRules: [String],
+  gearControl: [String],
+  safetyEtiquette: [String],
+  bowTypes: [String],
+  tuningIndoors: Boolean,
+  tuningOutdoors: Boolean,
+  rangeType: [String],
+  targetType: [String],
+  laneCapIndoor: String,
+  laneCapOutdoor: String,
+  maxDistIndoor: String,
+  maxDistOutdoor: String,
 })
 
-export default mongoose.models.Venue || mongoose.model("Venue", VenueSchema)
+const Venue = mongoose.models.Venue || mongoose.model("Venue", VenueSchema)
+
+export default Venue
