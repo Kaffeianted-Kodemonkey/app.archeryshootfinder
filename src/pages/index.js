@@ -18,12 +18,12 @@ const IndexPage = ({ data }) => {
   const Venues = data.allVenuesJson.nodes
   const [view, setView] = useState("map")
 
-  // Local state for filtered shoots, location, tab (decoupled from SearchContext)
+  // Local state for filtered shoots, location, tab
   const [filteredCurrentShoots, setFilteredCurrentShoots] = useState([])
   const [filteredUpcomingShoots, setFilteredUpcomingShoots] = useState([])
   const [userLocation, setUserLocation] = useState(null)
-  const [userState, setUserState] = useState("CO")
-  const [userCountry, setUserCountry] = useState("USA")
+  const [userState, setUserState] = useState(null)
+  const [userCountry, setUserCountry] = useState(null)
   const [showRegionalBanner, setShowRegionalBanner] = useState(false)
   const [activeTab, setActiveTab] = useState("current")
 
@@ -103,7 +103,7 @@ const IndexPage = ({ data }) => {
             lng: position.coords.longitude,
           }
           setUserLocation(loc)
-          setUserCountry("USA")
+          setUserCountry(null)
 
           let geoCurrent = computedCurrentShoots
           let geoUpcoming = computedUpcomingShoots
@@ -115,7 +115,7 @@ const IndexPage = ({ data }) => {
                 s.useVenueLocation !== false && s.venue?.location
                   ? s.venue.location
                   : s.shootLocation
-              return l?.state === userState
+              return !userState || l?.state === userState
             })
 
           // --- Current tab ---
@@ -127,7 +127,8 @@ const IndexPage = ({ data }) => {
           )
           if (
             distCurrent.length === computedCurrentShoots.length &&
-            computedCurrentShoots.length > 0
+            computedCurrentShoots.length > 0 &&
+            userState
           ) {
             showBanner = true
             geoCurrent = applyStateFilter(computedCurrentShoots)
@@ -144,7 +145,8 @@ const IndexPage = ({ data }) => {
           )
           if (
             distUpcoming.length === computedUpcomingShoots.length &&
-            computedUpcomingShoots.length > 0
+            computedUpcomingShoots.length > 0 &&
+            userState
           ) {
             showBanner = true
             geoUpcoming = applyStateFilter(computedUpcomingShoots)
@@ -164,20 +166,6 @@ const IndexPage = ({ data }) => {
     getUserLocation()
   }, [computedCurrentShoots, computedUpcomingShoots /* , allPublishedShoots */])
 
-  // const venueShootCounts = useMemo(() => {
-  //   return Venues.reduce((acc, venue) => {
-  //     // venue.hostedShoots is now an array of objects, not strings
-  //     const validShoots = (venue.hostedShoots || []).filter(shoot => {
-  //       const shootDate = new Date(shoot.date)
-  //       return shootDate > now
-  //     })
-
-  //     acc[venue.id] = validShoots.length
-  //     return acc
-  //   }, {})
-  // }, [Venues, now])
-
-  // Map view props (dynamic based on activeTab)
   const mapProps = useMemo(() => {
     let shootsToPass = []
     let venuesToPass = []
@@ -295,7 +283,6 @@ export const query = graphql`
       nodes {
         shootId
         sname
-        slug
         venueId
         date
         endDate
@@ -314,6 +301,8 @@ export const query = graphql`
           city
           state
           zip
+          lat
+          lng
         }
         venue {
           vname
@@ -322,6 +311,8 @@ export const query = graphql`
           location {
             city
             state
+            lat
+            lng
           }
         }
       }
@@ -338,6 +329,8 @@ export const query = graphql`
         location {
           city
           state
+          lat
+          lng
         }
       }
     }

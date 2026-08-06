@@ -1,6 +1,7 @@
 // src/api/snipcart-webhook.js
 import mongoose from "mongoose"
 import Venue from "../../models/Venue"
+import Shoot from "../../models/Shoot"
 
 const connectDB = async () => {
   if (mongoose.connections.readyState) return

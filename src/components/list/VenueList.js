@@ -51,10 +51,6 @@ const VenueList = ({
   let venues = Array.isArray(allVenues) ? [...allVenues] : []
   const allShoots = [...currentShoots, ...upcomingShoots, ...destinationShoots]
 
-  if (!showUnclaimed) {
-    venues = venues.filter(venue => venue.subscription !== "basic")
-  }
-
   if (venues.length === 0) {
     return (
       <div
@@ -118,7 +114,7 @@ const VenueList = ({
       {venues.map(venue => {
         const venueLocation = venue.location || {}
         const contact = venue.contact || {}
-        const equipment = venue.equipment || {}
+        //const equipment = venue.equipment || {}
         const hours = venue.hours || {}
         const membership = venue.membership || {}
 
@@ -129,19 +125,19 @@ const VenueList = ({
             : "N/A"
 
         const distance = `${distanceValue} mi`
-        const cityState = `${venueLocation.city || ""}, ${
-          venueLocation.state || ""
-        }`
+        const cityState =
+          venueLocation.city && venueLocation.state
+            ? `${venueLocation.city}, ${venueLocation.state}`
+            : "N/A"
 
         const mapping =
           venueTypeMapping[venue.venueType] || venueTypeMapping.default
 
         // Logic helpers
-        const isUnclaimed = venue.subscription === "BASIC"
-        const isNonProfit = venue.subscription === "FREEMIUM"
+        const isUnclaimed = !venue.isClaimed
+        const isNonProfit = venue.subscriptionPlan === "Freemium"
         const isPaidTier =
-          venue.subscription === "PREMIUM" ||
-          venue.subscription === "DESTINATION"
+          venue.subscriptionPlan && venue.subscriptionPlan !== "Freemium"
 
         const hasPhone = contact.phone && contact.phone.trim().length > 0
         const hasEmail = contact.email && contact.email.trim().length > 0
@@ -315,7 +311,7 @@ const VenueList = ({
                       {isNonProfit ? "Verified Club" : "Verified Venue"}
                     </span>
                     <Link
-                      to={`/venues/${venue.slug}`}
+                      to={`/venues/${venue.slug || venue.venueId}`}
                       className="btn btn-sm btn-success"
                     >
                       View Details
@@ -327,9 +323,7 @@ const VenueList = ({
                       <i className="bi bi-question-circle"></i> Unclaimed
                     </span>
                     <Link
-                      to={`/pricing?claimVenueId=${
-                        venue.venueId
-                      }&venueName=${encodeURIComponent(venue.name)}`}
+                      to="/pricing"
                       className="btn btn-sm btn-outline-warning"
                     >
                       Claim Listing

@@ -175,10 +175,6 @@ const ShootList = ({
                         <span className={`badge ${status.className}`}>
                           {status.label}
                         </span>
-                        {/* <span className="fs-4 fw-bold mt-1 valign-middle">
-                          {venueShoots.length} Total Shoot
-                          {venueShoots.length === 1 ? "" : "s"}
-                        </span>*/}
                       </div>
                     </div>
 

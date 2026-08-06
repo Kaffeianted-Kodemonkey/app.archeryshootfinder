@@ -552,19 +552,12 @@ export const query = graphql`
       slug
       tagline
       bio
-<<<<<<< HEAD
-      rulesGuidlines
-      subscription
-      membership
-      tier
-=======
       behavioralRules
       gearControl
       safteyEtiquette
       subscriptionStatus
       isMembership
       subscriptionPlan
->>>>>>> FixNodeJS
       img
       alt
       isClaimed

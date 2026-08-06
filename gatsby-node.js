@@ -194,7 +194,6 @@ exports.createSchemaCustomization = ({ actions }) => {
      type ShootsJson implements Node {
        shootId: Int
        sname: String
-       slug: String
        venueId: String!
        venue: VenuesJson @link(by: "venueId", from: "venueId")
        description: String
