@@ -575,6 +575,8 @@ export const query = graphql`
         city
         state
         zip
+        lat
+        lng
       }
       contact {
         phone

@@ -122,13 +122,10 @@ const VenueList = ({
         const distanceValue =
           location && venueLocation.lat != null && venueLocation.lng != null
             ? getDistance(location, venueLocation).toFixed(1)
-            : "N/A"
+            : "—"
 
         const distance = `${distanceValue} mi`
-        const cityState =
-          venueLocation.city && venueLocation.state
-            ? `${venueLocation.city}, ${venueLocation.state}`
-            : "N/A"
+        const cityState = `${venueLocation.city}, ${venueLocation.state}`
 
         const mapping =
           venueTypeMapping[venue.venueType] || venueTypeMapping.default

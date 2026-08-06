@@ -145,8 +145,7 @@ const ShootList = ({
             first.useVenueLocation !== false && venue.location
               ? venue.location
               : first.shootLocation
-          const cityState =
-            loc?.city && loc?.state ? `${loc.city}, ${loc.state}` : "TBD"
+          const cityState = `${loc.city}, ${loc.state}`
 
           const status = getStatusInfo(first)
           const regLabel = getRegLabel(first.registrationUrl)

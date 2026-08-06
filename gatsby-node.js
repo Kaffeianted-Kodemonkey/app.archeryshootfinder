@@ -121,7 +121,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     createPage({
       path: `/venues/${pathSlug}`, // The public URL path structure
       component: spotlightTemplate, // Target layout rendering template file
-      contet: {
+      context: {
         // Pass the internal Gatsby node ID to the template page-query as a variable
         id: venue.id,
         venueId: venue.venueId,
