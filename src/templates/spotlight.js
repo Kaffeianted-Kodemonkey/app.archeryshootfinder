@@ -557,6 +557,8 @@ export const query = graphql`
       safteyEtiquette
       subscriptionStatus
       isMembership
+      isClass
+      isLeague
       subscriptionPlan
       img
       alt
