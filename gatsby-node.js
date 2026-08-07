@@ -240,7 +240,7 @@ exports.createSchemaCustomization = ({ actions }) => {
     }
 
     type Hours {
-      day: String
+      day: [String]
       open: String
       close: String
     }
