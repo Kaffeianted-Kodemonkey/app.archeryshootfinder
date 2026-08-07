@@ -38,6 +38,7 @@ module.exports = {
     //     path: `${__dirname}/src/data/shoots.json`,
     //   },
     // },
+    //
     `gatsby-plugin-netlify`,
     `gatsby-transformer-sharp`,
     `gatsby-plugin-sharp`,
