@@ -18,12 +18,12 @@ const IndexPage = ({ data }) => {
   const Venues = data.allVenuesJson.nodes
   const [view, setView] = useState("map")
 
-  // Local state for filtered shoots, location, tab (decoupled from SearchContext)
+  // Local state for filtered shoots, location, tab
   const [filteredCurrentShoots, setFilteredCurrentShoots] = useState([])
   const [filteredUpcomingShoots, setFilteredUpcomingShoots] = useState([])
   const [userLocation, setUserLocation] = useState(null)
-  const [userState, setUserState] = useState("CO")
-  const [userCountry, setUserCountry] = useState("USA")
+  const [userState, setUserState] = useState(null)
+  const [userCountry, setUserCountry] = useState(null)
   const [showRegionalBanner, setShowRegionalBanner] = useState(false)
   const [activeTab, setActiveTab] = useState("current")
 
@@ -103,7 +103,7 @@ const IndexPage = ({ data }) => {
             lng: position.coords.longitude,
           }
           setUserLocation(loc)
-          setUserCountry("USA")
+          setUserCountry(null)
 
           let geoCurrent = computedCurrentShoots
           let geoUpcoming = computedUpcomingShoots
@@ -115,7 +115,7 @@ const IndexPage = ({ data }) => {
                 s.useVenueLocation !== false && s.venue?.location
                   ? s.venue.location
                   : s.shootLocation
-              return l?.state === userState
+              return !userState || l?.state === userState
             })
 
           // --- Current tab ---
@@ -127,7 +127,8 @@ const IndexPage = ({ data }) => {
           )
           if (
             distCurrent.length === computedCurrentShoots.length &&
-            computedCurrentShoots.length > 0
+            computedCurrentShoots.length > 0 &&
+            userState
           ) {
             showBanner = true
             geoCurrent = applyStateFilter(computedCurrentShoots)
@@ -144,7 +145,8 @@ const IndexPage = ({ data }) => {
           )
           if (
             distUpcoming.length === computedUpcomingShoots.length &&
-            computedUpcomingShoots.length > 0
+            computedUpcomingShoots.length > 0 &&
+            userState
           ) {
             showBanner = true
             geoUpcoming = applyStateFilter(computedUpcomingShoots)
@@ -164,20 +166,6 @@ const IndexPage = ({ data }) => {
     getUserLocation()
   }, [computedCurrentShoots, computedUpcomingShoots /* , allPublishedShoots */])
 
-  const venueShootCounts = useMemo(() => {
-    return Venues.reduce((acc, venue) => {
-      // venue.hostedShoots is now an array of objects, not strings
-      const validShoots = (venue.hostedShoots || []).filter(shoot => {
-        const shootDate = new Date(shoot.date)
-        return shootDate > now
-      })
-
-      acc[venue.id] = validShoots.length
-      return acc
-    }, {})
-  }, [Venues, now])
-
-  // Map view props (dynamic based on activeTab)
   const mapProps = useMemo(() => {
     let shootsToPass = []
     let venuesToPass = []
@@ -290,21 +278,25 @@ export const Head = () => <Seo title="Home" />
 export default IndexPage
 
 export const query = graphql`
-  query AllData {
-    # 1. Fetch the Venues
-    allVenuesJson {
+  query IndexPageData {
+    allShootsJson {
       nodes {
-        id
+        shootId
+        sname
         venueId
-        slug
-        name
-        bio
+        date
+        endDate
+        startTime
+        endTime
+        shootFormat
+        shootClass
+        bowTypes
+        skillLevel
+        terrain
+        entryFee
         description
-        venueType
-        subscription
-        icon
-        iconColor
-        location {
+        useVenueLocation
+        shootLocation {
           address
           city
           state
@@ -312,91 +304,33 @@ export const query = graphql`
           lat
           lng
         }
-        contact {
-          phone
-          email
-          website
-          facebook
-          instagram
-        }
-        facilities
-        amenities
-        equipmentAllowed
-        customEquipmentRules
-        hours {
-          day
-          open
-          closed
-        }
-        membership
-        hostedShoots {
-          id
-          # name
-          date
-          # shootFormat
-        }
-        imageUrl
-        isClaimed
-      }
-    }
-
-    # 2. ADD THIS: Fetch the Shoots
-    allShootsJson {
-      nodes {
-        id
-        shootId
-        name
-        date
-        endDate
-        time
-        amenities
-        useVenueLocation
-        shootLocation {
-          lat
-          lng
-          city
-          state
-        }
-        shootFormat
-        shootClass
-        terrain
-        bowTypes
-        skillLevel
-        entryFee
-        pricing {
-          tier
-          note
-          options {
-            days
-            cost
-            currency
-          }
-        }
-
-        prizes
-        isVerified
-        isRegistration
-        isDestination
-        # Link back to venue for your "shootsWithVenues" logic
-        venueId
         venue {
-          venueId
+          vname
+          venueType
           isClaimed
-          name
-          description
-          slug
-          contact {
-            phone
-            email
-          }
           location {
-            address
             city
             state
             lat
             lng
           }
-          subscription
+        }
+      }
+    }
+    allVenuesJson {
+      nodes {
+        venueId
+        vname
+        slug
+        venueType
+        isClaimed
+        subscriptionPlan
+        bio
+        location {
+          city
+          state
+          lat
+          lng
         }
       }
     }

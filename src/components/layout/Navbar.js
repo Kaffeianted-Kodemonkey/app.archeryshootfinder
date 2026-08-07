@@ -1,48 +1,59 @@
-// src/components/layout/Navbar.js
 import * as React from "react"
 import { useState, useEffect } from "react"
-import { Link, navigate } from "gatsby"
-import InstallButton from "../InstallButton"
+import { Link } from "gatsby"
 
-const Navbar = ({ siteTitle, siteDesc, view, setView }) => {
+const Navbar = ({ siteTitle, siteDesc }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false) // Track the dashboard dropdown state
   const [loggedInuser, setLoggedInuser] = useState(null)
 
-  // Only use real Snipcart data — no role, no mock fallback
-  useEffect(() => {
-    const check = async () => {
-      if (window.Snipcart?.api?.user?.current) {
-        try {
-          const c = await window.Snipcart.api.user.current()
-          if (c?.email) {
-            setLoggedInuser({
-              name: c.billingAddress?.company || c.email.split("@")[0],
-              email: c.email,
-            })
-            return
-          }
-        } catch (_) {}
-      }
-      setLoggedInuser(null)
+  const checkSnipcartUser = async () => {
+    // Guard clause: Exit early if window does not exist (Server-Side Rendering)
+    if (typeof window === "undefined") return
+
+    // Snipcart v2 global object checks
+    if (window.Snipcart?.api?.user?.current) {
+      try {
+        const c = await window.Snipcart.api.user.current()
+        if (c?.email) {
+          setLoggedInuser({
+            name: c.billingAddress?.company || c.email.split("@")[0],
+            email: c.email,
+          })
+          return
+        }
+      } catch (_) {}
     }
-    check()
-    window.addEventListener("storage", check)
-    return () => window.removeEventListener("storage", check)
+    setLoggedInuser(null)
+  }
+
+  useEffect(() => {
+    // Only run this code if window is fully available in the browser
+    if (typeof window !== "undefined") {
+      checkSnipcartUser()
+
+      const handleLogin = () => checkSnipcartUser()
+      window.addEventListener("snipcart:user-logged-in", handleLogin)
+      window.addEventListener("storage", checkSnipcartUser)
+
+      return () => {
+        window.removeEventListener("snipcart:user-logged-in", handleLogin)
+        window.removeEventListener("storage", checkSnipcartUser)
+      }
+    }
   }, [])
 
   const handleLogoutClick = async () => {
-    if (window.Snipcart?.api?.user?.logout) {
-      await window.Snipcart.api.user.logout()
+    // Guard clause: Ensure window exists before running browser logic
+    if (typeof window !== "undefined") {
+      if (window.Snipcart?.api?.user?.logout) {
+        await window.Snipcart.api.user.logout()
+      }
+      setLoggedInuser(null)
+      window.location.href = "/"
     }
-    setLoggedInuser(null)
-    window.location.href = "/pricing"
   }
 
-  const handleLinkClick = () => {
-    setIsMenuOpen(false)
-    setIsDropdownOpen(false)
-  }
+  const handleLinkClick = () => setIsMenuOpen(false)
 
   return (
     <nav
@@ -50,7 +61,6 @@ const Navbar = ({ siteTitle, siteDesc, view, setView }) => {
       style={{ zIndex: 1050 }}
     >
       <div className="container-fluid">
-        {/* Logo + Brand */}
         <Link
           className="navbar-brand d-flex align-items-center fw-bold"
           to="/"
@@ -86,6 +96,11 @@ const Navbar = ({ siteTitle, siteDesc, view, setView }) => {
         >
           <ul className="navbar-nav me-auto">
             <li className="nav-item">
+              <Link to="/" className="nav-link" onClick={handleLinkClick}>
+                Home
+              </Link>
+            </li>
+            <li className="nav-item">
               <Link
                 to="/pricing"
                 className="nav-link"
@@ -94,102 +109,6 @@ const Navbar = ({ siteTitle, siteDesc, view, setView }) => {
                 Price Tiers
               </Link>
             </li>
-
-            {/* NESTED VENUE PORTAL MENU SECTION */}
-            {loggedInuser ? (
-              // LOGGED IN
-              <li
-                className={`nav-item dropdown ${isDropdownOpen ? "show" : ""}`}
-              >
-                <button
-                  className="nav-link dropdown-toggle btn btn-link fw-bold text-warning border-0"
-                  type="button"
-                  aria-expanded={isDropdownOpen}
-                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                >
-                  Account Login
-                </button>
-                <ul
-                  className={`dropdown-menu ${isDropdownOpen ? "show" : ""}`}
-                  data-bs-theme="light"
-                >
-                  {/* Venue role items */}
-                  {(loggedInuser.role || "venue") === "venue" && (
-                    <li>
-                      <Link
-                        to="/portal/"
-                        className="dropdown-item"
-                        onClick={handleLinkClick}
-                      >
-                        <span class="snipcart-user-email">Dashboard</span>
-                      </Link>
-                    </li>
-                  )}
-
-                  {/* Common items */}
-                  <li>
-                    <Link
-                      to="/portal/profile"
-                      className="dropdown-item"
-                      onClick={handleLinkClick}
-                    >
-                      Profile
-                    </Link>
-                  </li>
-                  <li>
-                    <hr className="dropdown-divider" />
-                  </li>
-                  <li>
-                    <a
-                      href="#"
-                      onClick={handleLogoutClick}
-                      className="dropdown-item text-danger fw-bold"
-                    >
-                      Logout
-                    </a>
-                  </li>
-                </ul>
-              </li>
-            ) : (
-              // LOGGED OUT
-              <li
-                className={`nav-item dropdown ${isDropdownOpen ? "show" : ""}`}
-              >
-                <button
-                  className="nav-link dropdown-toggle btn btn-link fw-bold text-warning border-0"
-                  type="button"
-                  aria-expanded={isDropdownOpen}
-                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                >
-                  Account Login
-                </button>
-                <ul
-                  className={`dropdown-menu ${isDropdownOpen ? "show" : ""}`}
-                  data-bs-theme="light"
-                >
-                  <li>
-                    <Link
-                      to="#"
-                      className="dropdown-item snipcart-user-profile"
-                      onClick={handleLinkClick}
-                    >
-                      Venue
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="#"
-                      className="dropdown-item"
-                      onClick={handleLinkClick}
-                    >
-                      Shooter
-                    </Link>
-                  </li>
-                </ul>
-              </li>
-            )}
-
-            {/* General Baseline Links shown to everyone */}
             <li className="nav-item">
               <Link
                 to="https://archeryshootfinder.com"
@@ -209,16 +128,70 @@ const Navbar = ({ siteTitle, siteDesc, view, setView }) => {
               </Link>
             </li>
           </ul>
-
-          <div className="d-flex align-items-center gap-2">
-            {/* Displaying an active logged-in badge on the right edge */}
-            {loggedInuser && (
-              <div className="d-none d-lg-block text-white bg-dark bg-opacity-25 rounded px-3 py-1 small fw-semibold">
-                {loggedInuser.name}
-              </div>
+          {/* RIGHT SIDE: Dynamic Auth Navigation Panel */}
+          <ul className="navbar-nav ms-auto gap-2">
+            {loggedInuser ? (
+              <>
+                <li className="nav-item d-none d-md-inline">
+                  <span className="text-white small fw-bold me-2">
+                    {loggedInuser.name}
+                  </span>
+                </li>
+                <li className="nav-item">
+                  <Link
+                    to="/portal/"
+                    className="btn btn-outline-light btn-sm px-3"
+                    onClick={handleLinkClick}
+                  >
+                    Admin Dashboard
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link
+                    to="/portal/profile"
+                    className="btn btn-outline-light btn-sm px-3"
+                    onClick={handleLinkClick}
+                  >
+                    Venue Profile
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <button
+                    className="btn btn-outline-light btn-sm px-3 snipcart-edit-profile"
+                    onClick={handleLinkClick}
+                  >
+                    Billing
+                  </button>
+                </li>
+                <li className="nav-item">
+                  <button
+                    className="btn btn-outline-light btn-sm px-3 snipcart-user-profile"
+                    onClick={handleLinkClick}
+                  >
+                    Subscriptions
+                  </button>
+                </li>
+                <li className="nav-item">
+                  <button
+                    onClick={handleLogoutClick}
+                    className="btn btn-dark btn-sm px-3"
+                  >
+                    Logout
+                  </button>
+                </li>
+              </>
+            ) : (
+              <li className="nav-item">
+                <Link
+                  to="/login"
+                  className="btn btn-warning btn-sm px-4 fw-bold"
+                  onClick={handleLinkClick}
+                >
+                  Login
+                </Link>
+              </li>
             )}
-            <InstallButton />
-          </div>
+          </ul>
         </div>
       </div>
     </nav>

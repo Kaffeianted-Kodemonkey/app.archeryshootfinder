@@ -12,7 +12,17 @@ const Portal = () => {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    let cancelled = false
+
     const check = async () => {
+      // Wait up to ~2 seconds for Snipcart to become available
+      for (let i = 0; i < 20; i++) {
+        if (window.Snipcart?.api?.user?.current) break
+        await new Promise(r => setTimeout(r, 100))
+      }
+
+      if (cancelled) return
+
       if (window.Snipcart?.api?.user?.current) {
         try {
           const c = await window.Snipcart.api.user.current()
@@ -31,12 +41,16 @@ const Portal = () => {
           }
         } catch (_) {}
       }
-      const saved = localStorage.getItem("mock_venue_user")
-      if (saved) setUser(JSON.parse(saved))
-      else navigate("/login")
+
+      // No Snipcart user → send them to pricing (or any public page)
       setLoading(false)
+      navigate("/pricing")
     }
+
     check()
+    return () => {
+      cancelled = true
+    }
   }, [])
 
   if (loading) {

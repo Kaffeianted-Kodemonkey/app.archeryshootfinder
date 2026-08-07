@@ -157,7 +157,7 @@ main.map-view .list-scroll-container {
 }
 
 /* Search Offcanvas (full-height side slide with scrolling) */
-.search-offcanvas {
+/*.search-offcanvas {
   top: 0 !important;
   height: 100vh !important;
   width: 350px !important;
@@ -165,44 +165,44 @@ main.map-view .list-scroll-container {
   display: flex !important;
   flex-direction: column !important;
   --bs-offcanvas-height: 100vh !important;
-}
+}*/
 
-.search-offcanvas .offcanvas-header {
+/*.search-offcanvas .offcanvas-header {
   flex-shrink: 0 !important;
   padding: 1rem !important;
   border-bottom: 1px solid #dee2e6 !important;
-}
+}*/
 
-.search-offcanvas .offcanvas-body {
+/*.search-offcanvas .offcanvas-body {
   flex: 1 !important;
   overflow-y: auto !important;
   max-height: calc(100vh - 60px) !important; /* Minus header */
-  padding: 0 !important;
-}
+/*  padding: 0 !important;
+}*/
 
-.search-content {
+/*.search-content {
   min-height: 100% !important;
   display: flex !important;
   flex-direction: column !important;
   padding: 1rem !important;
   gap: 0.5rem !important; /* Tight spacing */
-}
+/*}
 
 /* Tighten margins in search content */
-.search-content .mb-3,
+/*.search-content .mb-3,
 .search-content .mb-2,
 .search-content .mb-1 {
   margin-bottom: 0.15rem !important;
-}
+}*/
 
-.search-content hr {
+/*.search-content hr {
   margin: 0.5rem 0 !important;
-}
+}*/
 
 /* ==========================================================================
    FORM ENHANCEMENTS - Checkboxes and Inputs for Search Offcanvas
    ========================================================================== */
-.search-offcanvas .form-check {
+/*.search-offcanvas .form-check {
   padding-left: 1.5em !important;
   margin-bottom: 0.5em !important;
 }
@@ -211,25 +211,25 @@ main.map-view .list-scroll-container {
   width: 1.2em !important;
   height: 1.2em !important;
   border: 2px solid var(--bs-primary) !important; /* Navy border */
-  margin-top: 0.1em !important;
+/*margin-top: 0.1em !important;
 }
 
 .search-offcanvas .form-check-input:checked {
   background-color: var(--bs-secondary) !important; /* Gold check */
-  border-color: var(--bs-primary) !important;
+/* border-color: var(--bs-primary) !important;
 }
 
 .search-offcanvas .form-check-input:checked::after {
   border-color: var(--bs-primary) !important; /* Navy checkmark */
-}
+/*}
 
 .search-offcanvas .form-check-input:focus {
   box-shadow: 0 0 0 0.2rem rgba(var(--bs-primary-rgb), 0.25) !important; /* Navy focus */
-}
+/*}
 
 .search-offcanvas .form-control {
   border: 2px solid var(--bs-primary) !important; /* Navy border */
-  color: var(--bs-body-color) !important;
+/* color: var(--bs-body-color) !important;
   padding: 0.75rem !important;
   font-size: 1rem !important;
 }
@@ -612,5 +612,96 @@ main.map-view .list-scroll-container {
   .venue-table thead,
   .shoot-table thead {
     display: table-header-group !important;
+  }
+}
+/* ==========================================================================
+   SNIPCART V2 CONTEXTUAL OVERRIDES & STRUCTURAL INTEGRATION
+   ========================================================================== */
+
+.snip-layout {
+  background: rgba(123, 123, 123, 0.75);
+  bottom: 0;
+  color: #999;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  left: 0;
+  line-height: normal;
+  overflow-x: auto;
+  padding: 0;
+  position: fixed;
+  right: 0;
+  top: 20px !important;
+  z-index: 1040;
+}
+
+.snip-layout .snip-layout__subtitle {
+  padding: 1em 0 0 1em !important;
+  text-transform: uppercase;
+  font-size: 18px;
+}
+
+/* 1. INVOICE OVERRIDE: Block guest checkouts to safeguard database accounts */
+/*#snipcart-guest-checkout-container {
+  display: none !important;
+}*/
+
+/* 2. CONTEXT A: STANDALONE PORTAL BUTTON (Hides registration panel) */
+/*[data-login="login"] #snipcart-sub-content #snipcart-newaccount-form-container {
+  display: none !important;
+}
+
+[data-login="login"] #snipcart-sub-content #snipcart-login-form-container {
+  width: 100% !important;
+  max-width: 100% !important;
+  flex: 0 0 100% !important;
+  border-right: none !important;
+}
+
+[data-login="login"]
+  #snipcart-sub-content
+  #snipcart-login-form-container
+  .snip-static__title {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}*/
+
+/* 3. CONTEXT B: SUBSCRIPTION CHECKOUT CONFLICT FIX (Restores registration inline) */
+/*.snipcart-step-login #snipcart-newaccount-form-container {
+  display: block !important;
+}
+
+.snipcart-step-login #snipcart-login-form-container {
+  border-right: 1px solid #e2e2e2 !important;
+}
+
+#snipcart-main-container,
+.snipcart-modal__container {
+  z-index: 999999 !important; /* Forces Snipcart in front of your Gatsby layout components */
+/*}*/
+
+/* Mobile Screens (Under 768px) */
+@media (max-width: 767.98px) {
+  button.nav-link {
+    /* Pulls the tabs closer together horizontally */
+    margin-left: -4px !important;
+    margin-right: -4px !important;
+
+    /* Shrinks internal padding to maximize line space */
+    padding-left: 6px !important;
+    padding-right: 6px !important;
+
+    /* Decreases font size slightly so labels fit inline */
+    font-size: 13px !important;
+  }
+}
+
+/* Desktop Screens (768px and up) */
+@media (min-width: 768px) {
+  button.nav-link {
+    /* Returns spacing to standard desktop proportions */
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
   }
 }

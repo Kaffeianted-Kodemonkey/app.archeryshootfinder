@@ -10,21 +10,26 @@
     "@react-google-maps/api": "^2.20.8",
     "bootstrap": "^5.3.8",
     "chart.js": "^4.5.1",
-    "gatsby": "^5.14.6",
-    "gatsby-plugin-image": "^3.16.0",
-    "gatsby-plugin-manifest": "^5.14.0",
-    "gatsby-plugin-offline": "^6.16.0",
-    "gatsby-plugin-sharp": "^5.14.0",
-    "gatsby-source-filesystem": "^5.14.0",
-    "gatsby-transformer-json": "^5.14.0",
-    "gatsby-transformer-sharp": "^5.14.0",
+    "gatsby": "^5.16.1",
+    "gatsby-plugin-image": "^3.0.0",
+    "gatsby-plugin-manifest": "^5.16.0",
+    "gatsby-plugin-netlify": "5.1.1",
+    "gatsby-plugin-offline": "^6.13.0",
+    "gatsby-plugin-sharp": "^5.16.0",
+    "gatsby-source-filesystem": "^5.16.0",
+    "gatsby-transformer-json": "^5.16.0",
+    "gatsby-transformer-sharp": "^5.16.0",
     "leaflet": "^1.9.4",
+    "mongodb": "^7.5.0",
+    "mongoose": "^9.9.1",
     "react": "^18.2.0",
     "react-chartjs-2": "^5.3.1",
     "react-dom": "^18.2.0",
-    "react-leaflet": "^4.2.1"
+    "react-leaflet": "^4.2.1",
+    "sharp": "^0.33.5"
   },
   "devDependencies": {
+    "ajv": "^8.20.0",
     "gh-pages": "^6.3.0",
     "prettier": "^2.8.8"
   },
@@ -40,7 +45,7 @@
   "scripts": {
     "build": "gatsby build",
     "develop": "gatsby develop",
-    "deploy": "gatsby build && gh-pages -d public",
+    "deploy": "gatsby build",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md,css}\"",
     "start": "gatsby develop",
     "serve": "gatsby serve",
@@ -52,5 +57,17 @@
   },
   "bugs": {
     "url": "https://github.com/archeryshootfinder/archery-shoot-finder/issues"
+  },
+  "allowScripts": {
+    "core-js@2.6.12": true,
+    "core-js@3.49.0": true,
+    "es5-ext@0.10.64": true,
+    "gatsby@3.3.1": true,
+    "gatsby@3.15.0": true,
+    "gatsby-cli@3.15.0": true,
+    "gatsby-telemetry@2.15.0": true,
+    "lmdb@2.5.3": true,
+    "msgpackr-extract@3.0.4": true,
+    "sharp@0.32.6": true
   }
 }

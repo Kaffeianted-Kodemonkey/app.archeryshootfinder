@@ -1,8 +1,95 @@
+require("dotenv").config({
+  path: `.env.${process.env.NODE_ENV}`,
+})
+
 const path = require("path")
+const { MongoClient } = require("mongodb")
 
 /**
- * @type {import('gatsby').GatsbyNode['createPages']}
+ * SOURCE NODES HOOK: Connect to Atlas and feed documents to GraphQL
  */
+exports.sourceNodes = async ({
+  actions,
+  createNodeId,
+  createContentDigest,
+}) => {
+  const { createNode } = actions
+
+  // Read URI from environment variable (Netlify) or fallback
+  const uri = process.env.GATSBY_MONGO_URI || process.env.GATSBY_MONGODB_URI
+
+  // Skip MongoDB connection during Netlify builds if no URI is set
+  if (!uri) {
+    console.log(
+      "No MongoDB URI provided — skipping sourceNodes (safe for CI builds)."
+    )
+    return
+  }
+
+  const client = new MongoClient(uri, {
+    tls: true,
+    ssl: true,
+    // This prevents the underlying OpenSSL layer from throwing "alert 80"
+    // during dynamic server selection on cloud runners
+    connectTimeoutMS: 30000,
+    socketTimeoutMS: 30000,
+  })
+
+  try {
+    await client.connect()
+    const db = client.db("ASFinder") // Change to your eact DB name
+
+    // 2. Fetch data from your collections
+    const venuesData = await db.collection("venues").find({}).toArray()
+    const shootsData = await db.collection("shoots").find({}).toArray()
+
+    // 3. Process Venues
+    venuesData.forEach(venue => {
+      const nodeMeta = {
+        id: createNodeId(`mongo-venue-${venue._id}`),
+        parent: null,
+        children: [],
+        internal: {
+          type: `VenuesJson`,
+          contentDigest: createContentDigest(venue),
+        },
+      }
+
+      // ⚡ Crucial Safe Array Guard
+      const cleanHoursArray = Array.isArray(venue.hours) ? venue.hours : []
+      createNode(
+        Object.assign(
+          {},
+          venue,
+          {
+            vname: venue.vname || venue.name,
+            hours: cleanHoursArray,
+          }, // ← this makes vname actually eist on the node
+          nodeMeta
+        )
+      )
+    })
+
+    // 4. Process Shoots
+    shootsData.forEach(shoot => {
+      const nodeMeta = {
+        id: createNodeId(`mongo-shoot-${shoot._id}`),
+        parent: null,
+        children: [],
+        internal: {
+          type: `ShootsJson`,
+          contentDigest: createContentDigest(shoot),
+        },
+      }
+      createNode(Object.assign({}, shoot, nodeMeta))
+    })
+  } catch (error) {
+    console.error("Critical error connecting or fetching from MongoDB:", error)
+  } finally {
+    await client.close()
+  }
+}
+
 exports.createPages = async ({ graphql, actions, reporter }) => {
   const { createPage } = actions
 
@@ -19,7 +106,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     }
   `)
 
-  // Handle data query error exceptions safely
+  // Handle data query error eceptions safely
   if (result.errors) {
     reporter.panicOnBuild(
       `Error while running GraphQL query inside gatsby-node.js`,
@@ -33,7 +120,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
 
   // 2. Loop through every venue item and programmatically create their public URL
   venues.forEach(venue => {
-    // Generate an fallback slug configuration if one isn't explicitly defined in the file
+    // Generate an fallback slug configuration if one isn't eplicitly defined in the file
     const pathSlug = venue.slug ? venue.slug : `venue-${venue.venueId}`
 
     createPage({
@@ -47,6 +134,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     })
   })
 }
+
 /**
  * NEW HOOK: Tell Gatsby to treat /portal/ as a client-side route dashboard
  */
@@ -67,64 +155,73 @@ exports.createSchemaCustomization = ({ actions }) => {
   const { createTypes } = actions
   const typeDefs = `
     type VenuesJson implements Node {
-      id: ID!          # Gatsby internal ID
-      venueId: Int! # Unique veneu ID
-      name: String
-      venueType: VenueType
-      slug: String
-      description: String
-      tagline: String
-      bio: String
-      subscription: VenueTier # Pay teir, Freemium, Premium, Destination
-      icon: String
-      iconColor: String
-      hours: [BusinessHours]
-      location: Location  # access as venue.location.city in components
-      contact: Contact   # Raw JSON; access as venue.contact.phone in components
-      facilities: [Facility] # not shoot spacifice as a venue may have [3D_COURSE, INDOOR_RANGE, OUTDOOR_RANGE, PRO_SHOP_ON_SITE, KITCHEN, CAMPGROUND]
-      amenities: [Amenities]
-      equipmentAllowed: [EquipmentType]
-      customEquipmentRules: [String]
-      membership: String # URL to mebership registration/signup
-      hostedShoots: [ShootsJson] @link(by: "venueId", from: "venueId")
-      imageUrl: String
-      isClaimed: Boolean!
-      sanctioning: [Association]
-      terrain: [Terrain]
-      amenities: [Amenities]
-      equipmentAllowed: [EquipmentType]
-      bowTypes: [BowTypes]
-    }
+       venueId: String!              # Your internal Venue Mongo ID mapping
+       vname: String                 # Passed from Snipcart (data-item-name or custom fields)
+       accOwner: String              # Account owner / Business name from Snipcart Billing
+       venueType: String!
+       isClaimed: Boolean!           # SET BY SYSTEM TO true ONCE SECURE WEBHOOK FIRES
+       isLeague: Boolean!
+       isClass: Boolean!
+       isMembership: Boolean!
+       slug: String
+       img: String
+       alt: String
+       tagline: String
+       bio: String
+       behavioralRules: [String]
+       gearControl: [String]
+       safteyEtiquette: [String]
+       location: Location            # Populated with Snipcart Billing Address data
+       contact: Contact              # Populated with Snipcart Customer Account data
+       hours: [Hours]
+       rangeType: [String]
+       targetType: [String]
+       tuningIndoor: [String]
+       tuningOutdoor: [String]
+       maDistIndoor: String
+       maDistOutdoor: String
+       laneCapIndoor: String
+       laneCapOutdoor: String
+       amenities: [String]
+       services: [String]
+    #   equipmentAllowed: [String]
+       sanctioning: [String]
+       bowTypes: [String]
 
-    type ShootsJson implements Node {
-      id: ID!            # Gatsby internal ID
-      shootId: Int!   # Unique Venue Identifier
-      venueId: Int!    # Unique Venue Identifier
-      venue: VenuesJson @link(by: "venueId", from: "venueId")
-      name: String
-      date: Date # @dateformat # if null then show TBD
-      endDate: Date # if null then show TBD
-      time: String # if null then show TBD
-      useVenueLocation: Boolean # if true then the shoot uses the Venue Location
-      shootLocation: Location
-      isVerified: Boolean # shows if a shoot has been verified by a claimed venue
-      shootFormat: [ShootFormat]
-      eventType: [EventType]
-      customFormat: [String]      # For events not in list this adds them to other
-      shootClass: [ShootClass]
-      customClass: [String]
-      bowTypes: [BowTypes]
-      skillLevel: [SkillLevel]
-      terrain: [Terrain]
-      pricing: [ShootPrice]
-      prizes: String
-      amenities: [Amenities]
-      isDestination: Boolean!
-      isMember: Boolean # some may require a membership to sign up
-      isRegistration: Boolean # this lets shooters know they have to sign up or can walk in. Exp: TAC must reg online before event
-      registrationUrl: String # if there is a url set isRegistration to true
-      entryFee: String
-    }
+       # === NEW SNIPCART V2 FIELDS ADDED HERE ===
+       snipcartUserId: String        # Links the venue to their Snipcart Customer Profile ID
+       subscriptionId: String        # Tracks active Snipcart V2 Subscription Contract
+       subscriptionStatus: String    # e.g., "Active", "Paused", "Cancelled"
+       subscriptionPlan: String
+    #   invoiceNumber: String         # Last successful transaction reference code
+     }
+
+     type ShootsJson implements Node {
+       shootId: Int
+       sname: String
+       venueId: String!
+       venue: VenuesJson @link(by: "venueId", from: "venueId")
+       description: String
+       shootLocation: Location
+       useVenueLocation: Boolean
+       date: Date
+       endDate: Date
+       startTime: String
+       endTime: String
+       shootFormat: [String]
+       shootClass: [String]
+       bowTypes: [String]
+       skillLevel: [String]
+       terrain: [String]
+       entryFee: String
+       pricing: [ShootPrice]
+       currency: String
+       prizes: String
+       registrationUrl: String
+       amenities: [String]
+       isDestination: Boolean
+       isVerified: Boolean
+     }
 
     type Location {
       address: String
@@ -133,26 +230,28 @@ exports.createSchemaCustomization = ({ actions }) => {
       zip: String
       lat: Float
       lng: Float
-      country: String
     }
 
-    type Contact {
-      phone: String
-      email: String
-      website: String
-      facebook: String
-      instagram: String
+     type Contact {
+       phone: String                 # Maps to Snipcart's billingAddress.phone
+       email: String                 # Maps to Snipcart's customer order email
+       website: String
+       socials: [Social]
+     }
+
+     type Social {
+      name: String
+      url: String
     }
 
-    type BusinessHours {
-      day: DayOfWeek
-      open: String # e.g., "09:00"
-      close: String # e.g., "17:00"
-      closed: Boolean
+    type Hours {
+      day: [String]
+      open: String
+      close: String
     }
 
     type ShootPrice {
-      tier: ShootClass
+      tier: String     # Fixed: Changed from missing 'ShootClass' enum to flat String
       note: String
       options: [PriceOption]
     }
@@ -162,152 +261,6 @@ exports.createSchemaCustomization = ({ actions }) => {
       cost: Float
       currency: String
     }
-
-    # Enums for validation
-    enum VenueType {
-      CLUB
-      ASSOCIATION
-      PRO_SHOP
-      RANGE
-      ORGANIZATION
-    }
-
-    enum Amenities {
-      RESTROOMS
-      FOOD
-      CAMPING
-      PET_FRIENDLY
-      WHEELCHAIR_ACCESSIBLE
-      PARKING
-      PICNIC_AREA
-      WIFI
-      KITCHEN
-    }
-
-    enum VenueTier {
-      BASIC       # Scraped
-      FREEMIUM    # Claimed (Non-Profit)
-      PREMIUM     # Paid
-      DESTINATION # Top Tier
-    }
-
-    enum Services {
-      BOW_TUNING_STATION
-      CUSTOM_TUNING
-      EQUIPMENT_RENTAL
-      EQUIPMENT_SALES
-      LESSONS
-    }
-
-    enum Facility {
-      THREE_D_COURSE
-      INDOOR_RANGE
-      OUTDOOR_RANGE
-      ARENA_FAIR_GROUNDS
-    }
-
-    enum Association {
-      ASA
-      IBO
-      NFAA
-      S3DA
-      USA_ARCHERY
-      TAC
-    }
-
-    enum EquipmentType {
-      COMPOUND
-      RECURVE
-      LONGBOW
-      CROSSBOW
-      TARGET_ARROWS_ONLY
-      MAX_SPEED_LIMIT # e.g., 300fps
-    }
-
-    enum DayOfWeek {
-      MONDAY
-      TUESDAY
-      WEDNESDAY
-      THURSDAY
-      FRIDAY
-      SATURDAY
-      SUNDAY
-    }
-
-    enum ShootClass {
-      CUB
-      YOUTH
-      ADULT
-      SENIOR_50
-      MASTER_60
-      BOWHUNTER
-      BOWHUNTER_PIN
-      OPEN_FREESTYLE
-      TRADITIONAL
-      PROFESSIONAL
-      CAMP
-      CLINIC
-      FLIGHTS
-      CHAMPIONSHIP
-      NONSHOOTER
-      TARGET
-      ALL_PARTICIPANTS
-    }
-
-    enum ShootFormat {
-      THREE_D
-      TARGET
-      FIELD_ARCHERY
-      INDOOR
-      OUTDOOR
-      SMOKER_ROUND
-      FIVE_SPOT
-      VEGAS
-      LONG_DISTANCE_CHALLENGE
-      NOVELTY # Good catch-all for "Fun Shoots" or "Iron Man" rounds
-    }
-
-    enum EventType {
-      TOURNAMENT
-      LEAGUE
-      CLINIC
-      WORKSHOP
-      CERTIFICATION
-      CAMP
-      FUN_SHOOT
-      EDUCATIONAL
-      WEEKLY_SHOOT
-    }
-
-    enum SkillLevel {
-      BEGINNER
-      INTERMEDIATE
-      EXPERT
-    }
-
-    enum BowTypes {
-      TRADITIONAL
-      COMPOUND
-      RECURVE
-      LONGBOW
-      BAREBOW
-      CROSSBOW
-    }
-
-    enum Terrain {
-      WOODED
-      FLAT
-      ROCKY
-      MOUNTAIN
-      DESERT
-      FIELD
-      URBAN
-      HILLS
-      INDOOR
-      OUTDOOR
-    }
-
-
   `
   createTypes(typeDefs)
 }

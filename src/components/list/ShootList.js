@@ -145,8 +145,7 @@ const ShootList = ({
             first.useVenueLocation !== false && venue.location
               ? venue.location
               : first.shootLocation
-          const cityState =
-            loc?.city && loc?.state ? `${loc.city}, ${loc.state}` : "TBD"
+          const cityState = `${loc.city}, ${loc.state}`
 
           const status = getStatusInfo(first)
           const regLabel = getRegLabel(first.registrationUrl)
@@ -175,10 +174,6 @@ const ShootList = ({
                         <span className={`badge ${status.className}`}>
                           {status.label}
                         </span>
-                        <span className="fs-4 fw-bold mt-1 valign-middle">
-                          {venueShoots.length} Total Shoot
-                          {venueShoots.length === 1 ? "" : "s"}
-                        </span>
                       </div>
                     </div>
 
@@ -186,7 +181,7 @@ const ShootList = ({
                     <div className="row mt-2 small text-muted">
                       <div className="col-12 md-2">
                         <strong className="fs-5">
-                          {venue.name || "Unknown Venue"}
+                          {venue.vname || "Unknown Venue"}
                         </strong>
                       </div>
                     </div>
@@ -337,7 +332,7 @@ const ShootList = ({
                                   colSpan={4}
                                   className="fw-bold bg-info-subtle"
                                 >
-                                  {s.name}
+                                  {s.sname}
                                 </td>
                               </tr>
 

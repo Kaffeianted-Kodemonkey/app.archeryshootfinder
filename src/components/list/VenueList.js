@@ -51,10 +51,6 @@ const VenueList = ({
   let venues = Array.isArray(allVenues) ? [...allVenues] : []
   const allShoots = [...currentShoots, ...upcomingShoots, ...destinationShoots]
 
-  if (!showUnclaimed) {
-    venues = venues.filter(venue => venue.subscription !== "basic")
-  }
-
   if (venues.length === 0) {
     return (
       <div
@@ -74,7 +70,7 @@ const VenueList = ({
         getDistance(location, a.location) - getDistance(location, b.location)
     )
   } else {
-    venues.sort((a, b) => a.name.localeCompare(b.name))
+    venues.sort((a, b) => a.vname.localeCompare(b.vname))
   }
 
   const getVenueShootCounts = venueId => {
@@ -118,7 +114,7 @@ const VenueList = ({
       {venues.map(venue => {
         const venueLocation = venue.location || {}
         const contact = venue.contact || {}
-        const equipment = venue.equipment || {}
+        //const equipment = venue.equipment || {}
         const hours = venue.hours || {}
         const membership = venue.membership || {}
 
@@ -126,22 +122,19 @@ const VenueList = ({
         const distanceValue =
           location && venueLocation.lat != null && venueLocation.lng != null
             ? getDistance(location, venueLocation).toFixed(1)
-            : "N/A"
+            : "—"
 
         const distance = `${distanceValue} mi`
-        const cityState = `${venueLocation.city || ""}, ${
-          venueLocation.state || ""
-        }`
+        const cityState = `${venueLocation.city}, ${venueLocation.state}`
 
         const mapping =
           venueTypeMapping[venue.venueType] || venueTypeMapping.default
 
         // Logic helpers
-        const isUnclaimed = venue.subscription === "BASIC"
-        const isNonProfit = venue.subscription === "FREEMIUM"
+        const isUnclaimed = !venue.isClaimed
+        const isNonProfit = venue.subscriptionPlan === "Freemium"
         const isPaidTier =
-          venue.subscription === "PREMIUM" ||
-          venue.subscription === "DESTINATION"
+          venue.subscriptionPlan && venue.subscriptionPlan !== "Freemium"
 
         const hasPhone = contact.phone && contact.phone.trim().length > 0
         const hasEmail = contact.email && contact.email.trim().length > 0
@@ -161,7 +154,7 @@ const VenueList = ({
                   <i className={`bi ${venue.icon || mapping.icon} me-1`}></i>
                   {venue.venueType}
                 </span>{" "}
-                <h2 className="card-title fs-3 mt-2 mb-0">{venue.name}</h2>
+                <h2 className="card-title fs-3 mt-2 mb-0">{venue.vname}</h2>
                 <p className="fs-6 mt-2">
                   <i className="bi bi-geo-alt"></i> {distance} | {cityState}
                 </p>
@@ -315,7 +308,7 @@ const VenueList = ({
                       {isNonProfit ? "Verified Club" : "Verified Venue"}
                     </span>
                     <Link
-                      to={`/venues/${venue.slug}`}
+                      to={`/venues/${venue.slug || venue.venueId}`}
                       className="btn btn-sm btn-success"
                     >
                       View Details
@@ -327,9 +320,7 @@ const VenueList = ({
                       <i className="bi bi-question-circle"></i> Unclaimed
                     </span>
                     <Link
-                      to={`/pricing?claimVenueId=${
-                        venue.venueId
-                      }&venueName=${encodeURIComponent(venue.name)}`}
+                      to="/pricing"
                       className="btn btn-sm btn-outline-warning"
                     >
                       Claim Listing
