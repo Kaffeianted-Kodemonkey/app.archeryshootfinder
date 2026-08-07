@@ -55,11 +55,16 @@ exports.sourceNodes = async ({
         },
       }
 
+      // ⚡ Crucial Safe Array Guard
+      const cleanHoursArray = Array.isArray(venue.hours) ? venue.hours : []
       createNode(
         Object.assign(
           {},
           venue,
-          { vname: venue.vname || venue.name }, // ← this makes vname actually eist on the node
+          {
+            vname: venue.vname || venue.name,
+            hours: cleanHoursArray,
+          }, // ← this makes vname actually eist on the node
           nodeMeta
         )
       )
