@@ -5,8 +5,6 @@
   X-XSS-Protection: 1; mode=block
   X-Content-Type-Options: nosniff
   Referrer-Policy: same-origin
-/component---cache-caches-gatsby-plugin-offline-app-shell-js-a0321dbc6f85d9103db3.js
-  Cache-Control: public, max-age=31536000, immutable
 /framework-0dabe0c00cc6caa7050b.js
   Cache-Control: public, max-age=31536000, immutable
 /7d0bf13e-6f61ab861383f4db233f.js
@@ -27,6 +25,8 @@
   Cache-Control: public, max-age=31536000, immutable
 /component---src-pages-pricing-js-df68278d0bae7b114124.js
   Cache-Control: public, max-age=31536000, immutable
+/component---cache-caches-gatsby-plugin-offline-app-shell-js-a0321dbc6f85d9103db3.js
+  Cache-Control: public, max-age=31536000, immutable
 /webpack-runtime-60c9f700dfb4727d4c7b.js
   Cache-Control: public, max-age=31536000, immutable
 /styles.36d2f5f5e2615097d4dd.css
@@ -37,13 +37,6 @@
   Cache-Control: public, max-age=31536000, immutable
 /sw.js
   Cache-Control: no-cache
-/offline-plugin-app-shell-fallback/
-  Link: </webpack-runtime-60c9f700dfb4727d4c7b.js>; rel=preload; as=script
-  Link: </framework-0dabe0c00cc6caa7050b.js>; rel=preload; as=script
-  Link: </app-0b21a4f05aefa54d54f7.js>; rel=preload; as=script
-  Link: </component---cache-caches-gatsby-plugin-offline-app-shell-js-a0321dbc6f85d9103db3.js>; rel=preload; as=script
-  Link: </page-data/app-data.json>; rel=preload; as=fetch; crossorigin
-  Link: </page-data/offline-plugin-app-shell-fallback/page-data.json>; rel=preload; as=fetch; crossorigin
 /venues/venue-no-limits-archery-denver-co/
   Link: </webpack-runtime-60c9f700dfb4727d4c7b.js>; rel=preload; as=script
   Link: </framework-0dabe0c00cc6caa7050b.js>; rel=preload; as=script
@@ -345,3 +338,10 @@
   Link: </component---src-pages-pricing-js-df68278d0bae7b114124.js>; rel=preload; as=script
   Link: </page-data/app-data.json>; rel=preload; as=fetch; crossorigin
   Link: </page-data/pricing/page-data.json>; rel=preload; as=fetch; crossorigin
+/offline-plugin-app-shell-fallback/
+  Link: </webpack-runtime-60c9f700dfb4727d4c7b.js>; rel=preload; as=script
+  Link: </framework-0dabe0c00cc6caa7050b.js>; rel=preload; as=script
+  Link: </app-0b21a4f05aefa54d54f7.js>; rel=preload; as=script
+  Link: </component---cache-caches-gatsby-plugin-offline-app-shell-js-a0321dbc6f85d9103db3.js>; rel=preload; as=script
+  Link: </page-data/app-data.json>; rel=preload; as=fetch; crossorigin
+  Link: </page-data/offline-plugin-app-shell-fallback/page-data.json>; rel=preload; as=fetch; crossorigin
