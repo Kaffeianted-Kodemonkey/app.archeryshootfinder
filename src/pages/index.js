@@ -283,6 +283,7 @@ export const query = graphql`
       nodes {
         shootId
         sname
+        isVerified
         venueId
         date
         endDate

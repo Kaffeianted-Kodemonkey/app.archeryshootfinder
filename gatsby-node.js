@@ -121,10 +121,10 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   // 2. Loop through every venue item and programmatically create their public URL
   venues.forEach(venue => {
     // Generate an fallback slug configuration if one isn't eplicitly defined in the file
-    const pathSlug = venue.slug ? venue.slug : `venue-${venue.venueId}`
+    // const pathSlug = venue.slug ? venue.slug : `venue-${venue.venueId}`
 
     createPage({
-      path: `/venues/${pathSlug}`, // The public URL path structure
+      path: `/venues/${venue.venueId}`, // The public URL path structure
       component: spotlightTemplate, // Target layout rendering template file
       context: {
         // Pass the internal Gatsby node ID to the template page-query as a variable

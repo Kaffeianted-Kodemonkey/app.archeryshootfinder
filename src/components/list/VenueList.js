@@ -125,14 +125,23 @@ const VenueList = ({
             : "—"
 
         const distance = `${distanceValue} mi`
-        const cityState = `${venueLocation.city}, ${venueLocation.state}`
+        const cityState =
+          `${venueLocation.city || ""}, ${venueLocation.state || ""}`.trim() ||
+          "No Location"
 
         const mapping =
           venueTypeMapping[venue.venueType] || venueTypeMapping.default
 
-        // Logic helpers
-        const isUnclaimed = !venue.isClaimed
+        // FIXED: Robust isClaimed check (Mongo can return boolean, string, or number)
+        const isClaimed =
+          venue.isClaimed === true ||
+          venue.isClaimed === "true" ||
+          venue.isClaimed === 1 ||
+          venue.isClaimed === "1"
+
+        const isUnclaimed = !isClaimed
         const isNonProfit = venue.subscriptionPlan === "Freemium"
+
         const isPaidTier =
           venue.subscriptionPlan && venue.subscriptionPlan !== "Freemium"
 
@@ -301,7 +310,7 @@ const VenueList = ({
               </div>
               {/* Card Footer UI */}
               <div className="card-footer d-flex justify-content-between align-items-center">
-                {venue.isClaimed ? (
+                {isClaimed ? (
                   <>
                     <span className="text-success small">
                       <i className="bi bi-patch-check-fill"></i>{" "}

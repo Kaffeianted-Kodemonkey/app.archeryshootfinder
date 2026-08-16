@@ -8,9 +8,9 @@ import ShootFilters from "./ShootFilters"
 // Helper to derive status from unverified (for claiming/verification)
 const getStatusInfo = shoot => {
   if (shoot.isVerified) {
-    return { className: "bg-warning text-dark", label: "Not Verified" }
+    return { className: "bg-success text-white", label: "Verified" }
   }
-  return { className: "bg-success text-white", label: "Verified" }
+  return { className: "bg-warning text-dark", label: "Not Verified" }
 }
 
 const humanizeEnum = enumStr => {
