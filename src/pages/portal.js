@@ -87,8 +87,8 @@ const Portal = () => {
                 <h1 className="h2 fw-bold text-dark mb-0">
                   Welcome back, {user.name}!
                 </h1>
-                <p className="text-muted small mb-0">
-                  Managing account parameters for: <strong>{user.email}</strong>
+                <p className="fs-5 text-muted small mb-0">
+                  Managing Account & Events.
                 </p>
               </div>
 

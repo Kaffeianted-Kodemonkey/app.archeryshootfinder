@@ -1,6 +1,27 @@
 // src/utils/shootFilters.js
 import { getDistance } from "./distance"
 
+/**
+ * Safely extracts coordinates from either a Shoot layout or a Venue layout node object.
+ */
+const extractCoordinates = item => {
+  if (!item) return null
+
+  // If it's a venue node directly
+  if (item.location?.lat && item.location?.lng) return item.location
+
+  // If it's a shoot node
+  const venue = item.venue
+  const effectiveLocation =
+    item.useVenueLocation !== false && venue?.location
+      ? venue.location
+      : item.shootLocation || venue?.location
+
+  return effectiveLocation?.lat && effectiveLocation?.lng
+    ? effectiveLocation
+    : null
+}
+
 const toDateKey = input => {
   const d = input instanceof Date ? input : new Date(input)
   const year = d.getFullYear()
@@ -14,13 +35,9 @@ export const getDateBoundaries = () => {
   const currentTab = new Date(now)
   currentTab.setDate(currentTab.getDate() + 21)
 
-  return {
-    now: now, // actual Date object
-    currentTab: currentTab,
-  }
+  return { now, currentTab }
 }
 
-// Only looks at START date. No overlap between Current and Upcoming.
 export const filterByDateRange = (shoots, startDate, endDate) => {
   const startKey = toDateKey(startDate)
   const endKey = toDateKey(endDate)
@@ -33,17 +50,20 @@ export const filterByDateRange = (shoots, startDate, endDate) => {
   return filtered.sort((a, b) => new Date(a.date) - new Date(b.date))
 }
 
-// Fixed: No longer resets the date filter
-export const filterByDistance = (shoots, userLocation, maxMiles = 50) => {
+/**
+ * Polymorphic Distance Filter - Streamlined to process BOTH Shoots and Venues
+ */
+export const filterByDistance = (items = [], userLocation, maxMiles = 50) => {
   if (!userLocation?.lat || !userLocation?.lng) {
-    return shoots
+    return items
   }
 
-  const nearby = shoots.filter(shoot => {
-    const loc = shoot.venue?.location || shoot.shootLocation
-    if (!loc?.lat || !loc?.lng) return false
+  const nearby = items.filter(item => {
+    const loc = extractCoordinates(item)
+    if (!loc) return false
     return getDistance(userLocation, loc) <= maxMiles
   })
 
-  return nearby.length > 0 ? nearby : shoots
+  // Fallback pattern: if nothing matches within the radius loop, return the full list baseline
+  return nearby.length > 0 ? nearby : items
 }

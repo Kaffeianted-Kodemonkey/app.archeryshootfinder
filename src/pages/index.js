@@ -1,339 +1,192 @@
 // This is the main page that runs the whole app.
 import * as React from "react"
 import { useState, useEffect, useMemo } from "react"
-import { graphql } from "gatsby"
-import PropTypes from "prop-types"
+//import { graphql } from "gatsby"
+import { Link, navigate } from "gatsby"
+
 import Layout from "../components/layout/Layout"
 import Seo from "../components/seo"
-import Tabs from "../components/list/tabs"
-import {
-  getDateBoundaries,
-  filterByDateRange,
-  filterByDistance,
-} from "../utils/shootFilters"
+import logoSticker from "../../static/images/logo-sticker-pop.png" // Adjust relative path dots based on your current component folder
+import ropetarges from "../images/ropetarges-58.png"
 
-const IndexPage = ({ data }) => {
-  const [selectedVenueId, setSelectedVenueId] = useState(null)
-  const Shoots = data.allShootsJson.nodes
-  const Venues = data.allVenuesJson.nodes
-  const [view, setView] = useState("map")
+export const IndexPage = () => {
+  const [searchVal, setSearchVal] = useState("")
 
-  // Local state for filtered shoots, location, tab
-  const [filteredCurrentShoots, setFilteredCurrentShoots] = useState([])
-  const [filteredUpcomingShoots, setFilteredUpcomingShoots] = useState([])
-  const [userLocation, setUserLocation] = useState(null)
-  const [userState, setUserState] = useState(null)
-  const [userCountry, setUserCountry] = useState(null)
-  const [showRegionalBanner, setShowRegionalBanner] = useState(false)
-  const [activeTab, setActiveTab] = useState("current")
+  const handleSearchSubmit = e => {
+    e.preventDefault()
 
-  // URL param handling (local)
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search)
-    const activeTabParam = params.get("activeTab")
+    const trimmedQuery = searchVal.trim()
+    if (!trimmedQuery) return
 
-    if (activeTabParam) setActiveTab(activeTabParam)
-  }, [])
-
-  // Just calculate the effectiveLocation
-  const shootsWithVenues = useMemo(() => {
-    return Shoots.map(shoot => {
-      // Use the venue object Gatsby already attached to the shoot
-      const venue = shoot.venue
-      const effectiveLocation =
-        shoot.useVenueLocation !== false && venue?.location
-          ? venue.location
-          : shoot.shootLocation || venue?.location
-
-      return {
-        ...shoot,
-        // No need to overwrite venue, it's already there from GraphQL!
-        effectiveLocation,
-      }
-    })
-  }, [Shoots])
-
-  const nonDestinationShoots = useMemo(
-    () => shootsWithVenues.filter(shoot => !shoot.isDestination), // ← correct
-    [shootsWithVenues]
-  )
-
-  // Date boundaries using util
-  const { now, currentTab } = useMemo(() => getDateBoundaries(), [])
-
-  // Computed current/upcoming using utils (date range filter + sort)
-  const computedCurrentShoots = useMemo(
-    () => filterByDateRange(nonDestinationShoots, now, currentTab),
-    [nonDestinationShoots, now, currentTab]
-  )
-
-  const computedUpcomingShoots = useMemo(
-    () =>
-      filterByDateRange(
-        nonDestinationShoots,
-        currentTab,
-        new Date("2100-01-01")
-      ),
-    [nonDestinationShoots, currentTab]
-  )
-
-  // Synchronous initial fallback: Set current to upcoming if empty
-  const initialCurrentShoots = useMemo(() => {
-    return computedCurrentShoots.length > 0
-      ? computedCurrentShoots
-      : computedUpcomingShoots
-  }, [computedCurrentShoots, computedUpcomingShoots])
-
-  // Geolocation for preload (current/upcoming only)
-  useEffect(() => {
-    // Initial setup: Use utils for consistency
-    setFilteredCurrentShoots(computedCurrentShoots)
-    setFilteredUpcomingShoots(computedUpcomingShoots)
-    setActiveTab("current") // Local setter
-
-    const getUserLocation = () => {
-      if (!navigator.geolocation) {
-        console.warn("Geolocation not supported")
-        return
-      }
-      navigator.geolocation.getCurrentPosition(
-        position => {
-          const loc = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          }
-          setUserLocation(loc)
-          setUserCountry(null)
-
-          let geoCurrent = computedCurrentShoots
-          let geoUpcoming = computedUpcomingShoots
-          let showBanner = false
-
-          const applyStateFilter = list =>
-            list.filter(s => {
-              const l =
-                s.useVenueLocation !== false && s.venue?.location
-                  ? s.venue.location
-                  : s.shootLocation
-              return !userState || l?.state === userState
-            })
-
-          // --- Current tab ---
-          const distCurrent = filterByDistance(
-            computedCurrentShoots,
-            loc,
-            50,
-            computedCurrentShoots
-          )
-          if (
-            distCurrent.length === computedCurrentShoots.length &&
-            computedCurrentShoots.length > 0 &&
-            userState
-          ) {
-            showBanner = true
-            geoCurrent = applyStateFilter(computedCurrentShoots)
-          } else {
-            geoCurrent = distCurrent
-          }
-
-          // --- Upcoming tab ---
-          const distUpcoming = filterByDistance(
-            computedUpcomingShoots,
-            loc,
-            50,
-            computedUpcomingShoots
-          )
-          if (
-            distUpcoming.length === computedUpcomingShoots.length &&
-            computedUpcomingShoots.length > 0 &&
-            userState
-          ) {
-            showBanner = true
-            geoUpcoming = applyStateFilter(computedUpcomingShoots)
-          } else {
-            geoUpcoming = distUpcoming
-          }
-
-          setFilteredCurrentShoots(geoCurrent)
-          setFilteredUpcomingShoots(geoUpcoming)
-          setShowRegionalBanner(showBanner)
-        },
-        error => {
-          console.warn("Geolocation error", error)
-        }
-      )
-    }
-    getUserLocation()
-  }, [computedCurrentShoots, computedUpcomingShoots /* , allPublishedShoots */])
-
-  const mapProps = useMemo(() => {
-    let shootsToPass = []
-    let venuesToPass = []
-    if (activeTab === "venue") {
-      venuesToPass = Venues
-    } else if (activeTab === "current") {
-      shootsToPass = filteredCurrentShoots
-    } else if (activeTab === "upcoming") {
-      shootsToPass = filteredUpcomingShoots
-    } else {
-      // Fallback to combined shoots (for 'current' default)
-      shootsToPass =
-        filteredCurrentShoots.length > 0
-          ? filteredCurrentShoots
-          : [...filteredCurrentShoots, ...filteredUpcomingShoots]
-    }
-    return {
-      shoots: shootsToPass,
-      venues: venuesToPass,
-      userLocation: userLocation,
-      activeTab: activeTab, // New: Pass activeTab to map
-    }
-  }, [
-    activeTab,
-    filteredCurrentShoots,
-    filteredUpcomingShoots,
-    Venues,
-    userLocation,
-  ])
-
-  const displayCurrentShoots = useMemo(() => {
-    if (selectedVenueId === null) return filteredCurrentShoots
-    return filteredCurrentShoots.filter(
-      shoot => shoot.venueId === selectedVenueId
-    )
-  }, [filteredCurrentShoots, selectedVenueId])
-
-  const displayUpcomingShoots = useMemo(() => {
-    if (selectedVenueId === null) return filteredUpcomingShoots
-    return filteredUpcomingShoots.filter(
-      shoot => shoot.venueId === selectedVenueId
-    )
-  }, [filteredUpcomingShoots, selectedVenueId])
-
-  // List props with local data (no SearchContext)
-  const listProps = useMemo(() => {
-    const isVenueSelected = selectedVenueId !== null
-
-    return {
-      shoots: shootsWithVenues,
-      venues: Venues,
-      // Headers always show global counts (never venue-filtered)
-      currentShoots: filteredCurrentShoots,
-      upcomingShoots: filteredUpcomingShoots,
-      // Display conditionally uses venue-filtered or normal shoots
-      displayCurrentShoots: isVenueSelected
-        ? displayCurrentShoots
-        : filteredCurrentShoots,
-      displayUpcomingShoots: isVenueSelected
-        ? displayUpcomingShoots
-        : filteredUpcomingShoots,
-      userLocation: userLocation,
-      activeTab,
-      setActiveTab,
-      selectedVenueId,
-      setSelectedVenueId,
-    }
-  }, [
-    shootsWithVenues,
-    Venues,
-    filteredCurrentShoots,
-    filteredUpcomingShoots,
-    displayCurrentShoots,
-    displayUpcomingShoots,
-    userLocation,
-    activeTab,
-    setActiveTab,
-    selectedVenueId,
-    setSelectedVenueId,
-  ])
-
-  const listViewContent = <Tabs {...listProps} />
+    // Programmatically navigate to the events page with the search query appended
+    // encodeURIComponent ensures special characters or spaces don't break the URL string
+    navigate(`/events?search=${encodeURIComponent(trimmedQuery)}`)
+  }
 
   return (
-    <Layout
-      view={view}
-      setView={setView}
-      mapProps={view === "map" ? mapProps : null}
-      listProps={listProps}
-      listViewContent={listViewContent}
-    >
-      <Seo title="Home" />
+    <Layout>
+      <div>
+        <div className="container my-5 pt-4">
+          {/* Logo and header */}
+          <div className="row text-center">
+            <div className="col">
+              <img
+                className="pb-2"
+                src={logoSticker}
+                alt="Archery Shoot Finder Logo"
+                width="30%"
+              />
+              <h1 className="fw-bold mb-4">
+                <span className="text-success">Archery Shoot</span>{" "}
+                <span className="text-warning">Finder</span>
+              </h1>
+            </div>
+          </div>
+          {/* Directory Search */}
+          <div
+            className="row position-relative overflow-hidden py-4 text-white"
+            style={{
+              backgroundImage: `url(${ropetarges})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat",
+            }}
+          >
+            <div className="col position-relative z-1">
+              <h1 className=" fw-bold mb-3 text-center">
+                Find your Next Shoot
+              </h1>
+              <form onSubmit={handleSearchSubmit} style={styles.form}>
+                <div className="row g-3 justify-content-center">
+                  <div className="col col-md-6">
+                    <input
+                      type="text"
+                      placeholder="Enter Location - City, State, or Zip"
+                      value={searchVal}
+                      onChange={e => setSearchVal(e.target.value)}
+                      style={styles.input}
+                      className="form-control form-control-lg border-secondary-subtle"
+                      aria-label="Enter Location"
+                    />
+                    <br />
+                    <button
+                      className="btn btn-lg btn-success px-4"
+                      type="submit"
+                      style={styles.button}
+                    >
+                      <i className="className me-2"></i>Search
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          {/* Directories */}
+          <div className="row align-items-center justify-content-between pt-0 pb-3 mt-3 g-0">
+            <div className="col-6 d-flex flex-column align-items-center">
+              <p>
+                <a
+                  href="/login?signin=shooter"
+                  className="btn btn-lg btn-success"
+                >
+                  <i className="bi bi-person-circle"></i> Shooter <br /> Account
+                </a>
+              </p>
+            </div>
+            <div className="col-6 d-flex flex-column align-items-center text-nowrap">
+              <p>
+                <a
+                  href="/login"
+                  className="btn btn-lg btn-success snipcart-user-profile"
+                >
+                  <i className="bi bi-shop-window"></i> Venue <br /> Account
+                </a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
     </Layout>
   )
 }
 
-IndexPage.propTypes = {
-  data: PropTypes.shape({
-    allShootsJson: PropTypes.shape({
-      nodes: PropTypes.array.isRequired,
-    }),
-    allVenuesJson: PropTypes.shape({
-      nodes: PropTypes.array.isRequired,
-    }),
-  }).isRequired,
+// Inline styles object definition added to resolve the no-undef compilation errors
+const styles = {
+  form: {
+    margin: 0,
+    padding: 0,
+  },
+  input: {
+    width: "100%",
+  },
+  button: {
+    width: "100%",
+    marginTop: "5px",
+  },
 }
 
 export const Head = () => <Seo title="Home" />
 
 export default IndexPage
 
-export const query = graphql`
-  query IndexPageData {
-    allShootsJson {
-      nodes {
-        shootId
-        sname
-        isVerified
-        venueId
-        date
-        endDate
-        startTime
-        endTime
-        shootFormat
-        shootClass
-        bowTypes
-        skillLevel
-        terrain
-        entryFee
-        description
-        useVenueLocation
-        shootLocation {
-          address
-          city
-          state
-          zip
-          lat
-          lng
-        }
-        venue {
-          vname
-          venueType
-          isClaimed
-          location {
-            city
-            state
-            lat
-            lng
-          }
-        }
-      }
-    }
-    allVenuesJson {
-      nodes {
-        venueId
-        vname
-        slug
-        venueType
-        isClaimed
-        subscriptionPlan
-        bio
-        location {
-          city
-          state
-          lat
-          lng
-        }
-      }
-    }
-  }
-`
+// export const query = graphql`
+//   query IndexPageData {
+//     allShootsJson {
+//       nodes {
+//         shootId
+//         sname
+//         isVerified
+//         venueId
+//         date
+//         endDate
+//         startTime
+//         endTime
+//         shootFormat
+//         shootClass
+//         bowTypes
+//         skillLevel
+//         terrain
+//         entryFee
+//         description
+//         useVenueLocation
+//         shootLocation {
+//           address
+//           city
+//           state
+//           zip
+//           lat
+//           lng
+//         }
+//         venue {
+//           vname
+//           venueType
+//           isClaimed
+//           location {
+//             city
+//             state
+//             lat
+//             lng
+//           }
+//         }
+//       }
+//     }
+//     allVenuesJson {
+//       nodes {
+//         venueId
+//         vname
+//         slug
+//         venueType
+//         isClaimed
+//         subscriptionPlan
+//         bio
+//         location {
+//           city
+//           state
+//           lat
+//           lng
+//         }
+//       }
+//     }
+//   }
+// `

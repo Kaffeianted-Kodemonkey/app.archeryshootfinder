@@ -75,9 +75,9 @@ const Navbar = ({ siteTitle, siteDesc }) => {
           {siteTitle}
         </Link>
 
-        <small className="text-white fs-5 pe-2 d-none d-md-inline">
+        {/* <small className="text-white fs-5 pe-2 d-none d-md-inline">
           {siteDesc}
-        </small>
+        </small>*/}
 
         <button
           className="navbar-toggler"
@@ -128,19 +128,22 @@ const Navbar = ({ siteTitle, siteDesc }) => {
               </Link>
             </li>
           </ul>
+
+          <hr class="text-light py-1" />
+
           {/* RIGHT SIDE: Dynamic Auth Navigation Panel */}
           <ul className="navbar-nav ms-auto gap-2">
             {loggedInuser ? (
               <>
-                <li className="nav-item d-none d-md-inline">
+                {/* <li className="nav-item d-none d-md-inline">
                   <span className="text-white small fw-bold me-2">
                     {loggedInuser.name}
                   </span>
-                </li>
+                </li>*/}
                 <li className="nav-item">
                   <Link
                     to="/portal/"
-                    className="btn btn-outline-light btn-sm px-3"
+                    className="btn btn-outline-warning btn-sm px-3"
                     onClick={handleLinkClick}
                   >
                     Admin Dashboard
@@ -149,7 +152,7 @@ const Navbar = ({ siteTitle, siteDesc }) => {
                 <li className="nav-item">
                   <Link
                     to="/portal/profile"
-                    className="btn btn-outline-light btn-sm px-3"
+                    className="btn btn-outline-warning btn-sm px-3"
                     onClick={handleLinkClick}
                   >
                     Venue Profile
@@ -157,7 +160,7 @@ const Navbar = ({ siteTitle, siteDesc }) => {
                 </li>
                 <li className="nav-item">
                   <button
-                    className="btn btn-outline-light btn-sm px-3 snipcart-edit-profile"
+                    className="btn btn-outline-warning btn-sm px-3 snipcart-edit-profile"
                     onClick={handleLinkClick}
                   >
                     Billing
@@ -165,7 +168,7 @@ const Navbar = ({ siteTitle, siteDesc }) => {
                 </li>
                 <li className="nav-item">
                   <button
-                    className="btn btn-outline-light btn-sm px-3 snipcart-user-profile"
+                    className="btn btn-outline-warning btn-sm px-3 snipcart-user-profile"
                     onClick={handleLinkClick}
                   >
                     Subscriptions
@@ -174,7 +177,7 @@ const Navbar = ({ siteTitle, siteDesc }) => {
                 <li className="nav-item">
                   <button
                     onClick={handleLogoutClick}
-                    className="btn btn-dark btn-sm px-3"
+                    className="btn btn-danger btn-sm px-3"
                   >
                     Logout
                   </button>
