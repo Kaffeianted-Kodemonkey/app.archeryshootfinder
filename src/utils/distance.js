@@ -2,6 +2,11 @@
 // Haversine formula to calculate distance between two lat/lng points in miles
 
 export const getDistance = (loc1, loc2) => {
+  // Safe validation guard block: returns a neutral infinity baseline if any coordinates are missing
+  if (!loc1 || !loc2 || loc1.lat == null || loc1.lng == null || loc2.lat == null || loc2.lng == null) {
+    return Infinity;
+  }
+
   const R = 3958.8; // Earth radius in miles
   const dLat = (loc2.lat - loc1.lat) * Math.PI / 180;
   const dLng = (loc2.lng - loc1.lng) * Math.PI / 180;
