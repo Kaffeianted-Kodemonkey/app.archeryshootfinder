@@ -10,7 +10,7 @@ module.exports = {
     title: `ASFinder`,
     description: `Find your Next Target!`,
     author: `@archeryshootfinder`,
-    siteUrl: `https://archeryshootfinder.com`,
+    siteUrl: `https://app.archeryshootfinder.com`,
   },
   plugins: [
     `gatsby-plugin-image`,
@@ -38,32 +38,11 @@ module.exports = {
         theme_color: `#C2410C`,
         lang: `en`,
         categories: [`sports`, `events`, `outdoors`],
-        // Point this to your master high-res asset
         icon: `src/images/logo-sticker-512.png`,
-        // This allows Gatsby to generate standard variants while honoring your specific masks
         icon_options: {
           purpose: `any maskable`,
         },
-        // If you absolutely need to use specific custom built filenames instead of auto-generation,
-        // ensure they are exactly mapped relative to your static/ folder or project asset root:
-        icons: [
-          {
-            src: `src/images/logo-sticker-192.png`,
-            sizes: `192x192`,
-            type: `image/png`,
-          },
-          {
-            src: `src/images/logo-sticker-512.png`,
-            sizes: `512x512`,
-            type: `image/png`,
-          },
-          {
-            src: `src/images/logo-sticker-512.png`,
-            sizes: `512x512`,
-            type: `image/png`,
-            purpose: `maskable`,
-          },
-        ],
+        // REMOVE the manual icons array entirely
       },
     },
     // gatsby-config.js
