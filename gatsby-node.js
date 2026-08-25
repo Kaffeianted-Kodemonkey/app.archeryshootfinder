@@ -189,7 +189,7 @@ exports.createSchemaCustomization = ({ actions }) => {
        bowTypes: [String]
 
        # === NEW SNIPCART V2 FIELDS ADDED HERE ===
-       snipcartUserId: String        # Links the venue to their Snipcart Customer Profile ID
+       snipcartUserId: String!        # Links the venue to their Snipcart Customer Profile ID
        subscriptionId: String        # Tracks active Snipcart V2 Subscription Contract
        subscriptionStatus: String    # e.g., "Active", "Paused", "Cancelled"
        subscriptionPlan: String
@@ -197,7 +197,7 @@ exports.createSchemaCustomization = ({ actions }) => {
      }
 
      type ShootsJson implements Node {
-       shootId: Int
+       shootId: String!
        sname: String
        venueId: String!
        venue: VenuesJson @link(by: "venueId", from: "venueId")
