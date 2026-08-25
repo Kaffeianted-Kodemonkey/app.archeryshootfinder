@@ -53,10 +53,20 @@ const SpotlightTemplate = ({ data }) => {
         {/* TITLE AND TAGLINE */}
         <div className="row px-3 pt-3 mb-4 text-body-emphasis border-top border-bottom border-2 border-success bg-success-subtle">
           <div className="col">
-            <span className="badge bg-primary mb-3 py-2 px-3 fw-bold small">
-              <i className="bi bi-building-gear"></i>{" "}
-              {venue.venueType?.replace("_", " ")}
-            </span>
+            {Array.isArray(venue.venueType) ? (
+              venue.venueType.map((type, index) => (
+                <span key={index} className="badge bg-primary mb-3 py-2 px-3 fw-bold small me-2">
+                  <i className="bi bi-building-gear"></i>{" "}
+                  {typeof type === "string" ? type.replace("_", " ") : ""}
+                </span>
+              ))
+            ) : venue.venueType ? (
+              <span className="badge bg-primary mb-3 py-2 px-3 fw-bold small">
+                <i className="bi bi-building-gear"></i>{" "}
+                {typeof venue.venueType === "string" ? venue.venueType.replace("_", " ") : ""}
+              </span>
+            ) : null}
+
             <h1 className="display-6 fst-italic">{venue.vname}</h1>
             <p className="lead my-3">{venue.tagline}</p>
           </div>
