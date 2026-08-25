@@ -1,5 +1,6 @@
 // src/components/layout/Footer.js
 import * as React from "react"
+import { Link } from "gatsby"
 
 const Footer = () => {
   return (
@@ -10,54 +11,46 @@ const Footer = () => {
       <div className="row align-items-center justify-content-between pb-3 g-0">
         <div className="col d-flex flex-column align-items-center text-nowrap">
           <i className="bi bi-house-door fs-4"></i>
-          <a href="/" className="text-decoration-none text-white ">
+          <Link to="/" className="text-decoration-none text-white ">
             Home
-          </a>
+          </Link>
         </div>
         <div className="col d-flex flex-column align-items-center text-nowrap">
-          <span>
-            <i className="bi bi-person fs-4"></i>
-          </span>
-          <a href="/events" className="text-decoration-none text-white ">
+          <i className="bi bi-person fs-4"></i>
+          <Link to="/events" className="text-decoration-none text-white ">
             Events
-          </a>
+          </Link>
         </div>
 
         <div className="col d-flex flex-column align-items-center text-nowrap">
-          <span>
-            <i className="bi bi-trophy fs-4"></i>
-          </span>
-          <a
-            href="/venues?type=Club"
+          <i className="bi bi-trophy fs-4"></i>
+        <Link
+            to="/venues?type=Club"
             className="text-decoration-none text-white "
           >
             Clubs
-          </a>
+          </Link>
         </div>
-
         <div className="col d-flex flex-column align-items-center text-nowrap">
-          <span>
-            <i className="bi bi-shop-window fs-4"></i>
-          </span>
-          <a
-            href="/venues?type='pro_shop"
-            className="text-decoration-none text-white "
-          >
-            Pro Shop
-          </a>
-        </div>
-
-        <div className="col d-flex flex-column align-items-center text-nowrap">
-          <span>
-            <i className="bi bi-bullseye fs-4"></i>
-          </span>
-          <a
-            href="/venues?type='range'"
+          <i className="bi bi-bullseye fs-4"></i>
+          <Link
+            to="/venues?type=Range"
             className="text-decoration-none text-white "
           >
             Ranges
-          </a>
+          </Link>
         </div>
+        <div className="col d-flex flex-column align-items-center text-nowrap">
+          <i className="bi bi-shop-window fs-4"></i>
+          <Link
+            to="/venues?type=Pro_Shop"
+            className="text-decoration-none text-white "
+          >
+            Pro Shop
+          </Link>
+        </div>
+
+
       </div>
       {/* <div className="d-flex align-items-center justify-content-between px-3 px-md-4 h-100">
         <div className="text-start">

@@ -21,24 +21,6 @@ module.exports = {
         path: `${__dirname}/src/images`,
       },
     },
-
-    // Nodes: allDataJson; filter by name for specific files (e.g., {name: {eq: "shoots"}})
-    // Separate sourcing for venues and shoots to create dedicated allVenuesJson and allShootsJson types
-    // {
-    //   resolve: `gatsby-source-filesystem`,
-    //   options: {
-    //     name: `venues`,
-    //     path: `${__dirname}/src/data/venues.json`,
-    //   },
-    // },
-    // {
-    //   resolve: `gatsby-source-filesystem`,
-    //   options: {
-    //     name: `shoots`,
-    //     path: `${__dirname}/src/data/shoots.json`,
-    //   },
-    // },
-    //
     `gatsby-plugin-netlify`,
     `gatsby-transformer-sharp`,
     `gatsby-plugin-sharp`,
@@ -56,6 +38,14 @@ module.exports = {
         theme_color: `#C2410C`,
         lang: `en`,
         categories: [`sports`, `events`, `outdoors`],
+        // Point this to your master high-res asset
+        icon: `src/images/logo-sticker-512.png`,
+        // This allows Gatsby to generate standard variants while honoring your specific masks
+        icon_options: {
+          purpose: `any maskable`,
+        },
+        // If you absolutely need to use specific custom built filenames instead of auto-generation,
+        // ensure they are exactly mapped relative to your static/ folder or project asset root:
         icons: [
           {
             src: `src/images/logo-sticker-192.png`,
@@ -76,7 +66,22 @@ module.exports = {
         ],
       },
     },
-    `gatsby-plugin-offline`,
+    // gatsby-config.js
+    {
+      resolve: `gatsby-plugin-offline`,
+      options: {
+        workboxConfig: {
+          runtimeCaching: [
+            {
+              // Intercept your dynamic MongoDB routes
+              urlPattern: /(\/api\/venues|\/api\/events|graphql)/,
+              // NetworkFirst forces a live DB look, instantly serving the last cache if offline
+              handler: `NetworkFirst`,
+            },
+          ],
+        },
+      },
+    },
     `gatsby-transformer-json`,
   ],
 }

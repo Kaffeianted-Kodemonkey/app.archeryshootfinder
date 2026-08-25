@@ -1,12 +1,18 @@
-// gatsby-browser.js
 import "bootstrap/dist/css/bootstrap.min.css"
 import "bootstrap/dist/js/bootstrap.bundle.min.js"
 import "./src/styles/global.css"
 import { navigate } from "gatsby"
 
-// gatsby-browser.js
+// Global browser entry lifecycle execution hook
 export const onClientEntry = () => {
   if (typeof window === "undefined") return
+
+  // Catch missing asset chunks seamlessly when navigating offline
+  window.addEventListener("unhandledrejection", event => {
+    if (event.reason && /Loading chunk \d+ failed/.test(event.reason)) {
+      console.warn("PWA asset chunk failed to load offline. Fetching fallback state...")
+    }
+  })
 
   // Listen for global clicks on the page
   window.addEventListener("click", e => {
@@ -22,6 +28,18 @@ export const onClientEntry = () => {
       }
     }
   })
+}
+
+// Prompt users to reload immediately when a fresh Netlify deployment is detected
+export const onServiceWorkerUpdateReady = () => {
+  const answer = window.confirm(
+    `Archery Shoot Finder has been updated. ` +
+    `Would you like to reload to display the latest shoots?`
+  )
+
+  if (answer === true) {
+    window.location.reload()
+  }
 }
 
 // === Snipcart v2 Lifecycle Handler ===
