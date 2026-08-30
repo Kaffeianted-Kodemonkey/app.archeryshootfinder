@@ -5,86 +5,149 @@ require("dotenv").config({
 const path = require("path")
 const { MongoClient } = require("mongodb")
 
-/**
- * SOURCE NODES HOOK: Connect to Atlas and feed documents to GraphQL
- */
+const VENUE_PROJECTION = {
+  _id: 1,
+  venueId: 1,
+  vname: 1,
+  name: 1,
+  accOwner: 1,
+  venueType: 1,
+  isClaimed: 1,
+  isLeague: 1,
+  isClass: 1,
+  isMembership: 1,
+  slug: 1,
+  img: 1,
+  alt: 1,
+  tagline: 1,
+  bio: 1,
+  behavioralRules: 1,
+  gearControl: 1,
+  safteyEtiquette: 1,
+  location: 1,
+  contact: 1,
+  hours: 1,
+  rangeType: 1,
+  targetType: 1,
+  tuningIndoor: 1,
+  tuningOutdoor: 1,
+  maDistIndoor: 1,
+  maDistOutdoor: 1,
+  laneCapIndoor: 1,
+  laneCapOutdoor: 1,
+  amenities: 1,
+  services: 1,
+  sanctioning: 1,
+  bowTypes: 1,
+  snipcartUserId: 1,
+  subscriptionId: 1,
+  subscriptionStatus: 1,
+  subscriptionPlan: 1,
+}
+
+const SHOOT_PROJECTION = {
+  _id: 1,
+  shootId: 1,
+  sname: 1,
+  slug: 1,
+  venueId: 1,
+  description: 1,
+  shootLocation: 1,
+  location: 1,
+  useVenueLocation: 1,
+  date: 1,
+  endDate: 1,
+  startTime: 1,
+  endTime: 1,
+  shootFormat: 1,
+  shootClass: 1,
+  bowTypes: 1,
+  skillLevel: 1,
+  terrain: 1,
+  entryFee: 1,
+  pricing: 1,
+  currency: 1,
+  prizes: 1,
+  registrationUrl: 1,
+  amenities: 1,
+  isDestination: 1,
+  isVerified: 1,
+}
+
+function createMongoNode(
+  { createNode, createNodeId, createContentDigest },
+  { type, prefix, doc, extra = {} }
+) {
+  const { _id, ...fields } = doc
+  const data = { ...fields, ...extra }
+  createNode({
+    ...data,
+    id: createNodeId(`${prefix}-${_id}`),
+    parent: null,
+    children: [],
+    internal: {
+      type,
+      contentDigest: createContentDigest(data),
+    },
+  })
+}
+
 exports.sourceNodes = async ({
   actions,
   createNodeId,
   createContentDigest,
+  reporter,
 }) => {
   const { createNode } = actions
+  const nodeApi = { createNode, createNodeId, createContentDigest }
 
-  // Read URI from environment variable (Netlify) or fallback
-  const uri = process.env.GATSBY_MONGO_URI || process.env.GATSBY_MONGODB_URI
+  const uri =
+    process.env.MONGO_URI ||
+    process.env.GATSBY_MONGO_URI ||
+    process.env.GATSBY_MONGODB_URI
 
-  // Skip MongoDB connection during Netlify builds if no URI is set
   if (!uri) {
-    console.log(
-      "No MongoDB URI provided — skipping sourceNodes (safe for CI builds)."
-    )
+    reporter.info("No MongoDB URI — skipping sourceNodes.")
     return
   }
 
   const client = new MongoClient(uri, {
     tls: true,
-    ssl: true,
-    // This prevents the underlying OpenSSL layer from throwing "alert 80"
-    // during dynamic server selection on cloud runners
     connectTimeoutMS: 30000,
     socketTimeoutMS: 30000,
+    maxPoolSize: 1,
   })
 
   try {
     await client.connect()
-    const db = client.db("ASFinder") // Change to your eact DB name
+    const db = client.db("ASFinder")
 
-    // 2. Fetch data from your collections
-    const venuesData = await db.collection("venues").find({}).toArray()
-    const shootsData = await db.collection("shoots").find({}).toArray()
+    const [venuesData, shootsData] = await Promise.all([
+      db.collection("venues").find({}, { projection: VENUE_PROJECTION }).toArray(),
+      db.collection("shoots").find({}, { projection: SHOOT_PROJECTION }).toArray(),
+    ])
 
-    // 3. Process Venues
     venuesData.forEach(venue => {
-      const nodeMeta = {
-        id: createNodeId(`mongo-venue-${venue._id}`),
-        parent: null,
-        children: [],
-        internal: {
-          type: `VenuesJson`,
-          contentDigest: createContentDigest(venue),
+      createMongoNode(nodeApi, {
+        type: "VenuesJson",
+        prefix: "mongo-venue",
+        doc: venue,
+        extra: {
+          vname: venue.vname || venue.name,
+          hours: Array.isArray(venue.hours) ? venue.hours : [],
         },
-      }
-
-      // ⚡ Crucial Safe Array Guard
-      const cleanHoursArray = Array.isArray(venue.hours) ? venue.hours : []
-      createNode(
-        Object.assign(
-          {},
-          venue,
-          {
-            vname: venue.vname || venue.name,
-            hours: cleanHoursArray,
-          }, // ← this makes vname actually eist on the node
-          nodeMeta
-        )
-      )
+      })
     })
 
-    // 4. Process Shoots
     shootsData.forEach(shoot => {
-      const nodeMeta = {
-        id: createNodeId(`mongo-shoot-${shoot._id}`),
-        parent: null,
-        children: [],
-        internal: {
-          type: `ShootsJson`,
-          contentDigest: createContentDigest(shoot),
-        },
-      }
-      createNode(Object.assign({}, shoot, nodeMeta))
+      createMongoNode(nodeApi, {
+        type: "ShootsJson",
+        prefix: "mongo-shoot",
+        doc: shoot,
+      })
     })
   } catch (error) {
-    console.error("Critical error connecting or fetching from MongoDB:", error)
+    reporter.panicOnBuild("MongoDB sourceNodes failed", error)
   } finally {
     await client.close()
   }
@@ -92,8 +155,6 @@ exports.sourceNodes = async ({
 
 exports.createPages = async ({ graphql, actions, reporter }) => {
   const { createPage } = actions
-
-  // 1. Run a GraphQL query to grab all registered venue IDs and Slugs
   const result = await graphql(`
     query GetSpotlightVenues {
       allVenuesJson {
@@ -106,28 +167,21 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     }
   `)
 
-  // Handle data query error eceptions safely
   if (result.errors) {
     reporter.panicOnBuild(
-      `Error while running GraphQL query inside gatsby-node.js`,
+      "GraphQL query failed in createPages",
       result.errors
     )
     return
   }
 
-  const venues = result.data.allVenuesJson.nodes
-  const spotlightTemplate = path.resolve(`src/templates/spotlight.js`)
+  const spotlightTemplate = path.resolve("src/templates/spotlight.js")
 
-  // 2. Loop through every venue item and programmatically create their public URL
-  venues.forEach(venue => {
-    // Generate an fallback slug configuration if one isn't eplicitly defined in the file
-    // const pathSlug = venue.slug ? venue.slug : `venue-${venue.venueId}`
-
+  result.data.allVenuesJson.nodes.forEach(venue => {
     createPage({
-      path: `/venues/${venue.venueId}`, // The public URL path structure
-      component: spotlightTemplate, // Target layout rendering template file
+      path: `/venues/${venue.venueId}`,
+      component: spotlightTemplate,
       context: {
-        // Pass the internal Gatsby node ID to the template page-query as a variable
         id: venue.id,
         venueId: venue.venueId,
       },
@@ -135,93 +189,81 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   })
 }
 
-/**
- * NEW HOOK: Tell Gatsby to treat /portal/ as a client-side route dashboard
- */
 exports.onCreatePage = async ({ page, actions }) => {
   const { createPage } = actions
-
-  // If a file is created inside the /portal path, let the browser handle sub-routes
   if (page.path.match(/^\/portal/)) {
     page.matchPath = "/portal/*"
     createPage(page)
   }
 }
 
-/**
- * Schema customization: Define types for JSON data (nested as JSON for raw access)
- */
 exports.createSchemaCustomization = ({ actions }) => {
   const { createTypes } = actions
-  const typeDefs = `
+  createTypes(`
     type VenuesJson implements Node {
-       venueId: String!              # Your internal Venue Mongo ID mapping
-       vname: String                 # Passed from Snipcart (data-item-name or custom fields)
-       accOwner: String              # Account owner / Business name from Snipcart Billing
-       venueType: [String]
-       isClaimed: Boolean!           # SET BY SYSTEM TO true ONCE SECURE WEBHOOK FIRES
-       isLeague: Boolean!
-       isClass: Boolean!
-       isMembership: Boolean!
-       slug: String
-       img: String
-       alt: String
-       tagline: String
-       bio: String
-       behavioralRules: [String]
-       gearControl: [String]
-       safteyEtiquette: [String]
-       location: Location            # Populated with Snipcart Billing Address data
-       contact: Contact              # Populated with Snipcart Customer Account data
-       hours: [Hours]
-       rangeType: [String]
-       targetType: [String]
-       tuningIndoor: [String]
-       tuningOutdoor: [String]
-       maDistIndoor: String
-       maDistOutdoor: String
-       laneCapIndoor: String
-       laneCapOutdoor: String
-       amenities: [String]
-       services: [String]
-    #   equipmentAllowed: [String]
-       sanctioning: [String]
-       bowTypes: [String]
+      venueId: String!
+      vname: String
+      accOwner: String
+      venueType: [String]
+      isClaimed: Boolean!
+      isLeague: Boolean!
+      isClass: Boolean!
+      isMembership: Boolean!
+      slug: String
+      img: String
+      alt: String
+      tagline: String
+      bio: String
+      behavioralRules: [String]
+      gearControl: [String]
+      safteyEtiquette: [String]
+      location: Location
+      contact: Contact
+      hours: [Hours]
+      rangeType: [String]
+      targetType: [String]
+      tuningIndoor: [String]
+      tuningOutdoor: [String]
+      maDistIndoor: String
+      maDistOutdoor: String
+      laneCapIndoor: String
+      laneCapOutdoor: String
+      amenities: [String]
+      services: [String]
+      sanctioning: [String]
+      bowTypes: [String]
+      snipcartUserId: String!
+      subscriptionId: String
+      subscriptionStatus: String
+      subscriptionPlan: String
+    }
 
-       # === NEW SNIPCART V2 FIELDS ADDED HERE ===
-       snipcartUserId: String!        # Links the venue to their Snipcart Customer Profile ID
-       subscriptionId: String        # Tracks active Snipcart V2 Subscription Contract
-       subscriptionStatus: String    # e.g., "Active", "Paused", "Cancelled"
-       subscriptionPlan: String
-    #   invoiceNumber: String         # Last successful transaction reference code
-     }
-
-     type ShootsJson implements Node {
-       shootId: String!
-       sname: String
-       venueId: String!
-       venue: VenuesJson @link(by: "venueId", from: "venueId")
-       description: String
-       shootLocation: Location
-       useVenueLocation: Boolean
-       date: Date
-       endDate: Date
-       startTime: String
-       endTime: String
-       shootFormat: [String]
-       shootClass: [String]
-       bowTypes: [String]
-       skillLevel: [String]
-       terrain: [String]
-       entryFee: String
-       pricing: [ShootPrice]
-       currency: String
-       prizes: String
-       registrationUrl: String
-       amenities: [String]
-       isDestination: Boolean
-       isVerified: Boolean
-     }
+    type ShootsJson implements Node {
+      shootId: String!
+      sname: String
+      venueId: String!
+      venue: VenuesJson @link(by: "venueId", from: "venueId")
+      description: String
+      shootLocation: Location
+      useVenueLocation: Boolean
+      date: Date
+      endDate: Date
+      startTime: String
+      endTime: String
+      shootFormat: [String]
+      shootClass: [String]
+      bowTypes: [String]
+      skillLevel: [String]
+      terrain: [String]
+      entryFee: String
+      pricing: [ShootPrice]
+      currency: String
+      prizes: String
+      registrationUrl: String
+      amenities: [String]
+      isDestination: Boolean
+      isVerified: Boolean
+    }
 
     type Location {
       address: String
@@ -232,14 +274,14 @@ exports.createSchemaCustomization = ({ actions }) => {
       lng: Float
     }
 
-     type Contact {
-       phone: String                 # Maps to Snipcart's billingAddress.phone
-       email: String                 # Maps to Snipcart's customer order email
-       website: String
-       socials: [Social]
-     }
+    type Contact {
+      phone: String
+      email: String
+      website: String
+      socials: [Social]
+    }
 
-     type Social {
+    type Social {
       name: String
       url: String
     }
@@ -251,7 +293,7 @@ exports.createSchemaCustomization = ({ actions }) => {
     }
 
     type ShootPrice {
-      tier: String     # Fixed: Changed from missing 'ShootClass' enum to flat String
+      tier: String
       note: String
       options: [PriceOption]
     }
@@ -261,6 +303,5 @@ exports.createSchemaCustomization = ({ actions }) => {
       cost: Float
       currency: String
     }
-  `
-  createTypes(typeDefs)
+  `)
 }

@@ -32,7 +32,7 @@ module.exports = {
         description: `Find archery shoots, tournaments, and events near you`,
         start_url: `/`,
         scope: `/`,
-        display: `standalone`,
+        display: `fullscreen`,
         orientation: `portrait`,
         background_color: `#ffffff`,
         theme_color: `#C2410C`,
