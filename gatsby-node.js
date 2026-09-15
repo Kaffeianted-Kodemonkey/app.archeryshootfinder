@@ -244,6 +244,7 @@ exports.createSchemaCustomization = ({ actions }) => {
       venueId: String!
       venue: VenuesJson @link(by: "venueId", from: "venueId")
       description: String
+      associationType: String
       shootLocation: Location
       useVenueLocation: Boolean
       date: Date
@@ -261,8 +262,8 @@ exports.createSchemaCustomization = ({ actions }) => {
       prizes: String
       registrationUrl: String
       amenities: [String]
-      isDestination: Boolean
-      isVerified: Boolean
+      isDestination: Boolean!
+      isVerified: Boolean!
     }
 
     type Location {
