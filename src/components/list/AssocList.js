@@ -22,14 +22,6 @@ const formatDateShort = (start, end) => {
   })} - ${e.toLocaleDateString("en-US", { month: "short", day: "numeric" })}`
 }
 
-const getRegLabel = url => {
-  if (!url) return null
-  const lower = url.toLowerCase()
-  if (lower.includes("eventbrite")) return "Register on Eventbrite"
-  if (lower.includes("facebook")) return "Vendor Reg on Facebook"
-  return "Register"
-}
-
 const AssocList = ({
   shoots = [],
   userLocation,
@@ -41,6 +33,7 @@ const AssocList = ({
     setFilteredShoots(shoots)
   }, [shoots])
 
+  // 🌟 FIXED: Unpacks array properties securely to avoid key mapping reference breaks
   const groupedByAssociation = React.useMemo(() => {
     return filteredShoots.reduce((acc, shoot) => {
       const rawType = shoot.associationType
@@ -52,10 +45,11 @@ const AssocList = ({
     }, {})
   }, [filteredShoots])
 
-  if (shoots.length === 0) {
+  // FIXED: Check filtered length instead of initial prop to keep filter alerts working properly
+  if (filteredShoots.length === 0) {
     return (
       <div className="alert alert-info text-center py-5 my-4">
-        No Association Shoots have been listed for the season.
+        No Association Shoots found matching selected filters.
       </div>
     )
   }
@@ -87,9 +81,8 @@ const AssocList = ({
                   <div className="w-100">
                     <div className="row align-items-center mb-1">
                       <div className="col-12 col-md-auto d-flex gap-2 mb-1 mb-md-0">
-                        {/* FIXED: Outputs clean, scraper-normalized formats instantly with zero overhead */}
                         <span className="badge bg-secondary">
-                          {firstShoot.shootFormat || "3D"}
+                          {Array.isArray(firstShoot.shootFormat) ? firstShoot.shootFormat[0] : (firstShoot.shootFormat || "3D")}
                         </span>
                         <span className={`badge ${status.className}`}>
                           {status.label}
@@ -161,7 +154,7 @@ const AssocList = ({
                                       rel="noopener noreferrer"
                                       className="btn btn-sm btn-success"
                                     >
-                                      {getRegLabel(s.registrationUrl)}
+                                      Register Here
                                     </a>
                                   )}
                                 </div>

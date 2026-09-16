@@ -25,7 +25,6 @@ const EventTabs = ({
   }
 
   const renderContent = () => {
-    // FIXED: Let DestList manage its own filtering and empty warning layouts
     if (activeTab === "destination") {
       return (
         <DestList
@@ -36,7 +35,6 @@ const EventTabs = ({
       )
     }
 
-    // Updated tab state string keyword to singular "association"
     if (activeTab === "association") {
       return associationsShoots.length === 0 ? (
         <div className="alert alert-info text-center py-5 my-4">
