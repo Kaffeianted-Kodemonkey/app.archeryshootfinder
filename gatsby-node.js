@@ -75,6 +75,21 @@ const SHOOT_PROJECTION = {
   isVerified: 1,
 }
 
+// ADDED: Projections layer for the master associations collection documents
+const ASSOCIATION_PROJECTION = {
+  _id: 1,
+  associationCode: 1,
+  fullName: 1,
+  hqAddress: 1,
+  phone: 1,
+  email: 1,
+  websiteUrl: 1,
+  membershipUrl: 1,
+  isPremiumVerified: 1,
+  pinnedBannerUrl: 1,
+  announcementText: 1,
+}
+
 function createMongoNode(
   { createNode, createNodeId, createContentDigest },
   { type, prefix, doc, extra = {} }
@@ -92,7 +107,6 @@ function createMongoNode(
     },
   })
 }
-
 exports.sourceNodes = async ({
   actions,
   createNodeId,
@@ -123,9 +137,11 @@ exports.sourceNodes = async ({
     await client.connect()
     const db = client.db("ASFinder")
 
-    const [venuesData, shootsData] = await Promise.all([
+    // UPDATED: Added parallel task lookups to extract your new associations collection array
+    const [venuesData, shootsData, associationsData] = await Promise.all([
       db.collection("venues").find({}, { projection: VENUE_PROJECTION }).toArray(),
       db.collection("shoots").find({}, { projection: SHOOT_PROJECTION }).toArray(),
+      db.collection("associations").find({}, { projection: ASSOCIATION_PROJECTION }).toArray(),
     ])
 
     venuesData.forEach(venue => {
@@ -147,13 +163,24 @@ exports.sourceNodes = async ({
         doc: shoot,
       })
     })
+
+    // ADDED: Loops over the association arrays to construct valid Gatsby node assets inside GraphQL
+    associationsData.forEach(assoc => {
+      createMongoNode(nodeApi, {
+        type: "AssociationsJson",
+        prefix: "mongo-association",
+        doc: assoc,
+      })
+    })
+
+    reporter.info(`🚀 Successfully sourced node data collections -> Venues: ${venuesData.length} | Shoots: ${shootsData.length} | Associations: ${associationsData.length}`);
+
   } catch (error) {
     reporter.panicOnBuild("MongoDB sourceNodes failed", error)
   } finally {
     await client.close()
   }
 }
-
 exports.createPages = async ({ graphql, actions, reporter }) => {
   const { createPage } = actions
   const result = await graphql(`
@@ -209,7 +236,6 @@ exports.createSchemaCustomization = ({ actions }) => {
       isClaimed: Boolean!
       isLeague: Boolean!
       isClass: Boolean!
-      isMembership: Boolean!
       slug: String
       img: String
       alt: String
@@ -231,7 +257,7 @@ exports.createSchemaCustomization = ({ actions }) => {
       laneCapOutdoor: String
       amenities: [String]
       services: [String]
-      sanctioning: [String]
+      sanctioning: [String] # this is the govering bodies over archery
       bowTypes: [String]
       snipcartUserId: String!
       subscriptionId: String
@@ -245,9 +271,11 @@ exports.createSchemaCustomization = ({ actions }) => {
       venueId: String!
       venue: VenuesJson @link(by: "venueId", from: "venueId")
       description: String
-      associationType: [String]
+      guidelines: String
+      associationType: String # this is the governing body rules to follow per event
+      # ADDED: Relational multi-link selector connecting individual shoots directly to their governing parent profiles
+      # association: AssociationsJson @link(by: "associationCode", from: "associationType")
       shootLocation: Location
-      useVenueLocation: Boolean
       date: Date
       endDate: Date
       startTime: String
@@ -257,15 +285,26 @@ exports.createSchemaCustomization = ({ actions }) => {
       bowTypes: [String]
       skillLevel: [String]
       terrain: [String]
+      currency: String
       entryFee: String
       pricing: [ShootPrice]
-      currency: String
       prizes: String
       registrationUrl: String
       amenities: [String]
       isDestination: Boolean!
       isVerified: Boolean!
     }
+
+  # ADDED: Strict structural data definition block typing for the new Archery Association profiles Node
+  # type AssociationsJson implements Node {
+  #   associationCode: String!
+  #   associationName: String!
+  #   address: [Location]
+  #   contact: [Contact]
+  #   rulesRegUrl: String
+  #   pinnedBannerUrl: String
+  #   announcementText: String
+  # }
 
     type Location {
       address: String
@@ -280,6 +319,7 @@ exports.createSchemaCustomization = ({ actions }) => {
       phone: String
       email: String
       website: String
+      membershipUrl: String
       socials: [Social]
     }
 
@@ -295,15 +335,12 @@ exports.createSchemaCustomization = ({ actions }) => {
     }
 
     type ShootPrice {
-      tier: String
-      note: String
-      options: [PriceOption]
-    }
-
-    type PriceOption {
-      days: Int
-      cost: Float
-      currency: String
+      tier: String      # e.g., "Adult", "Youth", "Pro Division"
+      note: String      # e.g., "Includes raffle ticket" or "Known distances only"
+      cost1Day: Float   # Explicit, direct property mapping
+      cost2Days: Float  # Explicit, direct property mapping
+      cost3Days: Float  # Explicit, direct property mapping
+      cost4Days: Float  # Explicit, direct property mapping
     }
   `)
 }

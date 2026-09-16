@@ -66,15 +66,17 @@ const EventPage = ({ data, location }) => {
     [shootsWithVenues]
   )
 
-  // Filter 3: Association Feed (assocType !== null), grouped by assocType
+  // Filter 3: Association Feed (associationType elements checked), grouped by type key safely
   const groupedAssociationsShoots = useMemo(() => {
-    const associationsOnly = shootsWithVenues.filter(
-      shoot => shoot.assocType !== null && shoot.assocType !== undefined
-    )
+    const associationsOnly = shootsWithVenues.filter(shoot => {
+      const type = shoot.associationType
+      return Array.isArray(type) ? type.length > 0 : !!type
+    })
 
-    // Grouping entries securely by assocType keys
+    // Grouping entries securely by normalized association name keys
     return associationsOnly.reduce((groups, shoot) => {
-      const type = shoot.assocType
+      const rawType = shoot.associationType
+      const type = Array.isArray(rawType) ? (rawType[0] || "General") : (rawType || "General")
       if (!groups[type]) {
         groups[type] = []
       }
@@ -228,7 +230,7 @@ const EventPage = ({ data, location }) => {
     }
   }, [activeTab, activeMapShoots, userLocation])
 
-  // 1. Update this filter to check array string lengths safely
+  // 1. Filter to verify array lengths safely against data nodes
   const computedAssociationsShoots = useMemo(
     () => shootsWithVenues.filter(shoot => {
       const type = shoot.associationType
@@ -237,7 +239,7 @@ const EventPage = ({ data, location }) => {
     [shootsWithVenues]
   )
 
-  // 2. Pass it under the plain flat array prop name "shoots" down inside your listProps hook
+  // 2. Pass it under the matching array layout names expected inside EventTabs
   const listProps = useMemo(() => {
     return {
       shoots: shootsWithVenues,
@@ -246,7 +248,7 @@ const EventPage = ({ data, location }) => {
       upcomingShoots: filteredUpcomingShoots,
       displayCurrentShoots: displayCurrentShoots,
       displayUpcomingShoots: filteredUpcomingShoots,
-      destinationShoots: computedDestinationShoots, // 🌟 FIXED: Pass destination data into the lists layout
+      destinationShoots: computedDestinationShoots,
       associationsShoots: computedAssociationsShoots,
       userLocation: userLocation,
       activeTab,
@@ -257,7 +259,7 @@ const EventPage = ({ data, location }) => {
     filteredCurrentShoots,
     filteredUpcomingShoots,
     displayCurrentShoots,
-    computedDestinationShoots, // 🌟 FIXED: track updates to destination results
+    computedDestinationShoots,
     computedAssociationsShoots,
     userLocation,
     activeTab,
@@ -304,7 +306,6 @@ export const query = graphql`
         description
         isDestination
         associationType
-        useVenueLocation
         shootLocation {
           address
           city
@@ -333,6 +334,7 @@ export const query = graphql`
         slug
         venueType
         isClaimed
+        sanctioning
         subscriptionPlan
         location {
           city

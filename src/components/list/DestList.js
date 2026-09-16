@@ -144,18 +144,20 @@ const DestList = ({
                       <tbody>
                         {first.pricing && first.pricing.length > 0 ? (
                           first.pricing.map(priceTier => {
-                            const tier = priceTier.tier
-                            const options = priceTier.options || []
-                            const getCost = days =>
-                              options.find(o => o.days === days)?.cost ?? ""
+                            // FIXED: Direct destructured mapping with clean default values if a cell is empty
+                            const { tier, note, cost1Day, cost2Days, cost3Days, cost4Days } = priceTier;
+                            const currencySymbol = first.currency === "CAD" ? "C$" : "$";
 
                             return (
                               <tr key={tier}>
-                                <th className="py-2">{tier}</th>
-                                <td>${getCost(1)}</td>
-                                <td>${getCost(2)}</td>
-                                <td>${getCost(3)}</td>
-                                <td>${getCost(4)}</td>
+                                <th className="py-2">
+                                  <div>{tier}</div>
+                                  {note && <small className="text-muted fw-normal">{note}</small>}
+                                </th>
+                                <td>{cost1Day ? `${currencySymbol}${cost1Day}` : "—"}</td>
+                                <td>{cost2Days ? `${currencySymbol}${cost2Days}` : "—"}</td>
+                                <td>{cost3Days ? `${currencySymbol}${cost3Days}` : "—"}</td>
+                                <td>{cost4Days ? `${currencySymbol}${cost4Days}` : "—"}</td>
                               </tr>
                             )
                           })
@@ -167,9 +169,10 @@ const DestList = ({
                         )}
                         <tr>
                           <th>PRIZES:</th>
-                          <td colSpan={4}> {first.prizes || "None listed"}</td>
+                          <td colSpan={4}>{first.prizes || "None listed"}</td>
                         </tr>
                       </tbody>
+
                     </table>
 
                     <small>
