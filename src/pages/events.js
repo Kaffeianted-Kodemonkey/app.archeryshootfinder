@@ -5,7 +5,7 @@ import { graphql, navigate } from "gatsby"
 import PropTypes from "prop-types"
 import Layout from "../components/layout/Layout"
 import Seo from "../components/seo"
-import EventTabs from "../components/list/EventTabs" // Verified implementation target
+import EventTabs from "../components/list/EventTabs"
 import {
   getDateBoundaries,
   filterByDateRange,
@@ -16,12 +16,11 @@ const EventPage = ({ data, location }) => {
   const Shoots = data.allShootsJson.nodes
   const [view, setView] = useState("map")
 
-  // Local state for filtered shoots, location, tab
+  // Local state for filtered local shoots, location, tab
   const [filteredCurrentShoots, setFilteredCurrentShoots] = useState([])
   const [filteredUpcomingShoots, setFilteredUpcomingShoots] = useState([])
   const [userLocation, setUserLocation] = useState(null)
   const [userState, setUserState] = useState(null)
-  const [showRegionalBanner, setShowRegionalBanner] = useState(false)
   const [activeTab, setActiveTab] = useState("current")
 
   // URL param handling (local)
@@ -55,15 +54,39 @@ const EventPage = ({ data, location }) => {
     })
   }, [Shoots])
 
+  // Filter 1: Main Feed Filters (isDestination === false)
   const nonDestinationShoots = useMemo(
     () => shootsWithVenues.filter(shoot => !shoot.isDestination),
     [shootsWithVenues]
   )
 
+  // Filter 2: Destination Feed (isDestination === true)
+  const computedDestinationShoots = useMemo(
+    () => shootsWithVenues.filter(shoot => shoot.isDestination === true),
+    [shootsWithVenues]
+  )
+
+  // Filter 3: Association Feed (assocType !== null), grouped by assocType
+  const groupedAssociationsShoots = useMemo(() => {
+    const associationsOnly = shootsWithVenues.filter(
+      shoot => shoot.assocType !== null && shoot.assocType !== undefined
+    )
+
+    // Grouping entries securely by assocType keys
+    return associationsOnly.reduce((groups, shoot) => {
+      const type = shoot.assocType
+      if (!groups[type]) {
+        groups[type] = []
+      }
+      groups[type].push(shoot)
+      return groups;
+    }, {})
+  }, [shootsWithVenues])
+
   // Date boundaries using util
   const { now, currentTab } = useMemo(() => getDateBoundaries(), [])
 
-  // Computed current/upcoming using utils (date range filter + sort)
+  // Computed current/upcoming local ranges using utils
   const computedCurrentShoots = useMemo(
     () => filterByDateRange(nonDestinationShoots, now, currentTab),
     [nonDestinationShoots, now, currentTab]
@@ -79,7 +102,7 @@ const EventPage = ({ data, location }) => {
     [nonDestinationShoots, currentTab]
   )
 
-  // Geolocation for preload (current/upcoming only)
+  // Geolocation processing for Current/Upcoming local views
   useEffect(() => {
     setFilteredCurrentShoots(computedCurrentShoots)
     setFilteredUpcomingShoots(computedUpcomingShoots)
@@ -100,7 +123,6 @@ const EventPage = ({ data, location }) => {
 
           let geoCurrent = computedCurrentShoots
           let geoUpcoming = computedUpcomingShoots
-          let showBanner = false
 
           const applyStateFilter = list =>
             list.filter(s => {
@@ -111,7 +133,7 @@ const EventPage = ({ data, location }) => {
               return !userState || l?.state === userState
             })
 
-          // --- Current tab (Preloaded: 21 days + 50 mil radius) ---
+          // --- Current tab (Preloaded: 21 days + 50 mile radius) ---
           const distCurrent = filterByDistance(
             computedCurrentShoots,
             loc,
@@ -123,7 +145,6 @@ const EventPage = ({ data, location }) => {
             computedCurrentShoots.length > 0 &&
             userState
           ) {
-            showBanner = true
             geoCurrent = applyStateFilter(computedCurrentShoots)
           } else {
             geoCurrent = distCurrent
@@ -141,7 +162,6 @@ const EventPage = ({ data, location }) => {
             computedUpcomingShoots.length > 0 &&
             userState
           ) {
-            showBanner = true
             geoUpcoming = applyStateFilter(computedUpcomingShoots)
           } else {
             geoUpcoming = distUpcoming
@@ -149,7 +169,6 @@ const EventPage = ({ data, location }) => {
 
           setFilteredCurrentShoots(geoCurrent)
           setFilteredUpcomingShoots(geoUpcoming)
-          setShowRegionalBanner(showBanner)
         },
         error => {
           console.warn("Geolocation error", error)
@@ -159,65 +178,76 @@ const EventPage = ({ data, location }) => {
     getUserLocation()
   }, [computedCurrentShoots, computedUpcomingShoots])
 
-  // Filter preloaded results down strictly by the URL search parameters
+  // Global search filtering mechanism applied down across local states
   const displayCurrentShoots = useMemo(() => {
-    let result = filteredCurrentShoots // Scoped directly to current preloaded tab state
+    let result = filteredCurrentShoots
 
     if (URLSearchQuery) {
-      const q = URLSearchQuery.replace(/,/g, "")
-        .replace(/\s+/g, " ")
-        .toLowerCase()
-
+      const q = URLSearchQuery.replace(/,/g, "").replace(/\s+/g, " ").toLowerCase()
       result = result.filter(shoot => {
         const text = [
           shoot.sname,
           shoot.venue?.vname,
           shoot.shootLocation?.city,
           shoot.shootLocation?.state,
-          shoot.venue?.location?.city,
-          shoot.venue?.location?.state,
-        ]
-          .join(" ")
-          .toLowerCase()
-
+        ].join(" ").toLowerCase()
         return text.includes(q)
       })
     }
-
     return result
   }, [filteredCurrentShoots, URLSearchQuery])
 
-  // Custom fallback helper function to wipe filters clean on re-click
   const handleTabChangeWithReset = tab => {
     setActiveTab(tab)
     if (URLSearchQuery) {
-      navigate("/events") // Removes parameters securely to load all pre-filters back up
+      navigate("/events")
     }
   }
 
+  // Determine dynamic contextual data for map plots depending on current tab
+  const activeMapShoots = useMemo(() => {
+    switch (activeTab) {
+      case "upcoming":
+        return filteredUpcomingShoots
+      case "destination":
+        return computedDestinationShoots
+      case "association":
+        return Object.values(groupedAssociationsShoots).flat()
+      case "current":
+      default:
+        return displayCurrentShoots
+    }
+  }, [activeTab, displayCurrentShoots, filteredUpcomingShoots, computedDestinationShoots, groupedAssociationsShoots])
+
   const mapProps = useMemo(() => {
     return {
-      shoots:
-        activeTab === "upcoming"
-          ? filteredUpcomingShoots
-          : displayCurrentShoots,
+      shoots: activeMapShoots,
       venues: [],
       userLocation: userLocation,
       activeTab: activeTab,
     }
-  }, [activeTab, displayCurrentShoots, filteredUpcomingShoots, userLocation])
+  }, [activeTab, activeMapShoots, userLocation])
 
-  // List props matching EventTabs structural attributes cleanly
+  // 1. Update this filter to check array string lengths safely
+  const computedAssociationsShoots = useMemo(
+    () => shootsWithVenues.filter(shoot => {
+      const type = shoot.associationType
+      return Array.isArray(type) ? type.length > 0 : !!type
+    }),
+    [shootsWithVenues]
+  )
+
+  // 2. Pass it under the plain flat array prop name "shoots" down inside your listProps hook
   const listProps = useMemo(() => {
     return {
       shoots: shootsWithVenues,
       venues: [],
-      // Badges keep showing full global preloaded counts
       currentShoots: filteredCurrentShoots,
       upcomingShoots: filteredUpcomingShoots,
-      // Target list render loops point to computed queries (safely registers 0 items)
       displayCurrentShoots: displayCurrentShoots,
       displayUpcomingShoots: filteredUpcomingShoots,
+      destinationShoots: computedDestinationShoots, // 🌟 FIXED: Pass destination data into the lists layout
+      associationsShoots: computedAssociationsShoots,
       userLocation: userLocation,
       activeTab,
       setActiveTab: handleTabChangeWithReset,
@@ -227,6 +257,8 @@ const EventPage = ({ data, location }) => {
     filteredCurrentShoots,
     filteredUpcomingShoots,
     displayCurrentShoots,
+    computedDestinationShoots, // 🌟 FIXED: track updates to destination results
+    computedAssociationsShoots,
     userLocation,
     activeTab,
   ])
@@ -271,6 +303,7 @@ export const query = graphql`
         entryFee
         description
         isDestination
+        associationType
         useVenueLocation
         shootLocation {
           address

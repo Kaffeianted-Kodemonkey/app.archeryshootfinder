@@ -51,6 +51,7 @@ const SHOOT_PROJECTION = {
   sname: 1,
   slug: 1,
   venueId: 1,
+  associationType: 1,
   description: 1,
   shootLocation: 1,
   location: 1,
@@ -244,7 +245,7 @@ exports.createSchemaCustomization = ({ actions }) => {
       venueId: String!
       venue: VenuesJson @link(by: "venueId", from: "venueId")
       description: String
-      associationType: String
+      associationType: [String]
       shootLocation: Location
       useVenueLocation: Boolean
       date: Date

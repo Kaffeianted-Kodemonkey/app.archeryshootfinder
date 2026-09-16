@@ -211,7 +211,7 @@ const ShootList = ({
                 aria-labelledby={`heading-${vIndex}`}
                 data-bs-parent="#shootAccordion"
               >
-                <div className="accordion-body">
+                <div className="accordion-body border-2 border-start border-end border-success-subtle">
                   <h3 className="fa-5">Registration Cost per Shooter</h3>
                   {/* Price table – prefers structured pricing, falls back to entryFee string */}
                   {first.entryFee ? (

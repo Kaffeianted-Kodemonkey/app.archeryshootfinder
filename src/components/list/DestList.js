@@ -1,108 +1,85 @@
-// src/components/list/DestList.js
 import * as React from "react"
 import PropTypes from "prop-types"
 import { Link } from "gatsby"
 import ShootFilters from "./ShootFilters"
 
 const getStatusInfo = shoot => {
-  if (shoot.isVerified) {
-    return { className: "bg-warning text-dark", label: "Not Verified" }
+  if (shoot?.isVerified) {
+    return { className: "bg-success text-white", label: "Verified" }
   }
-  return { className: "bg-success text-white", label: "Verified" }
-}
-
-const humanizeEnum = enumStr => {
-  if (!enumStr) return ""
-  const specialCases = {
-    THREE_D: "3D",
-    TAC: "TAC",
-    ASA: "ASA",
-    IBO: "IBO",
-    NFAA: "NFAA",
-    S3DA: "S3DA",
-  }
-  if (specialCases[enumStr]) return specialCases[enumStr]
-  return enumStr
-    .toLowerCase()
-    .split("_")
-    .map(w => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(" ")
+  return { className: "bg-warning text-dark", label: "Not Verified" }
 }
 
 const formatDateShort = (start, end) => {
   const s = new Date(`${start}T00:00:00`)
   const e = new Date(`${end || start}T00:00:00`)
+
+  // 1. Single-day event (e.g., "Jun 15")
   if (s.toDateString() === e.toDateString()) {
     return s.toLocaleDateString("en-US", { month: "short", day: "numeric" })
   }
+
+  // 2. Multi-day event within the SAME month (e.g., "Jun 15 - 18")
+  if (s.getMonth() === e.getMonth() && s.getFullYear() === e.getFullYear()) {
+    const startStr = s.toLocaleDateString("en-US", { month: "short", day: "numeric" })
+    return `${startStr} - ${e.getDate()}`
+  }
+
+  // 3. Multi-day event spanning CROSS-months (e.g., "Jun 30 - Jul 2")
   return `${s.toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
   })} - ${e.toLocaleDateString("en-US", { month: "short", day: "numeric" })}`
 }
-
-const getRegLabel = url => {
-  if (!url) return null
-  const lower = url.toLowerCase()
-  if (lower.includes("eventbrite")) return "Register on Eventbrite"
-  if (lower.includes("facebook")) return "Vendor Reg on Facebook"
-  return "Register"
-}
-
 const DestList = ({
   shoots = [],
   selectedVenueId = null,
   userLocation,
   onSelectShoot,
 }) => {
-  const [filteredShoots, setFilteredShoots] = React.useState(shoots)
-
-  React.useEffect(() => {
-    setFilteredShoots(shoots)
+  // Filter the incoming shoots to show only destination events
+  const destinationShoots = React.useMemo(() => {
+    return shoots.filter(shoot => shoot?.isDestination === true)
   }, [shoots])
 
-  if (shoots.length === 0) {
+  const [filteredShoots, setFilteredShoots] = React.useState(destinationShoots)
+
+  React.useEffect(() => {
+    setFilteredShoots(destinationShoots)
+  }, [destinationShoots])
+
+  const venues = React.useMemo(() => {
+    const grouped = filteredShoots.reduce((acc, shoot) => {
+      const vid = shoot.venue?.venueId || shoot.venueId || "unknown"
+      if (!acc[vid]) acc[vid] = []
+      acc[vid].push(shoot)
+      return acc
+    }, {})
+    return Object.entries(grouped)
+  }, [filteredShoots])
+
+  if (destinationShoots.length === 0) {
     return (
-      <div className="alert alert-info">
+      <div className="alert alert-info text-center py-5 my-4">
         No Destination Shoots have been listed for the season.
       </div>
     )
   }
 
-  // Group the FILTERED shoots by venue (this is the key one-line change)
-  const grouped = filteredShoots.reduce((acc, shoot) => {
-    const vid = shoot.venue?.venueId || shoot.venueId || "unknown"
-    if (!acc[vid]) acc[vid] = []
-    acc[vid].push(shoot)
-    return acc
-  }, {})
-
-  const venues = Object.entries(grouped)
-
   return (
     <div>
-      {/* Filters sit above the accordion - they filter destinations inside the groups */}
       <ShootFilters
-        shoots={shoots}
+        shoots={destinationShoots}
         onFilteredChange={setFilteredShoots}
         userLocation={userLocation}
       />
 
-      {/* Existing grouped accordion structure stays exactly the same */}
       <div className="accordion accordion-flush" id="shootAccordion">
         {venues.map(([venueId, venueShoots], vIndex) => {
           const isOpen = venueId === selectedVenueId
-          const first = venueShoots[0]
+          const first = venueShoots[0] || {}
           const venue = first.venue || {}
-          const loc =
-            first.useVenueLocation !== false && venue.location
-              ? venue.location
-              : first.shootLocation
-          // const cityState =
-          //   loc?.city && loc?.state ? `${loc.city}, ${loc.state}` : "TBD"
-
           const status = getStatusInfo(first)
-          // const regLabel = getRegLabel(first.registrationUrl)
 
           return (
             <div className="accordion-item" key={venueId}>
@@ -118,31 +95,23 @@ const DestList = ({
                   aria-controls={`collapse-${vIndex}`}
                 >
                   <div className="w-100">
-                    {/* Row 1: Badges (left) + Venue name (right) — name slides under on mobile */}
                     <div className="row align-items-center mb-1">
                       <div className="col-12 col-md-auto d-flex gap-2 mb-1 mb-md-0">
                         <span className="badge bg-secondary">
-                          {humanizeEnum(first.shootFormat?.[0])}
+                          {first.shootFormat?.[0] || "3D"}
                         </span>
                         <span className={`badge ${status.className}`}>
                           {status.label}
                         </span>
-                        {/* <span className="fs-4 fw-bold mt-1 valign-middle">
-                          {venueShoots.length} Total Shoot
-                          {venueShoots.length === 1 ? "" : "s"}
-                        </span>*/}
                       </div>
                     </div>
-                    {/* Row 2: Total shoots (left) + Date / City / Distance (right) */}
                     <div className="row mt-2 small text-muted">
-                      <div className="col-12 md-2">
-                        <strong className="fs-5">
+                      <div className="col-12">
+                        <strong className="fs-5 text-dark">
                           {venue.vname || "Unknown Venue"}
                         </strong>
                       </div>
                     </div>
-
-                    {/* Line 2: Date + total shoots count */}
                     <div className="row mt-2 small text-muted">
                       <div className="col-12 col-md-auto mb-1 mb-md-0">
                         {formatDateShort(first.date, first.endDate)} — Total
@@ -155,16 +124,13 @@ const DestList = ({
 
               <div
                 id={`collapse-${vIndex}`}
-                className={`accordion-collapse collapse${
-                  isOpen ? " show" : ""
-                }`}
+                className={`accordion-collapse collapse${isOpen ? " show" : ""}`}
                 aria-labelledby={`heading-${vIndex}`}
                 data-bs-parent="#shootAccordion"
               >
-                <div className="accordion-body">
-                  <h3 className="fa-5">Registration Cost per Shooter</h3>
-                  {/* Price table – prefers structured pricing, falls back to entryFee string */}
-                  <div className="resposive-table my-3">
+                <div className="accordion-body border-2 border-start border-end border-success-subtle">
+                  <h3 className="fs-5 fw-bold">Registration Cost per Shooter</h3>
+                  <div className="table-responsive my-3">
                     <table className="table table-bordered">
                       <thead>
                         <tr>
@@ -199,11 +165,9 @@ const DestList = ({
                             <td colSpan={4}>{first.entryFee || "TBD"}</td>
                           </tr>
                         )}
-
-                        {/* Prizes row */}
                         <tr>
                           <th>PRIZES:</th>
-                          <td colSpan={4}> {first.prizes}</td>
+                          <td colSpan={4}> {first.prizes || "None listed"}</td>
                         </tr>
                       </tbody>
                     </table>
@@ -218,20 +182,11 @@ const DestList = ({
                     </small>
                   </div>
 
-                  {/* About Event */}
-                  <h3 className="fs-5">
-                    <strong>About the Event</strong>
-                  </h3>
-                  <p>{first.venue?.description}</p>
+                  <h3 className="fs-5"><strong>About the Event</strong></h3>
+                  <p>{venue.description || "No description provided."}</p>
 
-                  {/* Event Rules */}
-                  <h3 className="fs-5">
-                    <strong>Rules & Regulations</strong>
-                  </h3>
-                  <p>
-                    General evet rules can be found on our landing page. [link
-                    PDF]
-                  </p>
+                  <h3 className="fs-5"><strong>Rules & Regulations</strong></h3>
+                  <p>General event rules can be found on our landing page.</p>
 
                   {first.registrationUrl && (
                     <a
@@ -240,34 +195,28 @@ const DestList = ({
                       rel="noopener noreferrer"
                       className="btn btn-sm btn-success me-2"
                     >
-                      {getRegLabel(first.registrationUrl)}
+                      Register Here
                     </a>
                   )}
 
-                  {first.venue?.slug && (
+                  {venue.slug && (
                     <Link
-                      to={`/venues/${first.venue.slug}`}
+                      to={`/venues/${venue.slug}`}
                       className="btn btn-sm btn-outline-primary"
                     >
                       Venue Details
                     </Link>
                   )}
 
-                  {/* Dynamic table listing ALL shoots for this venue */}
-                  <div className="resposive-table mt-3">
-                    <div className="row ">
-                      <div className="col">
-                        {first.time && (
-                          <h3 className="fs-5">
-                            <strong>Shoots & Time:</strong> {first.time}
-                          </h3>
-                        )}
-                      </div>
-                    </div>
+                  <div className="table-responsive mt-3">
+                    {first.time && (
+                      <h3 className="fs-5 mb-2">
+                        <strong>Shoots & Time:</strong> {first.time}
+                      </h3>
+                    )}
                     <table className="table table-bordered table-striped">
                       <thead>
                         <tr>
-                          {/* <th width="45%">Shoot</th>*/}
                           <th className="fs-5">Date</th>
                           <th className="fs-5">Location</th>
                           <th className="fs-5">Info</th>
@@ -285,18 +234,12 @@ const DestList = ({
                               : "TBD"
 
                           return (
-                            <React.Fragment key={s.id || idx}>
-                              {/* New name row */}
+                            <React.Fragment key={s.shootId || idx}>
                               <tr>
-                                <td
-                                  colSpan={3}
-                                  className="fw-bold bg-info-subtle"
-                                >
+                                <td colSpan={3} className="fw-bold bg-info-subtle">
                                   {s.sname}
                                 </td>
                               </tr>
-
-                              {/* Normal data row */}
                               <tr>
                                 <td>{formatDateShort(s.date, s.endDate)}</td>
                                 <td>{sCity}</td>
@@ -327,7 +270,8 @@ const DestList = ({
 
 DestList.propTypes = {
   shoots: PropTypes.array,
-  selectedVenueId: PropTypes.string, // or number, depending on your IDs
+  selectedVenueId: PropTypes.string,
+  userLocation: PropTypes.object,
   onSelectShoot: PropTypes.func,
 }
 
