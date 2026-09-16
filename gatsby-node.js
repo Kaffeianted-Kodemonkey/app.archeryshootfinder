@@ -245,7 +245,7 @@ exports.createSchemaCustomization = ({ actions }) => {
       venueId: String!
       venue: VenuesJson @link(by: "venueId", from: "venueId")
       description: String
-      associationType: [String]
+      associationType: String
       shootLocation: Location
       useVenueLocation: Boolean
       date: Date
