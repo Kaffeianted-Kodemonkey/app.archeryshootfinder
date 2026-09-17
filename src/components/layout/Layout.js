@@ -47,7 +47,7 @@ const Layout = ({
             {/* 1. FIXED TOP ELEMENT: Map Row (Stays static, no scrolling) */}
             <div className="row g-0 flex-shrink-0">
               <div
-                className="col bg-light border-bottom"
+                className="col"
                 style={{
                   height: "35vh",
                   maxHeight: "400px",

@@ -173,7 +173,7 @@ exports.sourceNodes = async ({
       })
     })
 
-    reporter.info(`🚀 Successfully sourced node data collections -> Venues: ${venuesData.length} | Shoots: ${shootsData.length} | Associations: ${associationsData.length}`);
+    reporter.info(`Successfully sourced node data collections -> Venues: ${venuesData.length} | Shoots: ${shootsData.length} | Associations: ${associationsData.length}`);
 
   } catch (error) {
     reporter.panicOnBuild("MongoDB sourceNodes failed", error)

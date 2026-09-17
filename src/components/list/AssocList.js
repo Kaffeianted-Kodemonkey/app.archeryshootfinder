@@ -1,26 +1,8 @@
+// src/components/list/AssocList.js
 import * as React from "react"
 import PropTypes from "prop-types"
 import ShootFilters from "./ShootFilters"
-
-const getStatusInfo = shootsForAssoc => {
-  const hasUnverified = shootsForAssoc.some(s => s?.isVerified === false)
-  if (hasUnverified) {
-    return { className: "bg-warning text-dark", label: "Contains Unverified" }
-  }
-  return { className: "bg-success text-white", label: "Verified" }
-}
-
-const formatDateShort = (start, end) => {
-  const s = new Date(`${start}T00:00:00`)
-  const e = new Date(`${end || start}T00:00:00`)
-  if (s.toDateString() === e.toDateString()) {
-    return s.toLocaleDateString("en-US", { month: "short", day: "numeric" })
-  }
-  return `${s.toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-  })} - ${e.toLocaleDateString("en-US", { month: "short", day: "numeric" })}`
-}
+import { getStatusInfo, formatDateShort, humanizeEnum } from "../../utils/shootUiHelpers"
 
 const AssocList = ({
   shoots = [],
@@ -33,7 +15,7 @@ const AssocList = ({
     setFilteredShoots(shoots)
   }, [shoots])
 
-  // 🌟 FIXED: Unpacks array properties securely to avoid key mapping reference breaks
+  // Grouping collection array properties securely
   const groupedByAssociation = React.useMemo(() => {
     return filteredShoots.reduce((acc, shoot) => {
       const rawType = shoot.associationType
@@ -45,7 +27,6 @@ const AssocList = ({
     }, {})
   }, [filteredShoots])
 
-  // FIXED: Check filtered length instead of initial prop to keep filter alerts working properly
   if (filteredShoots.length === 0) {
     return (
       <div className="alert alert-info text-center py-5 my-4">
@@ -82,7 +63,8 @@ const AssocList = ({
                     <div className="row align-items-center mb-1">
                       <div className="col-12 col-md-auto d-flex gap-2 mb-1 mb-md-0">
                         <span className="badge bg-secondary">
-                          {Array.isArray(firstShoot.shootFormat) ? firstShoot.shootFormat[0] : (firstShoot.shootFormat || "3D")}
+                          {/* {humanizeEnum(Array.isArray(firstShoot.shootFormat) ? firstShoot.shootFormat[0] : firstShoot.shootFormat || "3D")}*/}
+                          {(Array.isArray(firstShoot.shootFormat) ? firstShoot.shootFormat[0] : firstShoot.shootFormat || "")}
                         </span>
                         <span className={`badge ${status.className}`}>
                           {status.label}

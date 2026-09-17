@@ -11,7 +11,7 @@ const EventTabs = ({
   displayCurrentShoots = [],
   displayUpcomingShoots = [],
   destinationShoots = [],
-  associationsShoots = [], // 🌟 ACCEPT AS FLAT ARRAY FROM EVENT.JS
+  associationsShoots = [],
   userLocation,
   onSelectShoot,
   venueIdMapping,
@@ -25,6 +25,7 @@ const EventTabs = ({
   }
 
   const renderContent = () => {
+    // 1. Destination Tab Rendering Route
     if (activeTab === "destination") {
       return (
         <DestList
@@ -35,25 +36,23 @@ const EventTabs = ({
       )
     }
 
+    // 2. Association Tab Rendering Route
     if (activeTab === "association") {
-      return associationsShoots.length === 0 ? (
-        <div className="alert alert-info text-center py-5 my-4">
-          No Association Shoots have been listed for the season.
-        </div>
-      ) : (
+      return (
         <AssocList
-          shoots={associationsShoots} // 🌟 PASS FLAT ARRAY DOWN TO ASSOCLIST FOR REDUCTION
+          shoots={associationsShoots}
           userLocation={userLocation}
           onSelectShoot={onSelectShoot}
         />
       )
     }
 
+    // 3. Current & Upcoming Local Rendering Routes
     const shootsToShow = activeTab === "current" ? displayCurrentShoots : displayUpcomingShoots
 
     return shootsToShow.length === 0 ? (
       <div className="alert alert-info text-center py-5 my-4">
-        Nothing found.
+        Nothing found matching criteria.
       </div>
     ) : (
       <ShootList
@@ -67,6 +66,7 @@ const EventTabs = ({
 
   return (
     <section className="directory-section container-fluid">
+      {/* Tab Navigation Row Header Matrix */}
       <div className="container-fluid mt-3 gx-0 p-0 px-0">
         <div className="row gx-0">
           <div className="col px-0">
@@ -108,6 +108,7 @@ const EventTabs = ({
         </div>
       </div>
 
+      {/* Dynamic Content Display Portal Area */}
       <div className="row gx-0 p-0 mx-0 px-0">
         <div className="col-12 px-0">
           <div className="list-scroll-container">{renderContent()}</div>
