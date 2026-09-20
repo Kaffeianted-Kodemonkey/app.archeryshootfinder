@@ -1,7 +1,6 @@
 // src/components/list/ShootAccordionItem.js
 import * as React from "react"
 import PropTypes from "prop-types"
-import { Link } from "gatsby"
 import { getDistance } from "../../utils/distance"
 import { getStatusInfo, formatDateShort, getAssociationBadge } from "../../utils/shootUiHelpers"
 
@@ -16,8 +15,7 @@ const ShootAccordionItem = ({
   const first = venueShoots.find(s => (s.entryFee != null && s.entryFee !== "") || (Array.isArray(s.pricing) && s.pricing.length > 0)) || venueShoots[0] || {}
   const venue = first.venue || {}
   const loc = first.useVenueLocation !== false && venue.location ? venue.location : first.shootLocation || {}
-  const contact = first.contact || {}
-
+  const contact = venue.contact || {}
 
   const cityState = loc.city && loc.state ? `${loc.city}, ${loc.state}` : "TBD"
   const status = getStatusInfo(first)
@@ -74,11 +72,11 @@ const ShootAccordionItem = ({
         <div className="accordion-body border-2 border-start border-end border-success-subtle">
           <div className="row">
             <div className="col">
-              <small class="fs-6 ms-1">
+              <small className="fs-6 ms-1">
                 <strong>Phone:</strong> {contact.phone ? <a href={`tel:${contact.phone}`}>{contact.phone}</a> : "TBD"} |{" "}
                 <strong>Email:</strong> {contact.email ? <a href={`mailto:${contact.email}`}>{contact.email}</a> : "TBD"}  |{" "}
-                <strong>Website:</strong> {contact.websiteUrl ? <a href={contact.websiteUrl} target="_blank" rel="noreferrer">{contact.websiteUrl}</a> : "TBD"} |{" "}
-                <strong>Get Directions -> [Link to Map-Pin]</strong>
+                <strong>Website:</strong> {contact.website ? <a href={contact.website} target="_blank" rel="noreferrer">{contact.website}</a> : "TBD"} |{" "}
+                <strong>{"Get Directions -> [Link to Map-Pin]"}</strong>
               </small>
              <hr />
               <h3>About Event</h3>
@@ -90,7 +88,7 @@ const ShootAccordionItem = ({
           <div className="row">
             <div className="col">
               <h3>Course Overview</h3>
-              <p>breife overview about the corses</p>
+              <p>brief overview about the courses</p>
             </div>
             <div className="col col-md-5">
               {first.entryFee ? (
@@ -109,6 +107,7 @@ const ShootAccordionItem = ({
                     </thead>
                     <tbody>
                       {first.pricing.map(priceTier => {
+                        // FIXED: Re-added full variable path destructuring to satisfy the table body layout below
                         const { tier, note, cost1Day, cost2Days, cost3Days, cost4Days, options } = priceTier
                         const currencySymbol = first.currency === "CAD" ? "C" : ""
                         const getCost = days => options ? (options.find(o => o.days === days)?.cost ?? "") : priceTier[`cost${days}Day`] || priceTier[`cost${days}Days`] || ""
@@ -141,17 +140,16 @@ const ShootAccordionItem = ({
           <div className="row">
             <div className="col">
               <h3>Rules & Guidelines</h3>
-              <p class="fs=5 ms-1">
-                {first.rulesReg && <a href="{first.rulesReg}" className="btn btn-info btn-sm" target="_blank">Rules & Regs</a>}
+              <p className="fs-5 ms-1">
+                {first.rulesReg && <a href={first.rulesReg} className="btn btn-info btn-sm" target="_blank" rel="noreferrer">Rules & Regs</a>}
               </p>
-              <p>{first.guidelines ? first.guidelines : "Venue to enter their facility or range genral rules/"}</p>
+              <p>{first.guidelines ? first.guidelines : "Venue to enter their facility or range general rules."}</p>
             </div>
             <div className="col col-md-5">
-              <p><strong>Amenities: </strong>{first.amenitites ? first.amenitites : "TBD"}</p>
+              <p><strong>Amenities: </strong>{first.amenities ? first.amenities.join(", ") : "TBD"}</p>
               <hr />
-              <p><strong>Bow Types: </strong>{first.amenitites ? first.amenitites : "TBD"}</p>
+              <p><strong>Bow Types: </strong>{first.bowTypes ? first.bowTypes.join(", ") : "TBD"}</p>
             </div>
-
           </div>
 
           <hr />
