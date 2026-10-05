@@ -1,0 +1,498 @@
+[
+  {
+    "id": "1",
+    "venueId": 1,
+    "vname": "Uintah Basin Bowhunters",
+    "venueType": "CLUB",
+    "slug": "uintah-basin-bowhunters",
+    "img": "/static/images/logo-sticker-pop.png",
+    "alt": "Placehoder image for now",
+    "description": "Local club dedicated to 3D and field archery in the heart of Utah.",
+    "tagline": "Enter your tagline here limited to 50 words.",
+    "bio": "This is a short 150 words or 1k character limit about the venue.",
+    "rulesGuidlines": "Rules and Guidllines",
+    "subscription": "BASIC",
+    "location": {
+      "address": "Black Knolls Road",
+      "city": "Vernal",
+      "state": "UT",
+      "zip": "84078",
+      "lat": 37.156092,
+      "lng": -113.5688451,
+      "country": "USA"
+    },
+    "contact": {
+      "phone": "435-555-0123",
+      "email": "contact@uintahbowhunters.org",
+      "website": "https://uintahbowhunters.org",
+      "facebook": "uintahbowhunters"
+    },
+    "facilities": ["THREE_D_COURSE", "OUTDOOR_RANGE"],
+    "amenities": ["PARKING", "CAMPING", "RESTROOMS"],
+    "services": [],
+    "equipmentAllowed": ["COMPOUND", "RECURVE", "LONGBOW"],
+    "membership": "https://uintahbowhunters.org",
+
+    "imageUrl": "https://example.com",
+    "isClaimed": true,
+    "sanctioning": ["NFAA"]
+  },
+  {
+    "id": "3",
+    "venueId": 3,
+    "vname": "Mile High Archery Pro Shop",
+    "venueType": "PRO_SHOP",
+    "slug": "mile-high-archery",
+    "img": "/static/images/logo-sticker-pop.png",
+    "alt": "Placehoder image for now",
+    "description": "Full service pro shop with expert tuning and indoor lanes.",
+    "tagline": "Enter your tagline here limited to 50 words.",
+    "bio": "This is a short 150 words or 1k character limit about the venue.",
+    "subscription": "PREMIUM",
+    "rulesGuidlines": "Rules and Guidllines",
+    "location": {
+      "address": "123 Main St",
+      "city": "Denver",
+      "state": "CO",
+      "zip": "80201",
+      "lat": 39.7392,
+      "lng": -104.9903,
+      "country": "USA"
+    },
+    "contact": {
+      "phone": "303-555-0987",
+      "email": "info@milehigharchery.com",
+      "website": "https://milehigharchery.com"
+    },
+    "facilities": ["INDOOR_RANGE"],
+    "amenities": ["WIFI", "FOOD", "WHEELCHAIR_ACCESSIBLE"],
+    "services": [],
+    "equipmentAllowed": ["COMPOUND", "RECURVE", "TARGET_ARROWS_ONLY"],
+    "isClaimed": true,
+    "sanctioning": ["USA_ARCHERY", "ASA"]
+  },
+  {
+    "id": "4",
+    "venueId": 4,
+    "vname": "Total Archery Challenge",
+    "venueType": "ORGANIZATION",
+    "slug": "total-archery-challenge",
+    "img": "/static/images/logo-sticker-pop.png",
+    "alt": "Placehoder image for now",
+    "description": "The premier mountain 3D archery experience in the United States, hosting massive multi-day rugged outdoor shoots across the country.",
+    "tagline": "Enter your tagline here limited to 50 words.",
+    "bio": "This is a short 150 words or 1k character limit about the venue.",
+    "rulesGuidlines": "Rules and Guidllines",
+    "subscription": "FREEMIUM",
+    "location": {
+      "address": "Flagship National Tour",
+      "city": "Salt Lake City",
+      "state": "UT",
+      "zip": "84101",
+      "lat": 40.7608,
+      "lng": -111.891,
+      "country": "USA"
+    },
+    "contact": {
+      "phone": "",
+      "email": "info@totalarcherychallenge.com",
+      "website": "https://totalarcherychallenge.com"
+    },
+    "facilities": ["OUTDOOR_RANGE"],
+    "amenities": ["PARKING", "RESTROOMS"],
+    "services": [],
+    "equipmentAllowed": ["COMPOUND", "RECURVE", "LONGBOW"],
+
+    "isClaimed": false,
+    "sanctioning": []
+  },
+  {
+    "id": "5",
+    "venueId": 5,
+    "vname": "Archery Shooters Association",
+    "venueType": "ORGANIZATION",
+    "slug": "archery-shooters-association-asa",
+    "img": "/static/images/logo-sticker-pop.png",
+    "alt": "Placehoder image for now",
+    "description": "National governing body hosting the legendary Pro/Am 3D archery tournament trail featuring elite competition and consumer vendor villages.",
+    "tagline": "Enter your tagline here limited to 50 words.",
+    "bio": "This is a short 150 words or 1k character limit about the venue.",
+    "rulesGuidlines": "Rules and Guidllines",
+    "subscription": "FREEMIUM",
+    "location": {
+      "address": "National Headquarters",
+      "city": "Kennesaw",
+      "state": "GA",
+      "zip": "30144",
+      "lat": 34.0234,
+      "lng": -84.6155,
+      "country": "USA"
+    },
+    "contact": {
+      "phone": "",
+      "email": "info@asaarchery.com",
+      "website": "https://asaarchery.com"
+    },
+    "facilities": ["OUTDOOR_RANGE"],
+    "amenities": ["PARKING", "RESTROOMS", "FOOD"],
+    "services": [],
+    "equipmentAllowed": ["COMPOUND", "RECURVE", "LONGBOW", "CROSSBOW"],
+
+    "isClaimed": false,
+    "sanctioning": ["ASA"]
+  },
+  {
+    "id": "6",
+    "venueId": 6,
+    "vname": "International Bowhunting Organization",
+    "venueType": "ORGANIZATION",
+    "slug": "international-bowhunting-organization-ibo",
+    "img": "/static/images/logo-sticker-pop.png",
+    "alt": "Placehoder image for now",
+    "description": "Host of the National Triple Crown and World Championship 3D events designed to promote and protect the sport of bowhunting.",
+    "tagline": "Enter your tagline here limited to 50 words.",
+    "bio": "This is a short 150 words or 1k character limit about the venue.",
+    "rulesGuidlines": "Rules and Guidllines",
+    "subscription": "FREEMIUM",
+    "location": {
+      "address": "National Headquarters",
+      "city": "Vermilion",
+      "state": "OH",
+      "zip": "44089",
+      "lat": 41.4223,
+      "lng": -82.3165,
+      "country": "USA"
+    },
+    "contact": {
+      "phone": "",
+      "email": "ibo@ibo.net",
+      "website": "https://ibo.net"
+    },
+    "facilities": ["OUTDOOR_RANGE"],
+    "amenities": ["PARKING", "RESTROOMS", "FOOD"],
+    "services": [],
+    "equipmentAllowed": ["COMPOUND", "RECURVE", "LONGBOW"],
+
+    "isClaimed": false,
+    "sanctioning": ["IBO"]
+  },
+  {
+    "id": "7",
+    "venueId": 7,
+    "vname": "Lancaster Archery Supply Center",
+    "venueType": "PRO_SHOP",
+    "slug": "lancaster-archery-supply-center",
+    "img": "/static/images/logo-sticker-pop.png",
+    "alt": "Placehoder image for now",
+    "description": "The largest archery pro shop complex in the world and host of the world-famous Lancaster Archery Classic indoor tournament.",
+    "tagline": "Enter your tagline here limited to 50 words.",
+    "bio": "This is a short 150 words or 1k character limit about the venue.",
+    "rulesGuidlines": "Rules and Guidllines",
+    "subscription": "FREEMIUM",
+    "location": {
+      "address": "2195-A Old Philadelphia Pike",
+      "city": "Lancaster",
+      "state": "PA",
+      "zip": "17602",
+      "lat": 40.0391,
+      "lng": -76.2274,
+      "country": "USA"
+    },
+    "contact": {
+      "phone": "855-922-7769",
+      "email": "info@lancasterarchery.com",
+      "website": "https://lancasterarchery.com"
+    },
+    "facilities": ["INDOOR_RANGE", "OUTDOOR_RANGE"],
+    "amenities": ["PARKING", "RESTROOMS"],
+    "services": [],
+    "equipmentAllowed": ["COMPOUND", "RECURVE", "LONGBOW"],
+
+    "isClaimed": false,
+    "sanctioning": ["USA_ARCHERY"]
+  },
+  {
+    "id": "8",
+    "venueId": 8,
+    "vname": "NFAA Easton Yankton Archery Center",
+    "venueType": "RANGE",
+    "slug": "nfaa-easton-yankton-archery-center",
+    "img": "/static/images/logo-sticker-pop.png",
+    "alt": "Placehoder image for now",
+    "description": "The world's largest dedicated archery complex, featuring massive indoor ranges, field courses, 3D loops, and Olympic targets.",
+    "tagline": "Enter your tagline here limited to 50 words.",
+    "bio": "This is a short 150 words or 1k character limit about the venue.",
+    "rulesGuidlines": "Rules and Guidllines",
+    "subscription": "FREEMIUM",
+    "location": {
+      "address": "4009 Whiting Dr",
+      "city": "Yankton",
+      "state": "SD",
+      "zip": "57078",
+      "lat": 42.8885,
+      "lng": -97.4398,
+      "country": "USA"
+    },
+    "contact": {
+      "phone": "605-260-9282",
+      "email": "info@yanktonarcherycenter.org",
+      "website": "https://yanktonarcherycenter.org"
+    },
+    "facilities": ["INDOOR_RANGE", "OUTDOOR_RANGE", "THREE_D_COURSE"],
+    "amenities": ["PARKING", "RESTROOMS"],
+    "services": [],
+    "equipmentAllowed": ["COMPOUND", "RECURVE", "LONGBOW", "CROSSBOW"],
+
+    "isClaimed": false,
+    "sanctioning": ["NFAA", "USA_ARCHERY"]
+  },
+  {
+    "id": "9",
+    "venueId": 9,
+    "vname": "The Vegas Shoot (NFAA)",
+    "venueType": "ORGANIZATION",
+    "slug": "the-vegas-shoot-nfaa",
+    "img": "/static/images/logo-sticker-pop.png",
+    "alt": "Placehoder image for now",
+    "description": "The largest and most prestigious indoor archery tournament in the world, attracting thousands of global archers to Las Vegas annually.",
+    "tagline": "Enter your tagline here limited to 50 words.",
+    "bio": "This is a short 150 words or 1k character limit about the venue.",
+    "rulesGuidlines": "Rules and Guidllines",
+    "subscription": "FREEMIUM",
+    "location": {
+      "address": "South Point Hotel & Casino",
+      "city": "Las Vegas",
+      "state": "NV",
+      "zip": "89183",
+      "lat": 36.0116,
+      "lng": -115.1755,
+      "country": "USA"
+    },
+    "contact": {
+      "phone": "",
+      "email": "info@thevegasshoot.com",
+      "website": "https://thevegasshoot.com"
+    },
+    "facilities": ["INDOOR_RANGE"],
+    "amenities": ["PARKING", "RESTROOMS"],
+    "services": [],
+    "equipmentAllowed": ["COMPOUND", "RECURVE", "LONGBOW"],
+
+    "isClaimed": false,
+    "sanctioning": ["NFAA"]
+  },
+  {
+    "id": "10",
+    "venueId": 10,
+    "vname": "Mountain Archery Fest",
+    "venueType": "ORGANIZATION",
+    "slug": "mountain-archery-fest",
+    "img": "/static/images/logo-sticker-pop.png",
+    "alt": "Placehoder image for now",
+    "description": "A premier family-oriented mountain 3D archery festival hosting breathtaking multi-day backcountry shoots across western ski resorts.",
+    "tagline": "Enter your tagline here limited to 50 words.",
+    "bio": "This is a short 150 words or 1k character limit about the venue.",
+    "rulesGuidlines": "Rules and Guidllines",
+    "subscription": "FREEMIUM",
+    "location": {
+      "address": "Flagship Western Tour",
+      "city": "Denver",
+      "state": "CO",
+      "zip": "80202",
+      "lat": 39.7392,
+      "lng": -104.9903,
+      "country": "USA"
+    },
+    "contact": {
+      "phone": "",
+      "email": "info@mountainarcheryfest.com",
+      "website": "https://mountainarcheryfest.com"
+    },
+    "facilities": ["OUTDOOR_RANGE"],
+    "amenities": ["PARKING", "RESTROOMS", "FOOD"],
+    "services": [],
+    "equipmentAllowed": ["COMPOUND", "RECURVE", "LONGBOW"],
+
+    "isClaimed": false,
+    "sanctioning": []
+  },
+  {
+    "id": "11",
+    "venueId": 11,
+    "vname": "Straight Defense / S3DA National Trails",
+    "venueType": "ORGANIZATION",
+    "slug": "s3da-national-championships",
+    "img": "/static/images/logo-sticker-pop.png",
+    "alt": "Placehoder image for now",
+    "description": "Host of national-level youth championship destination tournaments across the United States, specializing in 3D, indoor, and target circuits.",
+    "tagline": "Enter your tagline here limited to 50 words.",
+    "bio": "This is a short 150 words or 1k character limit about the venue.",
+    "address": "South Point Hotel & Casino",
+    "rulesGuidlines": "Rules and Guidllines",
+    "subscription": "FREEMIUM",
+    "location": {
+      "address": "National Headquarters",
+      "city": "London",
+      "state": "KY",
+      "zip": "40741",
+      "lat": 37.1289,
+      "lng": -84.0833,
+      "country": "USA"
+    },
+    "contact": {
+      "phone": "",
+      "email": "info@s3da.org",
+      "website": "https://s3da.org"
+    },
+    "facilities": ["INDOOR_RANGE", "OUTDOOR_RANGE"],
+    "amenities": ["PARKING", "RESTROOMS"],
+    "services": [],
+    "equipmentAllowed": ["COMPOUND", "RECURVE", "LONGBOW"],
+
+    "isClaimed": false,
+    "sanctioning": ["S3DA"]
+  },
+  {
+    "id": "12",
+    "venueId": 12,
+    "vname": "KStraight Archery National Events",
+    "venueType": "ORGANIZATION",
+    "slug": "kstraight-archery-events",
+    "img": "/static/images/logo-sticker-pop.png",
+    "alt": "Placehoder image for now",
+    "description": "National organization specializing in major destination pop-up 3D targets, competitive outdoor field events, and bowhunter education courses.",
+    "tagline": "Enter your tagline here limited to 50 words.",
+    "bio": "This is a short 150 words or 1k character limit about the venue.",
+    "subscription": "FREEMIUM",
+    "location": {
+      "address": "Regional Tour Hub",
+      "city": "La Jolla",
+      "state": "CA",
+      "zip": "92037",
+      "lat": 32.8466,
+      "lng": -117.3211,
+      "country": "USA"
+    },
+    "contact": {
+      "phone": "",
+      "email": "events@kstraightarchery.org",
+      "website": ""
+    },
+    "facilities": ["OUTDOOR_RANGE"],
+    "amenities": ["PARKING", "RESTROOMS"],
+    "services": [],
+    "equipmentAllowed": ["COMPOUND", "RECURVE", "LONGBOW", "CROSSBOW"],
+
+    "isClaimed": false,
+    "sanctioning": []
+  },
+  {
+    "id": "13",
+    "venueId": 13,
+    "vname": "Coastal Archers Association",
+    "venueType": "ASSOCIATION",
+    "slug": "coastal-archers-ca",
+    "img": "/static/images/logo-sticker-pop.png",
+    "alt": "Placehoder image for now",
+    "description": "Regional association overseeing multiple public ranges in California.",
+    "tagline": "Enter your tagline here limited to 50 words.",
+    "bio": "This is a short 150 words or 1k character limit about the venue.",
+    "subscription": "FREEMIUM",
+    "location": {
+      "address": "La Jolla Shores",
+      "city": "La Jolla",
+      "state": "CA",
+      "zip": "92037",
+      "lat": 32.8466,
+      "lng": -117.3211,
+      "country": "USA"
+    },
+    "contact": {
+      "phone": "",
+      "email": "admin@coastalarchers.org",
+      "website": ""
+    },
+    "facilities": ["OUTDOOR_RANGE"],
+    "amenities": ["PARKING"],
+    "services": [],
+    "equipmentAllowed": ["COMPOUND", "RECURVE", "LONGBOW", "CROSSBOW"],
+
+    "isClaimed": false,
+    "sanctioning": []
+  },
+  {
+    "id": "14",
+    "venueId": 14,
+    "vname": "Midwest Youth Archery Center",
+    "venueType": "ORGANIZATION",
+    "slug": "midwest-youth-archery",
+    "img": "/static/images/logo-sticker-pop.png",
+    "alt": "Placehoder image for now",
+    "description": "Non-profit focused on introducing youth to competitive archery.",
+    "tagline": "Enter your tagline here limited to 50 words.",
+    "bio": "This is a short 150 words or 1k character limit about the venue.",
+    "rulesGuidlines": "Rules and Guidllines",
+    "subscription": "BASIC",
+    "location": {
+      "address": "500 Oak St",
+      "city": "Des Moines",
+      "state": "IA",
+      "zip": "50309",
+      "lat": 41.5868,
+      "lng": -93.625,
+      "country": "USA"
+    },
+    "contact": {
+      "phone": "515-555-4444",
+      "email": "",
+      "website": "https://midwestyoutharchery.org"
+    },
+    "facilities": ["INDOOR_RANGE"],
+    "amenities": ["WHEELCHAIR_ACCESSIBLE", "KITCHEN"],
+    "services": ["LESSONS", "EQUIPMENT_RENTAL"],
+    "equipmentAllowed": ["RECURVE", "COMPOUND"],
+
+    "isClaimed": false,
+    "sanctioning": ["S3DA"]
+  },
+  {
+    "id": "15",
+    "venueId": 15,
+    "venueType": "PRO_SHOP",
+    "vname": "Red Rock Archery",
+    "slug": "red-rock-archery-grand-junction",
+    "tagline": "Grand Junction's premier indoor archery range and full-service pro shop.",
+    "bio": "Red Rock Archery is a dedicated full-service archery pro shop and indoor shooting lane facility located in Grand Junction, Colorado. We specialize in top-tier bow tuning, custom arrow building, and equipment sales for bowhunters and target archers alike. Our climate-controlled indoor range hosts weekly competitive leagues, spot rounds, and instructional classes for shooters of all ages and skill levels.",
+    "img": "/static/images/venues/red-rock-archery-logo.png",
+    "alt": "Red Rock Archery Pro Shop and Lanes Logo",
+    "description": "Premier full-service archery pro shop and indoor training facility serving Western Colorado.",
+    "rulesGuidlines": "Rules and Guidllines",
+    "subscription": "BASIC",
+    "location": {
+      "address": "3193 Hall Ave",
+      "city": "Grand Junction",
+      "state": "CO",
+      "zip": "81504",
+      "lat": 39.0712,
+      "lng": -108.4975,
+      "country": "USA"
+    },
+    "contact": {
+      "phone": "970-241-0466",
+      "email": "info@redrockarcherygj.com",
+      "website": "https://facebook.com"
+    },
+    "facilities": ["INDOOR_RANGE"],
+    "amenities": ["PARKING"],
+    "services": [
+      "LESSONS",
+      "EQUIPMENT_SALES",
+      "BOW_TUNING_STATION",
+      "CUSTOM_TUNING"
+    ],
+    "equipmentAllowed": ["RECURVE", "COMPOUND", "LONGBOW", "CROSSBOW"],
+
+    "isClaimed": true,
+    "sanctioning": ["ASA", "NFAA"]
+  }
+]

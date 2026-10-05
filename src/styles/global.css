@@ -1,0 +1,541 @@
+/* src/styles/global.css - Part 1 */
+
+/* Import Bootstrap (full classes for components like cards, tables, badges) */
+@import "bootstrap/dist/css/bootstrap.min.css";
+
+/* ==========================================================================
+   ROOT VARIABLES - Desert Lizard & Archery Target Theme
+   ========================================================================== */
+:root {
+  /* Primary (Deep Obsidian / Charcoal - Base text, headers & structural dark buttons) */
+  --bs-primary: #2c2c2a;
+  --bs-primary-rgb: 44, 44, 42;
+  --bs-primary-bg-subtle: rgba(var(--bs-primary-rgb), 0.12);
+  --bs-forest-green:#042814;
+
+  /* Success (Target Ring Green - EXCLUSIVELY reserved for verified registration statuses) */
+  --bs-success: #28a745;
+  --bs-success-rgb: 40, 167, 69;
+  --bs-success-bg-subtle: rgba(var(--bs-success-rgb), 0.15);
+
+  /* Info (Target Ring Blue - FREEMIUM Tier / Registered Non-Profits) */
+  --bs-info: #4a8ca8;
+  --bs-info-rgb: 74, 140, 168;
+  --bs-info-bg-subtle: rgba(var(--bs-info-rgb), 0.15);
+
+  /* Secondary (Target Ring Red/Sandstone Copper - PREMIUM Tier / Pro Shops & Commercial Clubs) */
+  --bs-secondary: #d05a3f;
+  --bs-secondary-rgb: 208, 90, 63;
+  --bs-secondary-bg-subtle: rgba(var(--bs-secondary-rgb), 0.15);
+
+  /* Warning (Target Ring Gold / Cactus Flower - DESTINATION Tier / Major Tours & Competitions) */
+  --bs-warning: #e6a100;
+  --bs-warning-rgb: 230, 161, 0;
+  --bs-warning-bg-subtle: rgba(var(--bs-warning-rgb), 0.15);
+
+  /* Danger (Sun-Baked Clay Accent Tones) */
+  --bs-danger: #b84126;
+  --bs-danger-rgb: 184, 65, 38;
+  --bs-danger-bg-subtle: rgba(var(--bs-danger-rgb), 0.15);
+
+  /* Light (Desert Sand / Warm Bone Backgrounds) */
+  --bs-light: #f4efe2;
+  --bs-light-rgb: 244, 239, 226;
+  --bs-light-bg-subtle: rgba(var(--bs-light-rgb), 0.15);
+
+  /* Dark (Deep Canyon Black - High contrast text layers) */
+  --bs-dark: #1e1e1c;
+  --bs-dark-rgb: 33, 37, 41;
+
+  /* Body and global link layout configurations */
+  --bs-body-bg: #faf7f0; /* Soft warm light tone instead of blinding clinical white */
+  --bs-body-color: #1e1e1c;
+  --bs-link-color: #d05a3f; /* Sandstone action items */
+  --bs-link-hover-color: #b84126;
+
+  /* App-specific transitions */
+  --app-transition: 250ms ease;
+}
+
+/* ==========================================================================
+   BASE LAYOUT - Gatsby/PWA Support (Full-width, Sticky Footer)
+   ========================================================================== */
+#___gatsby,
+#gatsby-focus-wrapper {
+  width: 100% !important;
+  max-width: 100vw !important;
+  overflow-x: hidden;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  transition: background-color var(--app-transition);
+  overflow-y: auto !important;
+}
+
+main {
+  flex: 1 0 auto;
+  overflow-y: auto !important;
+  min-height: calc(100vh - 180px); /* Navbar + footer/peek buffer */
+  padding-bottom: 4rem; /* Extra bottom padding for peek/footer */
+}
+
+/* Banner */
+.banner {
+  background-color: var(--bs-forest-green) !important;
+  /*color: var(--bs-dark) !important;*/
+  padding: 1rem !important;
+  border: 2px solid var(--bs-secondary) !important; /* Gold accent underline */
+  height: 120px;
+  color: #ffffff;
+  font-size: 1.5em;;
+}
+
+/* Footer and offcanvas positioning */
+footer.fixed-bottom,
+.offcanvas-bottom.fixed-bottom {
+  flex-shrink: 0;
+  width: 100vw !important;
+  left: 0;
+  right: 0;
+  margin: 0 !important;
+}
+
+/* ==========================================================================
+   COMPONENT STYLES - Directory, Map, Search Layouts
+   ========================================================================== */
+.directory-section {
+  min-height: 100%;
+  overflow-y: auto;
+  padding-top: 0 !important;
+}
+
+.directory-section .nav-tabs {
+  margin-bottom: 0 !important;
+}
+
+/* Establishes a local relative stacking track context below sticky screen headers */
+.directory-section .list-scroll-container {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+  position: relative;
+  z-index: 1;
+}
+
+.table-responsive {
+  overflow-x: auto;
+  overflow-y: visible;
+}
+
+/* Map view adjustments */
+main.map-view {
+  padding-top: 0 !important;
+  min-height: calc(100vh - 56px - 120px); /* Full height minus nav and bottom clearance */
+  padding-bottom: 4rem;
+}
+
+main.map-view .directory-section,
+main.map-view .list-scroll-container {
+  overflow-y: auto !important;
+  padding-top: 1rem;
+  padding-bottom: 120px; /* Consolidated clearance for peek handle + footer */
+}
+
+/* ==========================================================================
+   MAP OVERLAYS & LAYERING - Prevents scroll track overflow onto map bounds
+   ========================================================================== */
+main.map-view .col[style*="height"] {
+  position: relative !important;
+  z-index: 50 !important; /* Locks map area securely above base card layers */
+  background-color: var(--bs-body-bg) !important; /* Uses your exact warm sand background to hide hidden scrolling text */
+}
+
+/* Keeps sticky navigation/tab elements sliding neatly above cards */
+/* FILTER BG-COLOR */
+.directory-section .row.align-items-center {
+  position: sticky !important;
+  top: 0;
+  z-index: 60 !important;
+  /*background-color: var(--bs-body-bg) !important;*/
+}
+/* src/styles/global.css - Part 2 */
+
+/* ==========================================================================
+   CONSOLIDATED RESPONSIVE MEDIA QUERIES - Mobile Viewports
+   ========================================================================== */
+@media (max-width: 768px) {
+  main {
+    min-height: calc(100vh - 150px); /* Reduced buffer */
+    padding-bottom: 5rem; /* Increased clearance */
+  }
+
+  .directory-section {
+    padding-top: 0.5rem; /* Less top padding */
+    padding-left: 0rem !important; /* Minimal side padding for content */
+    padding-right: 0rem !important;
+  }
+
+  main.map-view .col[style*="height: 24vh"] {
+    height: 30vh !important; /* Slightly smaller map */
+  }
+
+  main.map-view .list-scroll-container,
+  main.map-view .directory-section {
+    padding-bottom: 100px; /* Adjusted clearance */
+  }
+
+  .directory-section .list-scroll-container {
+    padding-left: 0.2rem !important; /* Safe padding without overflow */
+    padding-right: 0.2rem !important;
+    width: 100% !important;
+    overflow-x: hidden !important; /* No horizontal scroll */
+    position: relative;
+    z-index: 1;
+  }
+
+  .search-offcanvas {
+    width: 100vw !important;
+  }
+
+  .search-offcanvas .form-check-input {
+    width: 1.4em !important;
+    height: 1.4em !important;
+  }
+
+  .search-offcanvas .form-control,
+  .search-offcanvas .input-group .form-control {
+    padding: 1rem !important;
+    font-size: 1.1rem !important;
+  }
+
+  .search-offcanvas .input-group-text {
+    padding: 1rem !important;
+  }
+
+  /* Mobile Stacked Tables for Venues/Shoots */
+  .venue-table,
+  .shoot-table {
+    border: 0;
+    width: 100% !important;
+    overflow-x: hidden !important;
+  }
+
+  .venue-table thead,
+  .shoot-table thead {
+    display: none;
+  }
+
+  .venue-table tr,
+  .shoot-table tr {
+    display: block;
+    margin-bottom: 1rem;
+    padding: 1rem 0.5rem;
+    position: relative;
+    z-index: 2; /* Keeps individual card tiers on standard tracking layer planes */
+  }
+
+  .venue-table td,
+  .shoot-table td {
+    display: block;
+    padding: 0.5rem 0;
+    border: none;
+    position: relative;
+    background: inherit !important;
+  }
+
+  .venue-table tr > :first-child,
+  .venue-table tr > :nth-child(2),
+  .shoot-table tr > :first-child,
+  .shoot-table tr > :nth-child(2) {
+    display: inline-flex;
+    align-items: center;
+    flex: 1;
+    padding: 0.25rem 0;
+    margin-bottom: 0.75rem;
+  }
+
+  /* Base Venue Header */
+  .venue-table .venue-header {
+    position: relative;
+    width: calc(100% + 1rem);
+    margin: 0 -0.5rem;
+    padding: 0.5rem 1rem 2rem;
+    background-color: rgba(var(--bs-light-rgb), 0.5);
+    border-radius: 0.375rem 0.375rem 0 0;
+    margin-bottom: 0.5rem;
+  }
+
+  .venue-table .venue-header::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: -0.5rem;
+    right: -0.5rem;
+    height: 1px;
+    background-color: var(--bs-light);
+  }
+
+  /* Venue Classification Subtle Background Color Modifiers - RESTORED EXACT BRAND THEMES */
+  .bg-success-subtle .venue-header { background-color: rgba(var(--bs-success-rgb), 0.2); }
+  .bg-success-subtle .venue-header::after { background-color: var(--bs-success); }
+
+  .bg-danger-subtle .venue-header { background-color: rgba(var(--bs-danger-rgb), 0.2); }
+  .bg-danger-subtle .venue-header::after { background-color: var(--bs-danger); }
+
+  .bg-warning-subtle .venue-header { background-color: rgba(var(--bs-warning-rgb), 0.2); }
+  .bg-warning-subtle .venue-header::after { background-color: var(--bs-warning); }
+
+  .bg-info-subtle .venue-header { background-color: rgba(var(--bs-info-rgb), 0.2); }
+  .bg-info-subtle .venue-header::after { background-color: var(--bs-info); }
+
+  .bg-primary-subtle .venue-header { background-color: rgba(var(--bs-primary-rgb), 0.2); }
+  .bg-primary-subtle .venue-header::after { background-color: var(--bs-primary); }
+
+  .bg-secondary-subtle .venue-header { background-color: rgba(var(--bs-secondary-rgb), 0.2); }
+  .bg-secondary-subtle .venue-header::after { background-color: var(--bs-secondary); }
+
+  .bg-light .venue-header { background-color: rgba(var(--bs-light-rgb), 0.3); }
+  .bg-light .venue-header::after { background-color: var(--bs-secondary); }
+
+  .venue-table .venue-header td[data-label="Type"],
+  .venue-table .venue-header td[data-label="Venue Name"] {
+    padding: 0.25rem 0.5rem 0.25rem 0.75rem;
+    margin: 0;
+    border: none;
+  }
+
+  .venue-table .venue-header td[data-label="Type"] {
+    margin-right: 0.75rem;
+  }
+
+  .venue-table td[data-label="Type"] {
+    flex-shrink: 0;
+    margin-right: 1rem;
+    padding-right: 0.5rem;
+    min-width: auto;
+  }
+
+  .venue-table td[data-label="Type"]::before {
+    content: none;
+  }
+
+  .venue-table td[data-label="Venue Name"] {
+    flex: 1;
+    text-align: left;
+    font-weight: 600;
+    font-size: 1.1rem;
+  }
+
+  .venue-table td[data-label="Venue Name"]::before {
+    content: none;
+  }
+
+  .venue-table td[data-label="Upcoming Shoots"],
+  .venue-table td[data-label="Location"] {
+    text-align: left;
+    padding-left: 0.5rem;
+  }
+
+  .venue-table td[data-label="Upcoming Shoots"]::before,
+  .venue-table td[data-label="Location"]::before {
+    width: 100%;
+    text-align: left;
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 0.25rem;
+    padding-left: 0.5rem;
+  }
+
+  .venue-table td[data-label="Details"] {
+    position: absolute;
+    bottom: 1rem;
+    right: 0.5rem;
+    left: auto;
+    padding: 0;
+    margin: 0;
+    text-align: right;
+    width: auto;
+    background: inherit !important;
+  }
+
+  .venue-table td[data-label="Details"]::before {
+    display: none;
+  }
+
+  .venue-table td[data-label="Details"] a,
+  .venue-table td[data-label="Details"] button {
+    margin: 0;
+    display: inline-block;
+  }
+
+  .venue-table td[data-label="Venue Name"],
+  .venue-table td[data-label="Location"] {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .venue-table td::before {
+    content: attr(data-label) ": ";
+    font-weight: 600;
+    color: #6c757d;
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+
+  .accordion-header span {
+    font-size: 0.95rem !important;
+  }
+
+  .accordion-body small,
+  .accordion-body .text-muted {
+    font-size: 0.9rem !important;
+  }
+
+  .accordion-header .d-flex {
+    gap: 0.25rem;
+  }
+
+  .directory-section .nav-tabs {
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+    width: 100% !important;
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: hidden !important;
+  }
+
+  .directory-section .nav-tabs .nav-link {
+    font-size: 0.8rem !important;
+    padding: 0.4rem 0.6rem !important;
+    margin-right: 0rem !important;
+    white-space: nowrap !important;
+    min-width: auto !important;
+  }
+
+  button.nav-link {
+    margin-left: -4px !important;
+    margin-right: -4px !important;
+    padding-left: 6px !important;
+    padding-right: 6px !important;
+    font-size: 13px !important;
+  }
+}
+
+/* ==========================================================================
+   CONSOLIDATED RESPONSIVE MEDIA QUERIES - Desktop Viewports
+   ========================================================================== */
+@media (min-width: 769px) {
+  .directory-section {
+    max-width: 900px !important;
+    margin: 0 auto !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+
+  .directory-section .nav-tabs {
+    max-width: 900px !important;
+    margin: 0 auto !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+    justify-content: flex-start !important;
+    text-align: left !important;
+  }
+
+  .directory-section .list-scroll-container {
+    max-width: 900px !important;
+    margin: 0 auto !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+    width: 100% !important;
+  }
+
+  .list-scroll-container .venue-table,
+  .list-scroll-container .table-responsive,
+  .list-scroll-container .shoot-table {
+    width: 100% !important;
+  }
+
+  .venue-table tr {
+    padding: 1.5rem !important;
+    margin-bottom: 1.5rem !important;
+  }
+
+  .venue-table .venue-header {
+    padding: 0.75rem 1.5rem 2.5rem !important;
+  }
+
+  .venue-table td {
+    padding: 0.75rem 0 !important;
+  }
+
+  .venue-table thead,
+  .shoot-table thead {
+    display: table-header-group !important;
+  }
+
+  button.nav-link {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+}
+
+/* ==========================================================================
+   SNIPCART V2 CART PIPELINE LAYER & FOOTER ISOLATION OVERRIDES
+   ========================================================================== */
+html #snipcart-main-container {
+  height: calc(100vh - 80px) !important;
+  position: fixed !important;
+  top: 0 !important;
+  bottom: auto !important;
+}
+
+html #snipcart-main-container #snipcart-overlay {
+  height: 100% !important;
+  position: absolute !important;
+}
+
+footer {
+  position: fixed !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 80px !important;
+  z-index: 10000 !important;
+  background-color: #212529;
+}
+
+html #snipcart-main-container .snip-layout {
+  background: rgba(123, 123, 123, 0.75);
+  height: calc(100vh - 100px) !important;
+  bottom: auto !important;
+  color: #999;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  left: 0;
+  line-height: normal;
+  overflow-x: auto;
+  padding: 0;
+  position: fixed;
+  right: 0;
+  top: 20px !important;
+  z-index: 1040;
+}
+
+html .snip-footer {
+  margin-bottom: 35px !important;
+}
+
+.snip-layout .snip-layout__subtitle {
+  padding: 1em 0 0 1em !important;
+  text-transform: uppercase;
+  font-size: 18px;
+}

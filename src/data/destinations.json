@@ -1,0 +1,22 @@
+[
+  {
+    "id": "series_tac",
+    "name": "Total Archery Challenge",
+
+    "slug": "total-archery-challenge",
+
+    "seriesType": "destination",
+
+    "organizerVenueId": "venue_200",
+
+    "description": "Nationwide mountain archery challenge series.",
+
+    "website": "https://totalarcherychallenge.com",
+
+    "featured": true,
+
+    "sponsorLevel": "destination",
+
+    "logo": "/images/series/tac-logo.png"
+  }
+]
