@@ -90,7 +90,21 @@ const SpotlightTemplate = ({ data }) => {
               </p>
               <p className="fs-5">
                 <strong>Socials:</strong>{" "}
-                {venue.contact.socials || "No Socicals Listed"}
+                 {venue.contact.socials && venue.contact.socials.length > 0 ? (
+                   venue.contact.socials.map((social, idx) => (
+                     <a
+                       key={idx}
+                       href={social.url}
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       className="badge bg-secondary text-decoration-none text-white px-2 py-1"
+                     >
+                       {social.name}
+                     </a>
+                   ))
+                 ) : (
+                   <span className="text-muted fs-6">No Socials Listed</span>
+                 )}
               </p>
             </div>
           </div>
