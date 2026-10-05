@@ -12,7 +12,6 @@ const ShootList = ({
   sortDirection = "asc",
   onSelectShoot,
 }) => {
-  // Sort shoots based on current sort state
   const sortedShoots = React.useMemo(() => {
     return [...shoots].sort((a, b) => {
       let aVal, bVal
@@ -28,7 +27,8 @@ const ShootList = ({
           bVal = new Date(b.date)
           return sortDirection === "asc" ? aVal - bVal : bVal - aVal
         case "distance":
-          if (!userLocation || !a.effectiveLocation || !b.effectiveLocation) return 0
+          if (!userLocation || !a.effectiveLocation || !b.effectiveLocation)
+            return 0
           aVal = getDistance(userLocation, a.effectiveLocation)
           bVal = getDistance(userLocation, b.effectiveLocation)
           return sortDirection === "asc" ? aVal - bVal : bVal - aVal
@@ -45,29 +45,39 @@ const ShootList = ({
   }, [shoots, sortField, sortDirection, userLocation])
 
   const [filteredShoots, setFilteredShoots] = React.useState(sortedShoots)
-  const [selectedVenueId, setSelectedVenueId] = React.useState(null)
 
   React.useEffect(() => {
     setFilteredShoots(sortedShoots)
   }, [sortedShoots])
 
+  // Leagues: seriesName (or sname) + venueId; tournaments: one per shootId
+  // Must run every render (before any early return)
+  const eventGroups = React.useMemo(() => {
+    const grouped = filteredShoots.reduce((acc, shoot) => {
+      const venueId = shoot.venue?.venueId || shoot.venueId || "unknown"
+      const isLeague = shoot.isLeague === true || shoot.isLeague === "true"
+      const series = shoot.seriesName || shoot.sname || "league"
+
+      const groupKey = isLeague
+        ? `league-${String(series)
+            .replace(/\s+/g, "-")
+            .toLowerCase()}-${venueId}`
+        : `tournament-${shoot.shootId || shoot.id || Math.random()}`
+
+      if (!acc[groupKey]) acc[groupKey] = []
+      acc[groupKey].push(shoot)
+      return acc
+    }, {})
+    return Object.entries(grouped)
+  }, [filteredShoots])
+
   if (sortedShoots.length === 0) {
     return (
-      <div className="alert alert-info">
-        No shoots available here. Check the Upcoming tab for future events.
+      <div className="alert alert-info text-center py-5 my-4">
+        No upcoming events found.
       </div>
     )
   }
-
-  // Group the FILTERED shoots by venue
-  const grouped = filteredShoots.reduce((acc, shoot) => {
-    const vid = shoot.venue?.venueId || shoot.venueId || "unknown"
-    if (!acc[vid]) acc[vid] = []
-    acc[vid].push(shoot)
-    return acc
-  }, {})
-
-  const venues = Object.entries(grouped)
 
   return (
     <div className="flex-wrap">
@@ -77,15 +87,16 @@ const ShootList = ({
         userLocation={userLocation}
       />
       <div className="accordion accordion-flush" id="shootAccordion">
-        {venues.map(([venueId, venueShoots], vIndex) => (
+        {eventGroups.map(([groupId, groupShoots], gIndex) => (
           <ShootAccordionItem
-            key={venueId}
-            venueId={venueId}
-            venueShoots={venueShoots}
-            vIndex={vIndex}
-            isOpen={venueId === selectedVenueId}
+            key={groupId}
+            venueId={groupId}
+            venueShoots={groupShoots}
+            vIndex={gIndex}
+            isOpen={false}
             userLocation={userLocation}
             onSelectShoot={onSelectShoot}
+            variant="events"
           />
         ))}
       </div>

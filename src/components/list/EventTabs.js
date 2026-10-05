@@ -5,27 +5,24 @@ import ShootList from "./ShootList"
 import DestList from "./DestList"
 import AssocList from "./AssocList"
 
+/**
+ * Tabs: Events (all from today) | Destination | Associations
+ * Current + Upcoming are merged into Events.
+ */
 const EventTabs = ({
-  currentShoots = [],
-  upcomingShoots = [],
-  displayCurrentShoots = [],
-  displayUpcomingShoots = [],
+  eventsShoots = [],
   destinationShoots = [],
   associationsShoots = [],
   userLocation,
   onSelectShoot,
-  venueIdMapping,
-  activeTab = "current",
+  activeTab = "events",
   setActiveTab,
 }) => {
   const handleTabClick = tab => {
-    if (setActiveTab) {
-      setActiveTab(tab)
-    }
+    if (setActiveTab) setActiveTab(tab)
   }
 
   const renderContent = () => {
-    // 1. Destination Tab Rendering Route
     if (activeTab === "destination") {
       return (
         <DestList
@@ -36,7 +33,6 @@ const EventTabs = ({
       )
     }
 
-    // 2. Association Tab Rendering Route
     if (activeTab === "association") {
       return (
         <AssocList
@@ -47,18 +43,19 @@ const EventTabs = ({
       )
     }
 
-    // 3. Current & Upcoming Local Rendering Routes
-    const shootsToShow = activeTab === "current" ? displayCurrentShoots : displayUpcomingShoots
+    // Default: Events (from today onward, non-destination)
+    if (eventsShoots.length === 0) {
+      return (
+        <div className="alert alert-info text-center py-5 my-4">
+          No upcoming events found.
+        </div>
+      )
+    }
 
-    return shootsToShow.length === 0 ? (
-      <div className="alert alert-info text-center py-5 my-4">
-        Nothing found matching criteria.
-      </div>
-    ) : (
+    return (
       <ShootList
-        shoots={shootsToShow}
+        shoots={eventsShoots}
         userLocation={userLocation}
-        venueIdMapping={venueIdMapping}
         onSelectShoot={onSelectShoot}
       />
     )
@@ -66,29 +63,25 @@ const EventTabs = ({
 
   return (
     <section className="directory-section container-fluid">
-      {/* Tab Navigation Row Header Matrix */}
       <div className="container-fluid mt-3 gx-0 p-0 px-0">
         <div className="row gx-0">
           <div className="col px-0">
-            <ul className="nav nav-tabs border-0 mb-0 mx-0 px-0 px-md-1" role="tablist">
+            <ul
+              className="nav nav-tabs border-0 mb-0 mx-0 px-0 px-md-1"
+              role="tablist"
+            >
               <li className="nav-item">
                 <button
-                  className={`nav-link ${activeTab === "current" ? "active" : ""}`}
-                  onClick={() => handleTabClick("current")}
+                  type="button"
+                  className={`nav-link ${activeTab === "events" ? "active" : ""}`}
+                  onClick={() => handleTabClick("events")}
                 >
-                  Current ({currentShoots.length})
+                  Events ({eventsShoots.length})
                 </button>
               </li>
               <li className="nav-item">
                 <button
-                  className={`nav-link ${activeTab === "upcoming" ? "active" : ""}`}
-                  onClick={() => handleTabClick("upcoming")}
-                >
-                  Upcoming ({upcomingShoots.length})
-                </button>
-              </li>
-              <li className="nav-item">
-                <button
+                  type="button"
                   className={`nav-link ${activeTab === "destination" ? "active" : ""}`}
                   onClick={() => handleTabClick("destination")}
                 >
@@ -97,6 +90,7 @@ const EventTabs = ({
               </li>
               <li className="nav-item">
                 <button
+                  type="button"
                   className={`nav-link ${activeTab === "association" ? "active" : ""}`}
                   onClick={() => handleTabClick("association")}
                 >
@@ -108,7 +102,6 @@ const EventTabs = ({
         </div>
       </div>
 
-      {/* Dynamic Content Display Portal Area */}
       <div className="row gx-0 p-0 mx-0 px-0">
         <div className="col-12 px-0">
           <div className="list-scroll-container">{renderContent()}</div>
@@ -119,15 +112,11 @@ const EventTabs = ({
 }
 
 EventTabs.propTypes = {
-  currentShoots: PropTypes.array,
-  upcomingShoots: PropTypes.array,
-  displayCurrentShoots: PropTypes.array,
-  displayUpcomingShoots: PropTypes.array,
+  eventsShoots: PropTypes.array,
   destinationShoots: PropTypes.array,
   associationsShoots: PropTypes.array,
   userLocation: PropTypes.object,
   onSelectShoot: PropTypes.func,
-  venueIdMapping: PropTypes.object,
   activeTab: PropTypes.string,
   setActiveTab: PropTypes.func,
 }

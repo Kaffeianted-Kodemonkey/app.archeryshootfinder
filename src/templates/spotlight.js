@@ -575,7 +575,6 @@ export const query = graphql`
       subscriptionStatus
       isMembership
       isClass
-      isLeague
       subscriptionPlan
       img
       alt

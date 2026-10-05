@@ -5,7 +5,6 @@ require("dotenv").config({
 const path = require("path")
 const { MongoClient } = require("mongodb")
 
-// UPDATED: Added new relational mapping properties to the venue whitelist
 const VENUE_PROJECTION = {
   _id: 1,
   venueId: 1,
@@ -14,7 +13,6 @@ const VENUE_PROJECTION = {
   accOwner: 1,
   venueType: 1,
   isClaimed: 1,
-  isLeague: 1,
   isClass: 1,
   isMembership: 1,
   slug: 1,
@@ -44,18 +42,16 @@ const VENUE_PROJECTION = {
   subscriptionId: 1,
   subscriptionStatus: 1,
   subscriptionPlan: 1,
-
-  // Added keys matching your updated Mongoose Venue schema
   parentAssociationID: 1,
   associationScope: 1,
   inheritsRulesFromParent: 1,
 }
 
-// UPDATED: Added new relational mapping properties to the shoot whitelist
 const SHOOT_PROJECTION = {
   _id: 1,
   shootId: 1,
   sname: 1,
+  seriesName: 1, // Destination circuits / league series title
   slug: 1,
   venueId: 1,
   associationType: 1,
@@ -80,12 +76,12 @@ const SHOOT_PROJECTION = {
   amenities: 1,
   isDestination: 1,
   isVerified: 1,
-  // Added keys matching your updated Mongoose Shoot schema
   associationID: 1,
-
+  isLeague: 1,
+  rulesReg: 1,
+  guidelines: 1,
 }
 
-// FIXED: Aligned projection keys to exactly mirror your master seed layout parameters
 const ASSOCIATION_PROJECTION = {
   _id: 1,
   AssocID: 1,
@@ -98,7 +94,7 @@ const ASSOCIATION_PROJECTION = {
   state: 1,
   parentID: 1,
   inheritsRulesFromParent: 1,
-  ruleBooks: 1
+  ruleBooks: 1,
 }
 
 function createMongoNode(
@@ -152,7 +148,10 @@ exports.sourceNodes = async ({
     const [venuesData, shootsData, associationsData] = await Promise.all([
       db.collection("venues").find({}, { projection: VENUE_PROJECTION }).toArray(),
       db.collection("shoots").find({}, { projection: SHOOT_PROJECTION }).toArray(),
-      db.collection("associations").find({}, { projection: ASSOCIATION_PROJECTION }).toArray(),
+      db
+        .collection("associations")
+        .find({}, { projection: ASSOCIATION_PROJECTION })
+        .toArray(),
     ])
 
     venuesData.forEach(venue => {
@@ -183,8 +182,9 @@ exports.sourceNodes = async ({
       })
     })
 
-    reporter.info(`Successfully sourced node data collections -> Venues: ${venuesData.length} | Shoots: ${shootsData.length} | Associations: ${associationsData.length}`);
-
+    reporter.info(
+      `Successfully sourced node data collections -> Venues: ${venuesData.length} | Shoots: ${shootsData.length} | Associations: ${associationsData.length}`
+    )
   } catch (error) {
     reporter.panicOnBuild("MongoDB sourceNodes failed", error)
   } finally {
@@ -243,9 +243,8 @@ exports.createSchemaCustomization = ({ actions }) => {
       venueId: String!
       vname: String
       accOwner: String
-      venueType: [String]
+      venueType: String
       isClaimed: Boolean!
-      isLeague: Boolean!
       isClass: Boolean!
       slug: String
       img: String
@@ -272,10 +271,9 @@ exports.createSchemaCustomization = ({ actions }) => {
       parentAssociationID: String
       associationScope: String
       inheritsRulesFromParent: Boolean
-
       parentAssociations: [AssociationsJson] @link(by: "acronym", from: "sanctioning")
       bowTypes: [String]
-      snipcartUserId: String!
+      snipcartUserId: String
       subscriptionId: String
       subscriptionStatus: String
       subscriptionPlan: String
@@ -284,15 +282,16 @@ exports.createSchemaCustomization = ({ actions }) => {
     type ShootsJson implements Node {
       shootId: String!
       sname: String
+      seriesName: String
       venueId: String!
       venue: VenuesJson @link(by: "venueId", from: "venueId")
       description: String
       guidelines: String
+      rulesReg: String
       associationType: String
       associationID: String
       association: AssociationsJson @link(by: "acronym", from: "associationType")
-
-      shootLocation: Location
+      location: Location
       date: Date
       endDate: Date
       startTime: String
@@ -308,13 +307,13 @@ exports.createSchemaCustomization = ({ actions }) => {
       prizes: String
       registrationUrl: String
       amenities: [String]
-      isDestination: Boolean!
-      isVerified: Boolean!
+      isDestination: Boolean
+      isVerified: Boolean
+      isLeague: Boolean
     }
 
-    # UNCOMMENTED & FIXED: Standardized to align precisely with your seeded database configuration collections
     type AssociationsJson implements Node {
-      AssocID: Int!
+      AssocID: String
       assocName: String
       acronym: String!
       membership: String
@@ -322,7 +321,7 @@ exports.createSchemaCustomization = ({ actions }) => {
       logoUrl: String
       scope: String
       state: String
-      parentID: Int
+      parentID: String
       inheritsRulesFromParent: Boolean
       ruleBooks: [Rulebook]
     }

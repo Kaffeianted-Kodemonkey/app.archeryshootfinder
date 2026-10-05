@@ -93,7 +93,7 @@ const AssocList = ({
                 aria-labelledby={`heading-${index}`}
                 data-bs-parent="#assocShootAccordion"
               >
-                <div className="accordion-body bg-white border-2 border-start border-end border-success-subtle">
+                <div className="accordion-body bg-white border-2 border border-success-subtle">
                   <h3 className="fs-5 fw-bold">Circuit Overview</h3>
                   <p>Official scheduled events sanctioned under the rules of the {assocType} Association.</p>
 

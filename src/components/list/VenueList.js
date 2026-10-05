@@ -1,34 +1,24 @@
 // src/components/list/VenueList.js
-// Poupers of this page: This is my venue directory tab disply.
+// Venue directory tab display
 import * as React from "react"
 import { Link } from "gatsby"
 import { getDistance } from "../../utils/distance"
 
-// venueType mapping for icons and styles (uppercase enums)
+// venueType is a single string: "Club" | "Pro Shop" | "Range"
 const venueTypeMapping = {
-  CLUB: {
+  Club: {
     icon: "bi-building",
     className: "bg-primary text-white",
     rowBg: "bg-light",
   },
-  RANGE: {
+  Range: {
     icon: "bi-crosshairs",
     className: "bg-success text-white",
     rowBg: "bg-light",
   },
-  PRO_SHOP: {
+  "Pro Shop": {          // ← must match DB exactly
     icon: "bi-shop",
     className: "bg-danger text-white",
-    rowBg: "bg-light",
-  },
-  ASSOCIATION: {
-    icon: "bi-people",
-    className: "bg-purple text-white",
-    rowBg: "bg-light",
-  },
-  ORGANIZATION: {
-    icon: "bi-star",
-    className: "bg-warning text-dark",
     rowBg: "bg-light",
   },
   default: {
@@ -114,11 +104,9 @@ const VenueList = ({
       {venues.map(venue => {
         const venueLocation = venue.location || {}
         const contact = venue.contact || {}
-        //const equipment = venue.equipment || {}
         const hours = venue.hours || {}
         const membership = venue.membership || {}
 
-        // Calculate distance from the USER (prop) to the VENUE
         const distanceValue =
           location && venueLocation.lat != null && venueLocation.lng != null
             ? getDistance(location, venueLocation).toFixed(1)
@@ -129,10 +117,10 @@ const VenueList = ({
           `${venueLocation.city || ""}, ${venueLocation.state || ""}`.trim() ||
           "No Location"
 
+        // venueType is a string – look up mapping directly
         const mapping =
           venueTypeMapping[venue.venueType] || venueTypeMapping.default
 
-        // FIXED: Robust isClaimed check (Mongo can return boolean, string, or number)
         const isClaimed =
           venue.isClaimed === true ||
           venue.isClaimed === "true" ||
@@ -142,40 +130,35 @@ const VenueList = ({
         const isUnclaimed = !isClaimed
         const isNonProfit = venue.subscriptionPlan === "Freemium"
 
-        const isPaidTier =
-          venue.subscriptionPlan && venue.subscriptionPlan !== "Freemium"
-
         const hasPhone = contact.phone && contact.phone.trim().length > 0
         const hasEmail = contact.email && contact.email.trim().length > 0
 
-        // Inside your venues.map loop:
         const { currentCount, upcomingCount, destinationCount } =
           getVenueShootCounts(venue.venueId)
 
-        const totalShoots = currentCount + upcomingCount
-
         return (
-          <div key={venue.id} className="col-12 mb-3">
+          <div key={venue.id || venue.venueId} className="col-12 mb-3">
             <div className={`card ${mapping.rowBg}`}>
-              {/* Card Header starts here */}
+              {/* Card Header */}
               <div className="card-header pt-3">
                 <span className={`badge ${mapping.className}`}>
                   <i className={`bi ${venue.icon || mapping.icon} me-1`}></i>
-                  {venue.venueType}
+                  {venue.venueType || "Venue"}
                 </span>{" "}
                 <h2 className="card-title fs-3 mt-2 mb-0">{venue.vname}</h2>
                 <p className="fs-6 mt-2">
                   <i className="bi bi-geo-alt"></i> {distance} | {cityState}
                 </p>
               </div>
-              {/* Card Body starts here */}
+
+              {/* Card Body */}
               <div className="card-body">
                 <div className="row">
                   <div className="col-ms-12">
                     <h3 className="fs-5">
                       <strong>About the Venue</strong>
                     </h3>
-                    <p>{venue.description}</p>
+                    <p>{venue.description || venue.bio || ""}</p>
                   </div>
                 </div>
                 <div className="row">
@@ -308,7 +291,8 @@ const VenueList = ({
                   </div>
                 </div>
               </div>
-              {/* Card Footer UI */}
+
+              {/* Card Footer */}
               <div className="card-footer d-flex justify-content-between align-items-center">
                 {isClaimed ? (
                   <>

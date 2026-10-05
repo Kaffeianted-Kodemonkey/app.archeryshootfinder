@@ -29,7 +29,7 @@ const Directory = ({ data, location }) => {
         setUserLocation(loc)
 
         // Preload only venues within 50 miles using the shared utility engine
-        const nearby = filterByDistance(Venues, loc, 50)
+        const nearby = filterByDistance(Venues, loc, 10000)
         setFilteredVenues(nearby)
         setDisplayedVenues(nearby)
       },

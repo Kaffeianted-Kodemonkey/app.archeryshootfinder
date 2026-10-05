@@ -43,7 +43,7 @@ const Footer = () => {
         <div className="col d-flex flex-column align-items-center text-nowrap">
           <i className="bi bi-shop-window fs-4"></i>
           <Link
-            to="/venues?type=Pro_Shop"
+            to="/venues?type=Pro%20Shop"
             className="text-decoration-none text-white "
           >
             Pro Shop

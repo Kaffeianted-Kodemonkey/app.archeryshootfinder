@@ -3,27 +3,34 @@ import { useState, useEffect, useMemo } from "react"
 import { navigate } from "gatsby"
 import Layout from "./Layout"
 import EventTabs from "../list/EventTabs"
-import {
-  getDateBoundaries,
-  filterByDateRange,
-  filterByDistance,
-} from "../../utils/shootFilters"
+import { filterByDistance } from "../../utils/shootFilters"
+
+/** True if shoot is still relevant from today forward (not fully in the past). */
+function isFromTodayOnward(shoot, todayStart) {
+  const end = shoot.endDate ? new Date(shoot.endDate) : new Date(shoot.date)
+  if (Number.isNaN(end.getTime())) return false
+  end.setHours(23, 59, 59, 999)
+  return end >= todayStart
+}
 
 const EventLayout = ({ masterRawShoots = [], location, children }) => {
   const [view, setView] = useState("map")
-
-  // Application engine processing states
-  const [filteredCurrentShoots, setFilteredCurrentShoots] = useState([])
-  const [filteredUpcomingShoots, setFilteredUpcomingShoots] = useState([])
+  const [filteredEventsShoots, setFilteredEventsShoots] = useState([])
   const [userLocation, setUserLocation] = useState(null)
-  const [userState, setUserState] = useState(null)
-  const [activeTab, setActiveTab] = useState("current")
+  const [activeTab, setActiveTab] = useState("events")
 
-  // Sync state tracking with incoming parameter URLs
+  // URL ?activeTab=destination|association|events
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search)
-    const activeTabParam = params.get("activeTab")
-    if (activeTabParam) setActiveTab(activeTabParam)
+    const params = new URLSearchParams(
+      typeof window !== "undefined" ? window.location.search : location?.search || ""
+    )
+    const tab = params.get("activeTab")
+    if (tab === "destination" || tab === "association" || tab === "events") {
+      setActiveTab(tab)
+    } else if (tab === "current" || tab === "upcoming") {
+      // legacy URLs → main Events tab
+      setActiveTab("events")
+    }
   }, [location])
 
   const URLSearchQuery = useMemo(() => {
@@ -32,14 +39,20 @@ const EventLayout = ({ masterRawShoots = [], location, children }) => {
     return params.get("search")?.toLowerCase().trim() || ""
   }, [location])
 
-  // Normalization layer mapping fallback locations
+  const todayStart = useMemo(() => {
+    const d = new Date()
+    d.setHours(0, 0, 0, 0)
+    return d
+  }, [])
+
+  // Attach effectiveLocation once
   const shootsWithVenues = useMemo(() => {
     return masterRawShoots.map(shoot => {
       const venue = shoot.venue
       const effectiveLocation =
         shoot.useVenueLocation !== false && venue?.location
           ? venue.location
-          : shoot.shootLocation || venue?.location
+          : shoot.location || shoot.shootLocation || venue?.location
 
       return {
         ...shoot,
@@ -48,32 +61,34 @@ const EventLayout = ({ masterRawShoots = [], location, children }) => {
     })
   }, [masterRawShoots])
 
-  const nonDestinationShoots = useMemo(
-    () => shootsWithVenues.filter(shoot => !shoot.isDestination),
-    [shootsWithVenues]
-  )
+  // Main Events tab: not destination, from today onward
+  const computedEventsShoots = useMemo(() => {
+    return shootsWithVenues.filter(
+      s => !s.isDestination && isFromTodayOnward(s, todayStart)
+    )
+  }, [shootsWithVenues, todayStart])
 
   const computedDestinationShoots = useMemo(
-    () => shootsWithVenues.filter(shoot => shoot.isDestination === true),
-    [shootsWithVenues]
+    () =>
+      shootsWithVenues.filter(
+        s =>
+          (s.isDestination === true || s.isDestination === "true") &&
+          isFromTodayOnward(s, todayStart)
+      ),
+    [shootsWithVenues, todayStart]
   )
 
-  // Chronological Calculations & Geolocation Watch Loops
-  const { now, currentTab } = useMemo(() => getDateBoundaries(), [])
+  const computedAssociationsShoots = useMemo(() => {
+    return shootsWithVenues.filter(shoot => {
+      if (!isFromTodayOnward(shoot, todayStart)) return false
+      const type = shoot.associationType
+      return Array.isArray(type) ? type.length > 0 : !!type
+    })
+  }, [shootsWithVenues, todayStart])
 
-  const computedCurrentShoots = useMemo(
-    () => filterByDateRange(nonDestinationShoots, now, currentTab),
-    [nonDestinationShoots, now, currentTab]
-  )
-
-  const computedUpcomingShoots = useMemo(
-    () => filterByDateRange(nonDestinationShoots, currentTab, new Date("2100-01-01")),
-    [nonDestinationShoots, currentTab]
-  )
-
+  // Geolocation distance filter for main Events list
   useEffect(() => {
-    setFilteredCurrentShoots(computedCurrentShoots)
-    setFilteredUpcomingShoots(computedUpcomingShoots)
+    setFilteredEventsShoots(computedEventsShoots)
 
     if (typeof window === "undefined" || !navigator.geolocation) return
 
@@ -85,67 +100,32 @@ const EventLayout = ({ masterRawShoots = [], location, children }) => {
         }
         setUserLocation(loc)
 
-        let geoCurrent = computedCurrentShoots
-        let geoUpcoming = computedUpcomingShoots
-
-        const applyStateFilter = list =>
-          list.filter(s => {
-            const l = s.useVenueLocation !== false && s.venue?.location ? s.venue.location : s.shootLocation
-            return !userState || l?.state === userState
-          })
-
-        const distCurrent = filterByDistance(computedCurrentShoots, loc, 50, computedCurrentShoots)
-        geoCurrent = distCurrent.length === computedCurrentShoots.length && userState ? applyStateFilter(computedCurrentShoots) : distCurrent
-
-        const distUpcoming = filterByDistance(computedUpcomingShoots, loc, 50, computedUpcomingShoots)
-        geoUpcoming = distUpcoming.length === computedUpcomingShoots.length && userState ? applyStateFilter(computedUpcomingShoots) : distUpcoming
-
-        setFilteredCurrentShoots(geoCurrent)
-        setFilteredUpcomingShoots(geoUpcoming)
+        const dist = filterByDistance(
+          computedEventsShoots,
+          loc,
+          500,
+          computedEventsShoots
+        )
+        setFilteredEventsShoots(dist)
       },
-      error => console.warn("Proximity geocoding engine lookup trace down:", error)
+      error => console.warn("Geolocation unavailable:", error)
     )
-  }, [computedCurrentShoots, computedUpcomingShoots, userState])
+  }, [computedEventsShoots])
 
-  // Searching string text normalizer
-  const displayCurrentShoots = useMemo(() => {
-    let result = filteredCurrentShoots
+  // Optional ?search= on main Events list
+  const displayEventsShoots = useMemo(() => {
+    let result = filteredEventsShoots
     if (URLSearchQuery) {
       const q = URLSearchQuery.replace(/,/g, "").replace(/\s+/g, " ").toLowerCase()
-      result = result.filter(shoot => {
-        return [shoot.sname, shoot.venue?.vname, shoot.shootLocation?.city, shoot.shootLocation?.state].join(" ").toLowerCase().includes(q)
-      })
+      result = result.filter(shoot =>
+        [shoot.sname, shoot.venue?.vname, shoot.effectiveLocation?.city, shoot.effectiveLocation?.state]
+          .join(" ")
+          .toLowerCase()
+          .includes(q)
+      )
     }
     return result
-  }, [filteredCurrentShoots, URLSearchQuery])
-
-  const displayUpcomingShoots = useMemo(() => {
-    let result = filteredUpcomingShoots
-    if (URLSearchQuery) {
-      const q = URLSearchQuery.replace(/,/g, "").replace(/\s+/g, " ").toLowerCase()
-      result = result.filter(shoot => {
-        return [shoot.sname, shoot.venue?.vname, shoot.shootLocation?.city, shoot.shootLocation?.state].join(" ").toLowerCase().includes(q)
-      })
-    }
-    return result
-  }, [filteredUpcomingShoots, URLSearchQuery])
-
-  const computedAssociationsShoots = useMemo(() => {
-    return shootsWithVenues.filter(shoot => {
-      const type = shoot.associationType
-      return Array.isArray(type) ? type.length > 0 : !!type
-    })
-  }, [shootsWithVenues])
-
-  const groupedAssociationsShoots = useMemo(() => {
-    return computedAssociationsShoots.reduce((groups, shoot) => {
-      const rawType = shoot.associationType
-      const type = Array.isArray(rawType) ? (rawType[0] || "General") : (rawType || "General")
-      if (!groups[type]) groups[type] = []
-      groups[type].push(shoot)
-      return groups
-    }, {})
-  }, [computedAssociationsShoots])
+  }, [filteredEventsShoots, URLSearchQuery])
 
   const handleTabChangeWithReset = tab => {
     setActiveTab(tab)
@@ -154,33 +134,48 @@ const EventLayout = ({ masterRawShoots = [], location, children }) => {
 
   const activeMapShoots = useMemo(() => {
     switch (activeTab) {
-      case "upcoming": return displayUpcomingShoots
-      case "destination": return computedDestinationShoots
-      case "association": return Object.values(groupedAssociationsShoots).flat()
-      case "current":
-      default: return displayCurrentShoots
+      case "destination":
+        return computedDestinationShoots
+      case "association":
+        return computedAssociationsShoots
+      case "events":
+      default:
+        return displayEventsShoots
     }
-  }, [activeTab, displayCurrentShoots, displayUpcomingShoots, computedDestinationShoots, groupedAssociationsShoots])
+  }, [
+    activeTab,
+    displayEventsShoots,
+    computedDestinationShoots,
+    computedAssociationsShoots,
+  ])
 
-  const mapProps = useMemo(() => {
-    return { shoots: activeMapShoots, venues: [], userLocation, activeTab }
-  }, [activeTab, activeMapShoots, userLocation])
-
-  const listProps = useMemo(() => {
-    return {
-      shoots: shootsWithVenues,
+  const mapProps = useMemo(
+    () => ({
+      shoots: activeMapShoots,
       venues: [],
-      currentShoots: displayCurrentShoots,
-      upcomingShoots: displayUpcomingShoots,
-      displayCurrentShoots,
-      displayUpcomingShoots,
+      userLocation,
+      activeTab,
+    }),
+    [activeTab, activeMapShoots, userLocation]
+  )
+
+  const listProps = useMemo(
+    () => ({
+      eventsShoots: displayEventsShoots,
       destinationShoots: computedDestinationShoots,
       associationsShoots: computedAssociationsShoots,
       userLocation,
       activeTab,
       setActiveTab: handleTabChangeWithReset,
-    }
-  }, [shootsWithVenues, displayCurrentShoots, displayUpcomingShoots, computedDestinationShoots, computedAssociationsShoots, userLocation, activeTab])
+    }),
+    [
+      displayEventsShoots,
+      computedDestinationShoots,
+      computedAssociationsShoots,
+      userLocation,
+      activeTab,
+    ]
+  )
 
   return (
     <Layout

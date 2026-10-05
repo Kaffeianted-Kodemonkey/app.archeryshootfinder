@@ -1,3 +1,4 @@
+// src/pages/events.js
 import * as React from "react"
 import { graphql } from "gatsby"
 import PropTypes from "prop-types"
@@ -38,8 +39,10 @@ export const query = graphql`
         entryFee
         description
         isDestination
+        isLeague
+        seriesName
         associationType
-        shootLocation {
+        location {
           address
           city
           state
@@ -51,29 +54,22 @@ export const query = graphql`
           vname
           venueType
           isClaimed
+          contact {
+            phone
+            email
+            website
+            socials {
+              name
+              url
+            }
+            membershipUrl
+          }
           location {
             city
             state
             lat
             lng
           }
-        }
-      }
-    }
-    allVenuesJson {
-      nodes {
-        venueId
-        vname
-        slug
-        venueType
-        isClaimed
-        sanctioning
-        subscriptionPlan
-        location {
-          city
-          state
-          lat
-          lng
         }
       }
     }

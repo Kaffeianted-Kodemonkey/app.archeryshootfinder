@@ -58,10 +58,10 @@ const Direct = ({
 
     if (typeParam) {
       const t = typeParam.trim().toUpperCase()
-      if (t === "CLUB" || t === "CLUBS") setSelectedType("CLUB")
-      else if (t === "RANGE" || t === "RANGES") setSelectedType("RANGE")
-      else if (["PRO_SHOP", "PRO_SHOPS", "PRO SHOTS", "PRO SHOP"].includes(t))
-        setSelectedType("PRO_SHOP")
+      if (t === "CLUB" || t === "Club") setSelectedType("Club")
+      else if (t === "RANGE" || t === "Range") setSelectedType("Range")
+      else if (["PRO_SHOP", "PRO_SHOPS", "PRO SHOP"].includes(t))
+        setSelectedType("Pro Shop")
     }
 
     if (searchParam) {
@@ -186,9 +186,9 @@ const Direct = ({
             onChange={e => setSelectedType(e.target.value)}
           >
             <option value="">All Venue Types</option>
-            <option value="CLUB">Clubs</option>
-            <option value="RANGE">Ranges</option>
-            <option value="PRO_SHOP">Pro Shops</option>
+            <option value="Club">Clubs</option>
+            <option value="Range">Ranges</option>
+            <option value="Pro Shop">Pro Shops</option>
           </select>
         </div>
 
