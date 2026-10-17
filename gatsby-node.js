@@ -22,6 +22,7 @@ const VENUE_PROJECTION = {
   bio: 1,
   behavioralRules: 1,
   gearControl: 1,
+  safetyEtiquette: 1,
   safteyEtiquette: 1,
   location: 1,
   contact: 1,
@@ -162,6 +163,11 @@ exports.sourceNodes = async ({
         extra: {
           vname: venue.vname || venue.name,
           hours: Array.isArray(venue.hours) ? venue.hours : [],
+          safetyEtiquette: Array.isArray(venue.safetyEtiquette)
+            ? venue.safetyEtiquette
+            : Array.isArray(venue.safteyEtiquette)
+              ? venue.safteyEtiquette
+              : [],
         },
       })
     })
@@ -200,7 +206,6 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
         nodes {
           id
           venueId
-          slug
         }
       }
     }
@@ -253,7 +258,7 @@ exports.createSchemaCustomization = ({ actions }) => {
       bio: String
       behavioralRules: [String]
       gearControl: [String]
-      safteyEtiquette: [String]
+      safetyEtiquette: [String]
       location: Location
       contact: Contact
       hours: [Hours]

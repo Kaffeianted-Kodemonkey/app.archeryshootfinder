@@ -379,9 +379,9 @@ const ShootAccordionItem = ({
                     Event website
                   </a>
                 )}
-                {isVerified && (venue.venueId || venue.slug) && (
+                {isVerified && venue.venueId && (
                   <Link
-                    to={`/venues/${venue.slug || venue.venueId}`}
+                    to={`/venues/${venue.venueId}`}
                     className="btn btn-sm btn-primary"
                   >
                     Venue SLP

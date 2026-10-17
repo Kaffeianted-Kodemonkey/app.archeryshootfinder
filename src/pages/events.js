@@ -33,6 +33,7 @@ export const query = graphql`
         shootId
         sname
         venueId
+        isVerified
         date
         endDate
         shootFormat
@@ -51,6 +52,7 @@ export const query = graphql`
           lng
         }
         venue {
+          venueId
           vname
           venueType
           isClaimed

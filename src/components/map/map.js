@@ -191,8 +191,7 @@ const MapComponent = ({
   }, [selectedItem])
 
   return (
-    // <LoadScript googleMapsApiKey={process.env.GATSBY_GOOGLE_MAPS_API_KEY}>
-    <LoadScript googleMapsApiKey="AIzaSyCUM-y330tVty37B9avJLFoA_XpxyQyJFI">
+    <LoadScript googleMapsApiKey={process.env.GATSBY_GOOGLE_MAPS_API_KEY}>
       <GoogleMap
         mapContainerStyle={mapContainerStyle}
         center={center}
@@ -271,12 +270,14 @@ const MapComponent = ({
                       >
                         Directions
                       </a>
-                      <Link
-                        to={`/shoots/${selectedItem.slug}`}
-                        className="btn btn-sm btn-primary"
-                      >
-                        View Details
-                      </Link>
+                      {selectedItem.isVerified && selectedItem.venueId && (
+                        <Link
+                          to={`/venues/${selectedItem.venueId}`}
+                          className="btn btn-sm btn-primary"
+                        >
+                          View Details
+                        </Link>
+                      )}
                     </div>
                   </div>
                 )
@@ -324,10 +325,14 @@ const MapComponent = ({
                       >
                         Directions
                       </a>
-                      {/* Placeholder for venue details page; update if slugs exist */}
-                      <button className="btn btn-sm btn-primary">
-                        View Details
-                      </button>
+                      {selectedItem.venueId && (
+                        <Link
+                          to={`/venues/${selectedItem.venueId}`}
+                          className="btn btn-sm btn-primary"
+                        >
+                          View Details
+                        </Link>
+                      )}
                     </div>
                   </div>
                 )

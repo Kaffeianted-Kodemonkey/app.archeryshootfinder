@@ -71,7 +71,7 @@ const initSnipcartHandler = () => {
   })
 
   // EVENT HOOK: Triggers when an order/subscription checkout completes
-  window.Snipcart.subscribe("order.completed", async data => {
+  window.Snipcart.subscribe("order.completed", data => {
     if (window.Snipcart.api && window.Snipcart.api.modal) {
       window.Snipcart.api.modal.close()
     }
@@ -79,23 +79,6 @@ const initSnipcartHandler = () => {
     const companyName =
       data.billingAddress?.company || data.billingAddress?.name || "Venue"
     const email = data.email
-
-    try {
-      await fetch("https://github.com", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${process.env.GATSBY_GITHUB_PAT || ""}`,
-          Accept: "application/vnd.github.v3+json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          event_type: "cms_create_venue_on_payment",
-          client_payload: { companyName, email, snipcartOrderId: data.token },
-        }),
-      })
-    } catch (err) {
-      console.error("Failed to forward payload to repository pipeline", err)
-    }
 
     window.dispatchEvent(
       new CustomEvent("snipcart:user-logged-in", {

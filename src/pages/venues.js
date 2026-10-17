@@ -94,7 +94,6 @@ export const query = graphql`
       nodes {
         venueId
         vname
-        slug
         venueType
         isClaimed
         subscriptionPlan

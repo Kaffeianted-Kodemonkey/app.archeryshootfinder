@@ -580,12 +580,11 @@ export const query = graphql`
     venuesJson(id: { eq: $id }) {
       vname
       venueType
-      slug
       tagline
       bio
       behavioralRules
       gearControl
-      safteyEtiquette
+      safetyEtiquette
       subscriptionStatus
       isMembership
       isClass

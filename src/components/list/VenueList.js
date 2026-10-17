@@ -301,7 +301,7 @@ const VenueList = ({
                       {isNonProfit ? "Verified Club" : "Verified Venue"}
                     </span>
                     <Link
-                      to={`/venues/${venue.slug || venue.venueId}`}
+                      to={`/venues/${venue.venueId}`}
                       className="btn btn-sm btn-success"
                     >
                       View Details
