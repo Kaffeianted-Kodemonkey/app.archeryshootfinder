@@ -11,7 +11,7 @@
   --bs-primary: #2c2c2a;
   --bs-primary-rgb: 44, 44, 42;
   --bs-primary-bg-subtle: rgba(var(--bs-primary-rgb), 0.12);
-  --bs-forest-green:#042814;
+  --bs-forest-green: #042814;
 
   /* Success (Target Ring Green - EXCLUSIVELY reserved for verified registration statuses) */
   --bs-success: #28a745;
@@ -94,7 +94,7 @@ main {
   border: 2px solid var(--bs-secondary) !important; /* Gold accent underline */
   height: 120px;
   color: #ffffff;
-  font-size: 1.5em;;
+  font-size: 1.5em;
 }
 
 /* Footer and offcanvas positioning */
@@ -136,7 +136,9 @@ footer.fixed-bottom,
 /* Map view adjustments */
 main.map-view {
   padding-top: 0 !important;
-  min-height: calc(100vh - 56px - 120px); /* Full height minus nav and bottom clearance */
+  min-height: calc(
+    100vh - 56px - 120px
+  ); /* Full height minus nav and bottom clearance */
   padding-bottom: 4rem;
 }
 
@@ -153,7 +155,9 @@ main.map-view .list-scroll-container {
 main.map-view .col[style*="height"] {
   position: relative !important;
   z-index: 50 !important; /* Locks map area securely above base card layers */
-  background-color: var(--bs-body-bg) !important; /* Uses your exact warm sand background to hide hidden scrolling text */
+  background-color: var(
+    --bs-body-bg
+  ) !important; /* Uses your exact warm sand background to hide hidden scrolling text */
 }
 
 /* Keeps sticky navigation/tab elements sliding neatly above cards */
@@ -282,26 +286,54 @@ main.map-view .col[style*="height"] {
   }
 
   /* Venue Classification Subtle Background Color Modifiers - RESTORED EXACT BRAND THEMES */
-  .bg-success-subtle .venue-header { background-color: rgba(var(--bs-success-rgb), 0.2); }
-  .bg-success-subtle .venue-header::after { background-color: var(--bs-success); }
+  .bg-success-subtle .venue-header {
+    background-color: rgba(var(--bs-success-rgb), 0.2);
+  }
+  .bg-success-subtle .venue-header::after {
+    background-color: var(--bs-success);
+  }
 
-  .bg-danger-subtle .venue-header { background-color: rgba(var(--bs-danger-rgb), 0.2); }
-  .bg-danger-subtle .venue-header::after { background-color: var(--bs-danger); }
+  .bg-danger-subtle .venue-header {
+    background-color: rgba(var(--bs-danger-rgb), 0.2);
+  }
+  .bg-danger-subtle .venue-header::after {
+    background-color: var(--bs-danger);
+  }
 
-  .bg-warning-subtle .venue-header { background-color: rgba(var(--bs-warning-rgb), 0.2); }
-  .bg-warning-subtle .venue-header::after { background-color: var(--bs-warning); }
+  .bg-warning-subtle .venue-header {
+    background-color: rgba(var(--bs-warning-rgb), 0.2);
+  }
+  .bg-warning-subtle .venue-header::after {
+    background-color: var(--bs-warning);
+  }
 
-  .bg-info-subtle .venue-header { background-color: rgba(var(--bs-info-rgb), 0.2); }
-  .bg-info-subtle .venue-header::after { background-color: var(--bs-info); }
+  .bg-info-subtle .venue-header {
+    background-color: rgba(var(--bs-info-rgb), 0.2);
+  }
+  .bg-info-subtle .venue-header::after {
+    background-color: var(--bs-info);
+  }
 
-  .bg-primary-subtle .venue-header { background-color: rgba(var(--bs-primary-rgb), 0.2); }
-  .bg-primary-subtle .venue-header::after { background-color: var(--bs-primary); }
+  .bg-primary-subtle .venue-header {
+    background-color: rgba(var(--bs-primary-rgb), 0.2);
+  }
+  .bg-primary-subtle .venue-header::after {
+    background-color: var(--bs-primary);
+  }
 
-  .bg-secondary-subtle .venue-header { background-color: rgba(var(--bs-secondary-rgb), 0.2); }
-  .bg-secondary-subtle .venue-header::after { background-color: var(--bs-secondary); }
+  .bg-secondary-subtle .venue-header {
+    background-color: rgba(var(--bs-secondary-rgb), 0.2);
+  }
+  .bg-secondary-subtle .venue-header::after {
+    background-color: var(--bs-secondary);
+  }
 
-  .bg-light .venue-header { background-color: rgba(var(--bs-light-rgb), 0.3); }
-  .bg-light .venue-header::after { background-color: var(--bs-secondary); }
+  .bg-light .venue-header {
+    background-color: rgba(var(--bs-light-rgb), 0.3);
+  }
+  .bg-light .venue-header::after {
+    background-color: var(--bs-secondary);
+  }
 
   .venue-table .venue-header td[data-label="Type"],
   .venue-table .venue-header td[data-label="Venue Name"] {

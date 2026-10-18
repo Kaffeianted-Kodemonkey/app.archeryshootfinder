@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from "mongoose"
 
 const ShootSchema = new mongoose.Schema({
   shootId: { type: Number, required: true, unique: true },
@@ -33,8 +33,8 @@ const ShootSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Venue",
   },
-});
+})
 
-const Shoot = mongoose.models.Shoot || mongoose.model("Shoot", ShootSchema);
+const Shoot = mongoose.models.Shoot || mongoose.model("Shoot", ShootSchema)
 
-export default Shoot;
+export default Shoot

@@ -16,7 +16,8 @@ const venueTypeMapping = {
     className: "bg-success text-white",
     rowBg: "bg-light",
   },
-  "Pro Shop": {          // ← must match DB exactly
+  "Pro Shop": {
+    // ← must match DB exactly
     icon: "bi-shop",
     className: "bg-danger text-white",
     rowBg: "bg-light",

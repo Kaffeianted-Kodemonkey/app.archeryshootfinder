@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from "mongoose"
 
 const VenueSchema = new mongoose.Schema({
   venueId: { type: String, required: true, unique: true },
@@ -56,8 +56,8 @@ const VenueSchema = new mongoose.Schema({
   laneCapOutdoor: String,
   maxDistIndoor: String,
   maxDistOutdoor: String,
-});
+})
 
-const Venue = mongoose.models.Venue || mongoose.model("Venue", VenueSchema);
+const Venue = mongoose.models.Venue || mongoose.model("Venue", VenueSchema)
 
-export default Venue;
+export default Venue

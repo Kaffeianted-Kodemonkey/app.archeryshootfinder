@@ -14,10 +14,7 @@ function resolveLoc(shoot) {
   const venue = shoot?.venue || {}
   if (shoot?.useVenueLocation !== false && venue.location) return venue.location
   return (
-    shoot?.effectiveLocation ||
-    shoot?.location ||
-    shoot?.shootLocation ||
-    {}
+    shoot?.effectiveLocation || shoot?.location || shoot?.shootLocation || {}
   )
 }
 
@@ -184,20 +181,17 @@ const ShootAccordionItem = ({
       ? `${shoots.length} sessions · Next: ${formatDateShort(first.date)}`
       : formatDateShort(first.date, first.endDate)
     : isDestinationGroup && shoots.length > 1
-      ? dateRangeLabel(shoots)
-      : formatDateShort(first.date, first.endDate)
+    ? dateRangeLabel(shoots)
+    : formatDateShort(first.date, first.endDate)
 
   const whereLabel = isDestinationGroup
     ? multiStateLabel(shoots)
     : loc.city && loc.state
-      ? `${loc.city}, ${loc.state}`
-      : "TBD"
+    ? `${loc.city}, ${loc.state}`
+    : "TBD"
 
   const showDistance =
-    !isDestinationGroup &&
-    userLocation &&
-    loc?.lat != null &&
-    loc?.lng != null
+    !isDestinationGroup && userLocation && loc?.lat != null && loc?.lng != null
 
   const locationKeys = uniqueLocationKeys(shoots)
   const showLocationCols = locationKeys.size > 1
@@ -220,14 +214,16 @@ const ShootAccordionItem = ({
   const badgeKind = isDestinationGroup
     ? "Destination"
     : isLeagueGroup
-      ? "League"
-      : "Tournament"
+    ? "League"
+    : "Tournament"
 
   return (
     <div className="accordion-item border mb-3 rounded shadow-sm">
       <h2 className="accordion-header" id={headingId}>
         <button
-          className={`accordion-button ${isOpen ? "" : "collapsed"} bg-success-subtle border border-2 border-success shadow-none`}
+          className={`accordion-button ${
+            isOpen ? "" : "collapsed"
+          } bg-success-subtle border border-2 border-success shadow-none`}
           type="button"
           data-bs-toggle="collapse"
           data-bs-target={`#${collapseId}`}
@@ -237,7 +233,9 @@ const ShootAccordionItem = ({
           <div className="w-100 text-start">
             <div className="d-flex flex-wrap gap-2 mb-1">
               {assocLabel && (
-                <span className="badge bg-primary text-white">{assocLabel}</span>
+                <span className="badge bg-primary text-white">
+                  {assocLabel}
+                </span>
               )}
               <span className="badge bg-dark text-white">{badgeKind}</span>
               {status?.label && (

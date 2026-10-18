@@ -62,14 +62,9 @@ const Layout = ({
             <div className="flex-grow-1 overflow-auto bg-white">
               {/* Marketing Banner */}
               <div className="row g-0">
-                <div
-                  className="col banner d-flex align-items-center justify-content-center py-5 fw-bold text-center"
-                >
+                <div className="col banner d-flex align-items-center justify-content-center py-5 fw-bold text-center">
                   <p className="pt-2 mb-0 d-flex align-items-center justify-content-center flex-wrap gap-2">
-                    <i
-                      className="bi bi-star-fill"
-                      style={{ color: "red" }}
-                    ></i>
+                    <i className="bi bi-star-fill" style={{ color: "red" }}></i>
                     <span>Marketing Banner </span>
                     <span
                       className="px-3 py-1 rounded-pill ms-2"

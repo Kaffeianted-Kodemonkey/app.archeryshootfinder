@@ -24,7 +24,7 @@ const Footer = () => {
 
         <div className="col d-flex flex-column align-items-center text-nowrap">
           <i className="bi bi-trophy fs-4"></i>
-        <Link
+          <Link
             to="/venues?type=Club"
             className="text-decoration-none text-white "
           >
@@ -49,8 +49,6 @@ const Footer = () => {
             Pro Shop
           </Link>
         </div>
-
-
       </div>
       {/* <div className="d-flex align-items-center justify-content-between px-3 px-md-4 h-100">
         <div className="text-start">

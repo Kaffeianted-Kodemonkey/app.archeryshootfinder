@@ -2,16 +2,17 @@ import * as React from "react"
 import { useState, useEffect } from "react"
 import Layout from "../components/layout/Layout"
 import Seo from "../components/seo"
+
 /**
  * LoginPage Component
  *
- * Automatically captures the `signin` search parameter from the URL query string
- * via Gatsby's `location` prop, conditionally filtering the login view options.
- */ const LoginPage = ({ location }) => {
+ * Uses the `signin` search parameter to show a specific login option when
+ * requested, while keeping both options visible by default.
+ */
+const LoginPage = ({ location }) => {
   const [currentView, setCurrentView] = useState("both")
 
   useEffect(() => {
-    // Check for query parameters safely on the client side to avoid SSR mismatch
     if (location?.search) {
       const params = new URLSearchParams(location.search)
       const signinValue = params.get("signin")
@@ -28,26 +29,7 @@ import Seo from "../components/seo"
     <Layout>
       <Seo title="Portal Login" />
       <main className="container pt-5 pb-5 my-5">
-        {/* Navigation utility to return to view both options if desired */}
-        {/* {currentView !== "both" && (
-          <div className="text-center mb-4">
-            <button
-              className="btn btn-sm btn-outline-secondary"
-              onClick={() => {
-                setCurrentView("both")
-                // Safely clean up the address bar query string state
-                if (typeof window !== "undefined") {
-                  window.history.pushState({}, "", "/login")
-                }
-              }}
-            >
-              ← View All Login Options
-            </button>
-          </div>
-        )}*/}
-
         <div className="row justify-content-center g-4">
-          {/* LEFT COLUMN: CONSUMER PORTAL (SHOOTERS VIA STYTCH) */}
           {(currentView === "both" || currentView === "shooter") && (
             <div className="col-lg-5 col-md-6">
               <div className="card h-100 shadow-sm border">
@@ -55,46 +37,44 @@ import Seo from "../components/seo"
                   <h4 className="mb-0 fs-5 fw-bold">Shooter Portal</h4>
                 </div>
                 <div className="card-body p-4 d-flex flex-column justify-content-between">
-                  <div>
-                    <p className="text-muted small text-center mb-4">
-                      Log in to track your scores, manage saved archery shoots,
-                      and customize your finder preferences.
+                  <p className="text-muted small text-center mb-4">
+                    Log in to track your scores, manage saved archery shoots,
+                    and customize your finder preferences.
+                  </p>
+                  <div className="border rounded p-4 bg-light text-center flex-grow-1 d-flex flex-column justify-content-center">
+                    <h5 className="fw-bold">
+                      Shooter accounts are coming soon
+                    </h5>
+                    <p className="text-muted small mb-3">
+                      We’re working on a way to save your shoots and scores.
+                      Have an idea for shooter accounts? Let us know.
                     </p>
-
-                    {/* Target anchor placeholder for Stytch login initialization script later */}
-                    <div
-                      id="stytch-sdk-ui-root"
-                      className="border rounded p-3 bg-light text-center text-muted small"
-                      style={{
-                        minHeight: "200px",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
+                    <a
+                      className="btn btn-outline-primary align-self-center"
+                      href="https://archeryshootfinder.com"
+                      target="_blank"
+                      rel="noreferrer"
                     >
-                      Stytch Passwordless SDK UI <br /> (Will handle shooter
-                      login later)
-                    </div>
+                      Share feedback
+                    </a>
                   </div>
                 </div>
               </div>
             </div>
           )}
 
-          {/* RIGHT COLUMN: BUSINESS PORTAL (VENUES VIA SNIPCART) */}
-          {/* {(currentView === "both" || currentView === "venue") && (
+          {(currentView === "both" || currentView === "venue") && (
             <div className="col-lg-5 col-md-6">
               <div className="card h-100 shadow-sm border">
                 <div className="card-header bg-dark text-white py-3 text-center">
                   <h4 className="mb-0 fs-5 fw-bold">Venue Admin Portal</h4>
                 </div>
-                <div className="card-body p-4 d-flex flex-column justify-content-between">*/}
-          {/* <div>
+                <div className="card-body p-4 d-flex flex-column justify-content-between">
+                  <div>
                     <p className="text-muted small text-center mb-4">
                       Access your venue statistics, manage target directories,
                       or update your public profile settings.
                     </p>
-
                     <div
                       className="p-3 border rounded text-center mb-4"
                       style={{ background: "rgba(0,0,0,0.02)" }}
@@ -104,29 +84,24 @@ import Seo from "../components/seo"
                         are securely isolated through Snipcart.
                       </p>
                     </div>
-                  </div>*/}
-
-          {/* Using the native class trigger opens the standard modal cleanly */}
-          {/* <button
+                  </div>
+                  <button
                     className="btn btn-dark w-100 py-3 fw-bold mt-auto snipcart-user-profile"
                     data-login="login"
                   >
                     Sign In to Venue Admin
-                  </button>*/}
-          {/* </div>
-              </div>*/}
-          {/* <div className="row">
-                <div className="col mt-3">
-                  <p>
+                  </button>
+                  <p className="text-center mt-3 mb-0">
                     <a href="/pricing">New Venue Registrations</a>
                   </p>
                 </div>
-              </div>*/}
-          {/* </div>
-          )}*/}
+              </div>
+            </div>
+          )}
         </div>
       </main>
     </Layout>
   )
 }
+
 export default LoginPage

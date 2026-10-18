@@ -11,6 +11,7 @@ const ShootFilters = ({
 }) => {
   const [filters, setFilters] = React.useState({
     state: "", // ← new: selected state (empty = show all)
+    city: "",
     bowType: "",
     format: "",
     shootClass: "",
@@ -26,6 +27,7 @@ const ShootFilters = ({
     const classes = new Set()
     const levels = new Set()
     const states = new Set()
+    const cities = new Set()
 
     allShoots.forEach(s => {
       s.bowTypes?.forEach(b => bowTypes.add(b))
@@ -38,6 +40,7 @@ const ShootFilters = ({
           ? s.venue.location
           : s.effectiveLocation || s.shootLocation || s.location
       if (loc?.state) states.add(loc.state)
+      if (loc?.city) cities.add(loc.city.trim())
     })
 
     return {
@@ -46,6 +49,7 @@ const ShootFilters = ({
       classes: [...classes].sort(),
       levels: [...levels].sort(),
       states: [...states].sort(), // ← new
+      cities: [...cities].filter(Boolean).sort(),
     }
   }, [allShoots])
 
@@ -61,6 +65,15 @@ const ShootFilters = ({
             ? s.venue.location
             : s.effectiveLocation || s.shootLocation || s.location
         return loc?.state === filters.state
+      })
+    }
+    if (filters.city) {
+      result = result.filter(s => {
+        const loc =
+          s.useVenueLocation !== false && s.venue?.location
+            ? s.venue.location
+            : s.effectiveLocation || s.shootLocation || s.location
+        return loc?.city?.toLowerCase() === filters.city.toLowerCase()
       })
     }
     // "local" = do nothing (data is already the local set from index.js)
@@ -86,6 +99,7 @@ const ShootFilters = ({
   const reset = () => {
     setFilters({
       state: "",
+      city: "",
       bowType: "",
       format: "",
       shootClass: "",
@@ -104,8 +118,12 @@ const ShootFilters = ({
         aria-label="Filter by distance"
       >
         <option value="">All distances</option>
-        <option value="50" disabled={!userLocation}>Within 50 miles</option>
-        <option value="100" disabled={!userLocation}>Within 100 miles</option>
+        <option value="50" disabled={!userLocation}>
+          Within 50 miles
+        </option>
+        <option value="100" disabled={!userLocation}>
+          Within 100 miles
+        </option>
       </select>
 
       {/* State filter – shows every state that has shoots */}
@@ -118,6 +136,20 @@ const ShootFilters = ({
         {options.states.map(st => (
           <option key={st} value={st}>
             {st}
+          </option>
+        ))}
+      </select>
+
+      <select
+        className="form-select form-select-sm w-auto"
+        value={filters.city}
+        onChange={e => updateFilter("city", e.target.value)}
+        aria-label="Filter by city"
+      >
+        <option value="">All Cities</option>
+        {options.cities.map(city => (
+          <option key={city} value={city}>
+            {city}
           </option>
         ))}
       </select>

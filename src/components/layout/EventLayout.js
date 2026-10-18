@@ -23,7 +23,9 @@ const EventLayout = ({ masterRawShoots = [], location, children }) => {
   // URL ?activeTab=destination|association|events
   useEffect(() => {
     const params = new URLSearchParams(
-      typeof window !== "undefined" ? window.location.search : location?.search || ""
+      typeof window !== "undefined"
+        ? window.location.search
+        : location?.search || ""
     )
     const tab = params.get("activeTab")
     if (tab === "destination" || tab === "association" || tab === "events") {
@@ -105,7 +107,9 @@ const EventLayout = ({ masterRawShoots = [], location, children }) => {
   const displayEventsShoots = useMemo(() => {
     let result = computedEventsShoots
     if (URLSearchQuery) {
-      const q = URLSearchQuery.replace(/,/g, "").replace(/\s+/g, " ").toLowerCase()
+      const q = URLSearchQuery.replace(/,/g, "")
+        .replace(/\s+/g, " ")
+        .toLowerCase()
       result = result.filter(shoot =>
         [
           shoot.sname,
@@ -161,7 +165,9 @@ const EventLayout = ({ masterRawShoots = [], location, children }) => {
   const listProps = useMemo(
     () => ({
       eventsShoots: displayEventsShoots,
-      allEventsShoots: URLSearchQuery ? displayEventsShoots : computedEventsShoots,
+      allEventsShoots: URLSearchQuery
+        ? displayEventsShoots
+        : computedEventsShoots,
       destinationShoots: computedDestinationShoots,
       allDestinationShoots: computedDestinationShoots,
       associationsShoots: computedAssociationsShoots,

@@ -41,6 +41,7 @@
 ## Completion report
 
 After each change, report briefly:
+
 1. What changed and which files were modified.
 2. Any relevant checks performed.
 3. The exact command I should run, if validation is needed.

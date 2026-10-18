@@ -43,7 +43,10 @@ export const formatDateShort = (start, end) => {
   }
 
   if (s.getMonth() === e.getMonth() && s.getFullYear() === e.getFullYear()) {
-    const startStr = s.toLocaleDateString("en-US", { month: "short", day: "numeric" })
+    const startStr = s.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+    })
     return `${startStr} - ${e.getDate()}`
   }
 
@@ -52,25 +55,3 @@ export const formatDateShort = (start, end) => {
     day: "numeric",
   })} - ${e.toLocaleDateString("en-US", { month: "short", day: "numeric" })}`
 }
-
-/**
- * Humanizes raw backend enum codes into polished typography.
- */
-// export const humanizeEnum = enumStr => {
-//   if (!enumStr) return ""
-//   const specialCases = {
-//     THREE_D: "3D",
-//     TAC: "TAC",
-//     ASA: "ASA",
-//     IBO: "IBO",
-//     NFAA: "NFAA",
-//     S3DA: "S3DA",
-//   }
-//   if (specialCases[enumStr]) return specialCases[enumStr]
-
-//   return enumStr
-//     .toLowerCase()
-//     .split("_")
-//     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-//     .join(" ")
-// }

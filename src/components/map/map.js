@@ -214,153 +214,153 @@ const MapComponent = ({
 
   return (
     <GoogleMap
-        mapContainerStyle={mapContainerStyle}
-        center={center}
-        zoom={5}
-        onLoad={setMap}
-        onClick={handleMapClick}
-        options={{
-          styles: [
-            {
-              featureType: "poi",
-              elementType: "labels",
-              stylers: [{ visibility: "off" }],
-            },
-          ],
-          disableDefaultUI: true,
-          zoomControl: true,
-          mapTypeControl: true,
-        }}
-      >
-        {markers.map(marker => (
-          <Marker
-            key={marker.key}
-            position={marker.position}
-            onClick={() => handleMarkerClick(marker)}
-            icon={geoIcon}
-          />
-        ))}
+      mapContainerStyle={mapContainerStyle}
+      center={center}
+      zoom={5}
+      onLoad={setMap}
+      onClick={handleMapClick}
+      options={{
+        styles: [
+          {
+            featureType: "poi",
+            elementType: "labels",
+            stylers: [{ visibility: "off" }],
+          },
+        ],
+        disableDefaultUI: true,
+        zoomControl: true,
+        mapTypeControl: true,
+      }}
+    >
+      {markers.map(marker => (
+        <Marker
+          key={marker.key}
+          position={marker.position}
+          onClick={() => handleMarkerClick(marker)}
+          icon={geoIcon}
+        />
+      ))}
 
-        {selectedItem && safeInfoPosition && (
-          <InfoWindow
-            position={safeInfoPosition}
-            onCloseClick={() => {
-              setSelectedItem(null)
-              onClearSelection?.()
-            }}
-            ref={infoWindowRef}
-          >
-            {(() => {
-              const isShoot = selectedItem.date // Simple check: shoots have 'date'
-              if (isShoot) {
-                return (
-                  <div className="p-2">
-                    <h6 className="mb-2">{selectedItem.name}</h6>
+      {selectedItem && safeInfoPosition && (
+        <InfoWindow
+          position={safeInfoPosition}
+          onCloseClick={() => {
+            setSelectedItem(null)
+            onClearSelection?.()
+          }}
+          ref={infoWindowRef}
+        >
+          {(() => {
+            const isShoot = selectedItem.date // Simple check: shoots have 'date'
+            if (isShoot) {
+              return (
+                <div className="p-2">
+                  <h6 className="mb-2">{selectedItem.name}</h6>
+                  <p className="mb-2 small">
+                    <strong>Date:</strong> {formatDate(selectedItem.date)}
+                  </p>
+                  <p className="mb-2 small">
+                    <strong>Location:</strong>{" "}
+                    {selectedItem.effectiveLocation?.address || "TBD"},{" "}
+                    {selectedItem.effectiveLocation?.city},{" "}
+                    {selectedItem.effectiveLocation?.state}{" "}
+                    {selectedItem.effectiveLocation?.zip || ""}
+                  </p>
+                  {userLocation && selectedItem.effectiveLocation && (
                     <p className="mb-2 small">
-                      <strong>Date:</strong> {formatDate(selectedItem.date)}
+                      <strong>Distance:</strong>{" "}
+                      {getDistance(
+                        userLocation,
+                        selectedItem.effectiveLocation
+                      ).toFixed(1)}{" "}
+                      mi
                     </p>
-                    <p className="mb-2 small">
-                      <strong>Location:</strong>{" "}
-                      {selectedItem.effectiveLocation?.address || "TBD"},{" "}
-                      {selectedItem.effectiveLocation?.city},{" "}
-                      {selectedItem.effectiveLocation?.state}{" "}
-                      {selectedItem.effectiveLocation?.zip || ""}
+                  )}
+                  {getAmenityIcons(selectedItem.amenities) && (
+                    <p className="mb-2 small text-muted">
+                      <strong>Amenities:</strong>{" "}
+                      {getAmenityIcons(selectedItem.amenities)}
                     </p>
-                    {userLocation && selectedItem.effectiveLocation && (
-                      <p className="mb-2 small">
-                        <strong>Distance:</strong>{" "}
-                        {getDistance(
-                          userLocation,
-                          selectedItem.effectiveLocation
-                        ).toFixed(1)}{" "}
-                        mi
-                      </p>
-                    )}
-                    {getAmenityIcons(selectedItem.amenities) && (
-                      <p className="mb-2 small text-muted">
-                        <strong>Amenities:</strong>{" "}
-                        {getAmenityIcons(selectedItem.amenities)}
-                      </p>
-                    )}
-                    <div className="d-flex gap-2">
-                      <a
-                        href={`https://www.google.com/maps?q=${selectedItem.effectiveLocation?.lat},${selectedItem.effectiveLocation?.lng}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="btn btn-sm btn-outline-primary"
+                  )}
+                  <div className="d-flex gap-2">
+                    <a
+                      href={`https://www.google.com/maps?q=${selectedItem.effectiveLocation?.lat},${selectedItem.effectiveLocation?.lng}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn btn-sm btn-outline-primary"
+                    >
+                      Directions
+                    </a>
+                    {selectedItem.isVerified && selectedItem.venueId && (
+                      <Link
+                        to={`/venues/${selectedItem.venueId}`}
+                        className="btn btn-sm btn-primary"
                       >
-                        Directions
-                      </a>
-                      {selectedItem.isVerified && selectedItem.venueId && (
-                        <Link
-                          to={`/venues/${selectedItem.venueId}`}
-                          className="btn btn-sm btn-primary"
-                        >
-                          View Details
-                        </Link>
-                      )}
-                    </div>
-                  </div>
-                )
-              } else {
-                // Venue
-                return (
-                  <div className="p-2">
-                    <h6 className="mb-2">{selectedItem.name}</h6>
-                    <p className="mb-2 small">
-                      <strong>Type:</strong> {selectedItem.venueType || "Venue"}
-                    </p>
-                    {selectedItem.hours && (
-                      <p className="mb-2 small">
-                        <strong>Hours:</strong> Weekdays:{" "}
-                        {selectedItem.hours.weekday || "TBD"} | Weekends:{" "}
-                        {selectedItem.hours.weekend || "TBD"}
-                      </p>
+                        View Details
+                      </Link>
                     )}
+                  </div>
+                </div>
+              )
+            } else {
+              // Venue
+              return (
+                <div className="p-2">
+                  <h6 className="mb-2">{selectedItem.name}</h6>
+                  <p className="mb-2 small">
+                    <strong>Type:</strong> {selectedItem.venueType || "Venue"}
+                  </p>
+                  {selectedItem.hours && (
+                    <p className="mb-2 small">
+                      <strong>Hours:</strong> Weekdays:{" "}
+                      {selectedItem.hours.weekday || "TBD"} | Weekends:{" "}
+                      {selectedItem.hours.weekend || "TBD"}
+                    </p>
+                  )}
 
-                    {selectedItem.contact && (
-                      <p className="mb-2 small text-muted">
-                        <strong>Contact:</strong> Phone:{" "}
-                        {selectedItem.contact.phone || "TBD"}
-                      </p>
-                    )}
-                    {selectedItem.contact && (
-                      <p className="mb-2 small">
-                        <strong>Email:</strong>{" "}
-                        {selectedItem.contact.email || "TBD"}
-                      </p>
-                    )}
-                    <p className="mb-2 small">
-                      <strong>Location:</strong>{" "}
-                      {selectedItem.location?.address || "TBD"},{" "}
-                      {selectedItem.location?.city},{" "}
-                      {selectedItem.location?.state}{" "}
-                      {selectedItem.location?.zip || ""}
+                  {selectedItem.contact && (
+                    <p className="mb-2 small text-muted">
+                      <strong>Contact:</strong> Phone:{" "}
+                      {selectedItem.contact.phone || "TBD"}
                     </p>
-                    <div className="d-flex gap-2">
-                      <a
-                        href={`https://www.google.com/maps?q=${selectedItem.location?.lat},${selectedItem.location?.lng}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="btn btn-sm btn-outline-primary"
+                  )}
+                  {selectedItem.contact && (
+                    <p className="mb-2 small">
+                      <strong>Email:</strong>{" "}
+                      {selectedItem.contact.email || "TBD"}
+                    </p>
+                  )}
+                  <p className="mb-2 small">
+                    <strong>Location:</strong>{" "}
+                    {selectedItem.location?.address || "TBD"},{" "}
+                    {selectedItem.location?.city},{" "}
+                    {selectedItem.location?.state}{" "}
+                    {selectedItem.location?.zip || ""}
+                  </p>
+                  <div className="d-flex gap-2">
+                    <a
+                      href={`https://www.google.com/maps?q=${selectedItem.location?.lat},${selectedItem.location?.lng}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn btn-sm btn-outline-primary"
+                    >
+                      Directions
+                    </a>
+                    {selectedItem.venueId && (
+                      <Link
+                        to={`/venues/${selectedItem.venueId}`}
+                        className="btn btn-sm btn-primary"
                       >
-                        Directions
-                      </a>
-                      {selectedItem.venueId && (
-                        <Link
-                          to={`/venues/${selectedItem.venueId}`}
-                          className="btn btn-sm btn-primary"
-                        >
-                          View Details
-                        </Link>
-                      )}
-                    </div>
+                        View Details
+                      </Link>
+                    )}
                   </div>
-                )
-              }
-            })()}
-          </InfoWindow>
-        )}
+                </div>
+              )
+            }
+          })()}
+        </InfoWindow>
+      )}
     </GoogleMap>
   )
 }

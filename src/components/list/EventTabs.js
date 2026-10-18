@@ -85,7 +85,9 @@ const EventTabs = ({
               <li className="nav-item">
                 <button
                   type="button"
-                  className={`nav-link ${activeTab === "events" ? "active" : ""}`}
+                  className={`nav-link ${
+                    activeTab === "events" ? "active" : ""
+                  }`}
                   onClick={() => handleTabClick("events")}
                 >
                   Events ({eventsShoots.length})
@@ -94,7 +96,9 @@ const EventTabs = ({
               <li className="nav-item">
                 <button
                   type="button"
-                  className={`nav-link ${activeTab === "destination" ? "active" : ""}`}
+                  className={`nav-link ${
+                    activeTab === "destination" ? "active" : ""
+                  }`}
                   onClick={() => handleTabClick("destination")}
                 >
                   Destination ({destinationShoots.length})
@@ -103,7 +107,9 @@ const EventTabs = ({
               <li className="nav-item">
                 <button
                   type="button"
-                  className={`nav-link ${activeTab === "association" ? "active" : ""}`}
+                  className={`nav-link ${
+                    activeTab === "association" ? "active" : ""
+                  }`}
                   onClick={() => handleTabClick("association")}
                 >
                   Associations ({associationsShoots.length})

@@ -147,8 +147,14 @@ exports.sourceNodes = async ({
     const db = client.db("ASFinder")
 
     const [venuesData, shootsData, associationsData] = await Promise.all([
-      db.collection("venues").find({}, { projection: VENUE_PROJECTION }).toArray(),
-      db.collection("shoots").find({}, { projection: SHOOT_PROJECTION }).toArray(),
+      db
+        .collection("venues")
+        .find({}, { projection: VENUE_PROJECTION })
+        .toArray(),
+      db
+        .collection("shoots")
+        .find({}, { projection: SHOOT_PROJECTION })
+        .toArray(),
       db
         .collection("associations")
         .find({}, { projection: ASSOCIATION_PROJECTION })
@@ -166,8 +172,8 @@ exports.sourceNodes = async ({
           safetyEtiquette: Array.isArray(venue.safetyEtiquette)
             ? venue.safetyEtiquette
             : Array.isArray(venue.safteyEtiquette)
-              ? venue.safteyEtiquette
-              : [],
+            ? venue.safteyEtiquette
+            : [],
         },
       })
     })
@@ -212,10 +218,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   `)
 
   if (result.errors) {
-    reporter.panicOnBuild(
-      "GraphQL query failed in createPages",
-      result.errors
-    )
+    reporter.panicOnBuild("GraphQL query failed in createPages", result.errors)
     return
   }
 

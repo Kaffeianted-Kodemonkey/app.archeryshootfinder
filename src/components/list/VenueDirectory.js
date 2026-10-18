@@ -22,7 +22,6 @@ const Direct = ({
   const [sortDirection, setSortDirection] = useState("asc")
 
   // --- Filter Component Local States ---
-  const [searchQuery, setSearchQuery] = useState("")
   const [selectedCity, setSelectedCity] = useState("")
   const [selectedState, setSelectedState] = useState("")
   const [selectedType, setSelectedType] = useState("")
@@ -57,7 +56,6 @@ const Direct = ({
     if (!location?.search) return
     const params = new URLSearchParams(location.search)
     const typeParam = params.get("type")
-    const searchParam = params.get("search")
 
     if (typeParam) {
       const t = typeParam.trim().toUpperCase()
@@ -66,22 +64,13 @@ const Direct = ({
       else if (["PRO_SHOP", "PRO_SHOPS", "PRO SHOP"].includes(t))
         setSelectedType("Pro Shop")
     }
-
-    if (searchParam) {
-      setSearchQuery(searchParam)
-    }
   }, [location])
 
   // --- Computational Filtering Engine ---
   const filteredVenues = useMemo(() => {
-    const hasActiveFilters =
-      Boolean(
-        searchQuery ||
-          selectedCity ||
-          selectedState ||
-          selectedType ||
-          selectedDistance
-      )
+    const hasActiveFilters = Boolean(
+      selectedCity || selectedState || selectedType || selectedDistance
+    )
     let result = [...(hasActiveFilters ? allVenues : venues)]
 
     // 1. Filter by Venue Type Classification (Handles both Arrays and Legacy Strings)
@@ -113,24 +102,6 @@ const Direct = ({
       )
     }
 
-    // 4. Text Input Search Box Matching Lookups
-    if (searchQuery) {
-      const q = searchQuery.replace(/,/g, "").replace(/\s+/g, " ").toLowerCase()
-      result = result.filter(v => {
-        const textPool = [
-          v.vname,
-          v.location?.address,
-          v.location?.city,
-          v.location?.state,
-          v.location?.zip,
-          v.bio,
-        ]
-          .join(" ")
-          .toLowerCase()
-        return textPool.includes(q)
-      })
-    }
-
     if (selectedDistance && userLocation) {
       result = filterByDistance(result, userLocation, Number(selectedDistance))
     }
@@ -142,7 +113,6 @@ const Direct = ({
     selectedType,
     selectedState,
     selectedCity,
-    searchQuery,
     selectedDistance,
     userLocation,
   ])
@@ -156,7 +126,6 @@ const Direct = ({
 
   // --- Reset Toolbar Actions ---
   const handleClearFilters = () => {
-    setSearchQuery("")
     setSelectedCity("")
     setSelectedState("")
     setSelectedType("")
@@ -167,17 +136,6 @@ const Direct = ({
     <section className="directory-section container-fluid px-0">
       {/* Filter Panel Row */}
       <div className="d-flex flex-nowrap gap-2 align-items-center mx-0 px-3 pt-2 pb-2 mb-2 overflow-auto">
-        {/* Text Input Search Field */}
-        <div className="flex-shrink-0" style={{ width: "240px" }}>
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Search name, location, or bio..."
-            value={searchQuery}
-            onChange={e => setSearchQuery(e.target.value)}
-          />
-        </div>
-
         {/* City Selector Menu Dropdown */}
         <div className="flex-shrink-0" style={{ width: "160px" }}>
           <select
@@ -232,8 +190,12 @@ const Direct = ({
             aria-label="Filter by distance"
           >
             <option value="">All distances</option>
-            <option value="50" disabled={!userLocation}>Within 50 miles</option>
-            <option value="100" disabled={!userLocation}>Within 100 miles</option>
+            <option value="50" disabled={!userLocation}>
+              Within 50 miles
+            </option>
+            <option value="100" disabled={!userLocation}>
+              Within 100 miles
+            </option>
           </select>
         </div>
 
@@ -243,7 +205,6 @@ const Direct = ({
             className="btn btn-outline-success w-100"
             onClick={handleClearFilters}
             disabled={
-              !searchQuery &&
               !selectedCity &&
               !selectedState &&
               !selectedType &&

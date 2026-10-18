@@ -40,7 +40,7 @@ const SpotlightTemplate = ({ data }) => {
             {venue.img ? (
               <img
                 src={venue.img}
-                alt={venue.vname || "Venue Imgae"}
+                alt={venue.vname || "Venue Image"}
                 className="img-fluid rounded"
               />
             ) : (
@@ -55,7 +55,10 @@ const SpotlightTemplate = ({ data }) => {
           <div className="col">
             {Array.isArray(venue.venueType) ? (
               venue.venueType.map((type, index) => (
-                <span key={index} className="badge bg-primary mb-3 py-2 px-3 fw-bold small me-2">
+                <span
+                  key={index}
+                  className="badge bg-primary mb-3 py-2 px-3 fw-bold small me-2"
+                >
                   <i className="bi bi-building-gear"></i>{" "}
                   {typeof type === "string" ? type.replace("_", " ") : ""}
                 </span>
@@ -63,7 +66,9 @@ const SpotlightTemplate = ({ data }) => {
             ) : venue.venueType ? (
               <span className="badge bg-primary mb-3 py-2 px-3 fw-bold small">
                 <i className="bi bi-building-gear"></i>{" "}
-                {typeof venue.venueType === "string" ? venue.venueType.replace("_", " ") : ""}
+                {typeof venue.venueType === "string"
+                  ? venue.venueType.replace("_", " ")
+                  : ""}
               </span>
             ) : null}
 
@@ -71,7 +76,7 @@ const SpotlightTemplate = ({ data }) => {
             <p className="lead my-3">{venue.tagline}</p>
           </div>
         </div>
-        {/* CONTACT & lOCATION INFO */}
+        {/* CONTACT & LOCATION INFO */}
         <div className="row g-4 justify-content-center">
           <div className="col-md-6">
             <div className="p-3 border border-2 border-dark-subtle bg-body-tertiary rounded shadow-sm h-100">
@@ -90,21 +95,21 @@ const SpotlightTemplate = ({ data }) => {
               </p>
               <p className="fs-5">
                 <strong>Socials:</strong>{" "}
-                 {venue.contact.socials && venue.contact.socials.length > 0 ? (
-                   venue.contact.socials.map((social, idx) => (
-                     <a
-                       key={idx}
-                       href={social.url}
-                       target="_blank"
-                       rel="noopener noreferrer"
-                       className="badge bg-secondary text-decoration-none text-white px-2 py-1"
-                     >
-                       {social.name}
-                     </a>
-                   ))
-                 ) : (
-                   <span className="text-muted fs-6">No Socials Listed</span>
-                 )}
+                {venue.contact.socials && venue.contact.socials.length > 0 ? (
+                  venue.contact.socials.map((social, idx) => (
+                    <a
+                      key={idx}
+                      href={social.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="badge bg-secondary text-decoration-none text-white px-2 py-1"
+                    >
+                      {social.name}
+                    </a>
+                  ))
+                ) : (
+                  <span className="text-muted fs-6">No Socials Listed</span>
+                )}
               </p>
             </div>
           </div>
@@ -123,7 +128,7 @@ const SpotlightTemplate = ({ data }) => {
                 {venue.location.state || "No State Listed"}
               </p>
               <button>Directions</button>
-              {/* This need to be linked to the map on homepage */}
+              {/* This needs to be linked to the map on the homepage */}
             </div>
           </div>
         </div>
@@ -268,9 +273,9 @@ const SpotlightTemplate = ({ data }) => {
             <i className="bi bi-exclamation-triangle-fill me-1"></i> Rules &
             Regulations
           </h3>
-          <p>{venue.rulesregulations || "No bio at listed at this time."}</p>
-          {/* THIS NEEDS TO BE LOOK AT AND MAYBE ADDED TO THE
-            DB AS A BOOLAN IF THE CURENT STATED RULE IS OR IS NOT TRUE */}
+          <p>{venue.rulesregulations || "No rules listed at this time."}</p>
+          {/* THIS NEEDS TO BE REVIEWED AND MAYBE ADDED TO THE
+            DATABASE AS A BOOLEAN INDICATING WHETHER THE CURRENT RULE IS ACTIVE */}
           {/* Rules & Regulations Component Block  */}
           {/* Critical Safety Alerts Row  */}
           <div className="col mb-3">
@@ -289,7 +294,7 @@ const SpotlightTemplate = ({ data }) => {
           </div>
         </div>
 
-        {/* THIS NEED TO BE ADDED TO THE DB AS; THE CROSSBOW Allowance IS A BOOLON */}
+        {/* THIS NEEDS TO BE ADDED TO THE DATABASE: CROSSBOW ALLOWANCE SHOULD BE A BOOLEAN */}
         {/* Standard Policy Parameter Grid  */}
         <div className="row mt-3">
           <table className="table table-striped">

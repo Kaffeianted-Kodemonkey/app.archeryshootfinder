@@ -10,7 +10,9 @@ export const onClientEntry = () => {
   // Catch missing asset chunks seamlessly when navigating offline
   window.addEventListener("unhandledrejection", event => {
     if (event.reason && /Loading chunk \d+ failed/.test(event.reason)) {
-      console.warn("PWA asset chunk failed to load offline. Fetching fallback state...")
+      console.warn(
+        "PWA asset chunk failed to load offline. Fetching fallback state..."
+      )
     }
   })
 
@@ -20,7 +22,9 @@ export const onClientEntry = () => {
     if (window.Snipcart && typeof window.Snipcart.api === "object") {
       // Identify if the user clicked a nav link (adjust selectors if needed)
       const isNavLink =
-        e.target.closest("nav a") || e.target.closest(".nav-link")
+        e.target.closest("nav a") ||
+        e.target.closest("footer a") ||
+        e.target.closest(".nav-link")
 
       if (isNavLink) {
         // Force the Snipcart modal to close cleanly
@@ -34,7 +38,7 @@ export const onClientEntry = () => {
 export const onServiceWorkerUpdateReady = () => {
   const answer = window.confirm(
     `Archery Shoot Finder has been updated. ` +
-    `Would you like to reload to display the latest shoots?`
+      `Would you like to reload to display the latest shoots?`
   )
 
   if (answer === true) {
