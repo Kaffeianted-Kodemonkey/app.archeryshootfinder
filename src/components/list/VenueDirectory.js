@@ -4,9 +4,11 @@ import * as React from "react"
 import { useState, useMemo, useEffect } from "react"
 import PropTypes from "prop-types"
 import VenueList from "./VenueList"
+import { filterByDistance } from "../../utils/shootFilters"
 
 const Direct = ({
   venues = [],
+  allVenues = venues,
   userLocation,
   currentShoots = [],
   upcomingShoots = [],
@@ -24,6 +26,7 @@ const Direct = ({
   const [selectedCity, setSelectedCity] = useState("")
   const [selectedState, setSelectedState] = useState("")
   const [selectedType, setSelectedType] = useState("")
+  const [selectedDistance, setSelectedDistance] = useState("")
 
   const toggleShowUnclaimed = () => setShowUnclaimed(!showUnclaimed)
 
@@ -38,16 +41,16 @@ const Direct = ({
 
   // --- Dynamic Option Extractors (Sourced from database data arrays) ---
   const cityOptions = useMemo(() => {
-    const cities = venues.map(v => v.location?.city?.trim()).filter(Boolean)
+    const cities = allVenues.map(v => v.location?.city?.trim()).filter(Boolean)
     return [...new Set(cities)].sort()
-  }, [venues])
+  }, [allVenues])
 
   const stateOptions = useMemo(() => {
-    const states = venues
+    const states = allVenues
       .map(v => v.location?.state?.trim().toUpperCase())
       .filter(Boolean)
     return [...new Set(states)].sort()
-  }, [venues])
+  }, [allVenues])
 
   // --- Read & Normalize Inbound Footer / Global Navigation Params ---
   useEffect(() => {
@@ -71,7 +74,15 @@ const Direct = ({
 
   // --- Computational Filtering Engine ---
   const filteredVenues = useMemo(() => {
-    let result = [...venues]
+    const hasActiveFilters =
+      Boolean(
+        searchQuery ||
+          selectedCity ||
+          selectedState ||
+          selectedType ||
+          selectedDistance
+      )
+    let result = [...(hasActiveFilters ? allVenues : venues)]
 
     // 1. Filter by Venue Type Classification (Handles both Arrays and Legacy Strings)
     if (selectedType) {
@@ -106,15 +117,35 @@ const Direct = ({
     if (searchQuery) {
       const q = searchQuery.replace(/,/g, "").replace(/\s+/g, " ").toLowerCase()
       result = result.filter(v => {
-        const textPool = [v.vname, v.location?.city, v.location?.state, v.bio]
+        const textPool = [
+          v.vname,
+          v.location?.address,
+          v.location?.city,
+          v.location?.state,
+          v.location?.zip,
+          v.bio,
+        ]
           .join(" ")
           .toLowerCase()
         return textPool.includes(q)
       })
     }
 
+    if (selectedDistance && userLocation) {
+      result = filterByDistance(result, userLocation, Number(selectedDistance))
+    }
+
     return result
-  }, [venues, selectedType, selectedState, selectedCity, searchQuery])
+  }, [
+    venues,
+    allVenues,
+    selectedType,
+    selectedState,
+    selectedCity,
+    searchQuery,
+    selectedDistance,
+    userLocation,
+  ])
 
   // --- Keep External States/Maps Tracked Automatically ---
   useEffect(() => {
@@ -129,25 +160,26 @@ const Direct = ({
     setSelectedCity("")
     setSelectedState("")
     setSelectedType("")
+    setSelectedDistance("")
   }
 
   return (
     <section className="directory-section container-fluid px-0">
       {/* Filter Panel Row */}
-      <div className="row mx-0 px-3 pt-2 pb-2 mb-2 g-2 align-items-center">
+      <div className="d-flex flex-nowrap gap-2 align-items-center mx-0 px-3 pt-2 pb-2 mb-2 overflow-auto">
         {/* Text Input Search Field */}
-        <div className="col-12 col-md-3">
+        <div className="flex-shrink-0" style={{ width: "240px" }}>
           <input
             type="text"
             className="form-control"
-            placeholder="Search Name or Bio..."
+            placeholder="Search name, location, or bio..."
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
           />
         </div>
 
         {/* City Selector Menu Dropdown */}
-        <div className="col-6 col-md-2">
+        <div className="flex-shrink-0" style={{ width: "160px" }}>
           <select
             className="form-select"
             value={selectedCity}
@@ -163,7 +195,7 @@ const Direct = ({
         </div>
 
         {/* State Selector Menu Dropdown */}
-        <div className="col-6 col-md-2">
+        <div className="flex-shrink-0" style={{ width: "140px" }}>
           <select
             className="form-select"
             value={selectedState}
@@ -179,7 +211,7 @@ const Direct = ({
         </div>
 
         {/* Venue Category Field Type */}
-        <div className="col-12 col-md-3">
+        <div className="flex-shrink-0" style={{ width: "180px" }}>
           <select
             className="form-select"
             value={selectedType}
@@ -192,13 +224,30 @@ const Direct = ({
           </select>
         </div>
 
+        <div className="flex-shrink-0" style={{ width: "160px" }}>
+          <select
+            className="form-select"
+            value={selectedDistance}
+            onChange={e => setSelectedDistance(e.target.value)}
+            aria-label="Filter by distance"
+          >
+            <option value="">All distances</option>
+            <option value="50" disabled={!userLocation}>Within 50 miles</option>
+            <option value="100" disabled={!userLocation}>Within 100 miles</option>
+          </select>
+        </div>
+
         {/* Reset Action Control Button */}
-        <div className="col-12 col-md-2">
+        <div className="flex-shrink-0" style={{ width: "130px" }}>
           <button
             className="btn btn-outline-success w-100"
             onClick={handleClearFilters}
             disabled={
-              !searchQuery && !selectedCity && !selectedState && !selectedType
+              !searchQuery &&
+              !selectedCity &&
+              !selectedState &&
+              !selectedType &&
+              !selectedDistance
             }
           >
             Clear Filters
@@ -213,7 +262,7 @@ const Direct = ({
             {filteredVenues.length === 0 ? (
               <div className="px-3">
                 <div className="alert alert-info text-center py-5 my-4">
-                  Nothing found.
+                  No results found. Please use filters to adjust your results.
                 </div>
               </div>
             ) : (
@@ -239,6 +288,7 @@ const Direct = ({
 
 Direct.propTypes = {
   venues: PropTypes.array.isRequired,
+  allVenues: PropTypes.array,
   userLocation: PropTypes.object,
   currentShoots: PropTypes.array,
   upcomingShoots: PropTypes.array,

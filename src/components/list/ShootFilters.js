@@ -1,7 +1,9 @@
 import * as React from "react"
+import { filterByDistance } from "../../utils/shootFilters"
 
 const ShootFilters = ({
   shoots,
+  allShoots = shoots,
   onFilteredChange,
   userLocation,
   userState,
@@ -13,6 +15,7 @@ const ShootFilters = ({
     format: "",
     shootClass: "",
     skillLevel: "",
+    distance: "",
   })
 
   const [sort, setSort] = React.useState({ field: "", direction: "asc" })
@@ -24,7 +27,7 @@ const ShootFilters = ({
     const levels = new Set()
     const states = new Set()
 
-    shoots.forEach(s => {
+    allShoots.forEach(s => {
       s.bowTypes?.forEach(b => bowTypes.add(b))
       s.shootFormat?.forEach(f => formats.add(f))
       s.shootClass?.forEach(c => classes.add(c))
@@ -33,7 +36,7 @@ const ShootFilters = ({
       const loc =
         s.useVenueLocation !== false && s.venue?.location
           ? s.venue.location
-          : s.shootLocation
+          : s.effectiveLocation || s.shootLocation || s.location
       if (loc?.state) states.add(loc.state)
     })
 
@@ -44,10 +47,11 @@ const ShootFilters = ({
       levels: [...levels].sort(),
       states: [...states].sort(), // ← new
     }
-  }, [shoots])
+  }, [allShoots])
 
   React.useEffect(() => {
-    let result = [...shoots]
+    const hasActiveFilters = Object.values(filters).some(Boolean)
+    let result = [...(hasActiveFilters ? allShoots : shoots)]
 
     // STATE FILTER (new)
     if (filters.state) {
@@ -55,7 +59,7 @@ const ShootFilters = ({
         const loc =
           s.useVenueLocation !== false && s.venue?.location
             ? s.venue.location
-            : s.shootLocation
+            : s.effectiveLocation || s.shootLocation || s.location
         return loc?.state === filters.state
       })
     }
@@ -70,9 +74,12 @@ const ShootFilters = ({
       result = result.filter(s => s.shootClass?.includes(filters.shootClass))
     if (filters.skillLevel)
       result = result.filter(s => s.skillLevel?.includes(filters.skillLevel))
+    if (filters.distance && userLocation) {
+      result = filterByDistance(result, userLocation, Number(filters.distance))
+    }
 
     onFilteredChange(result)
-  }, [filters, shoots, onFilteredChange])
+  }, [filters, shoots, allShoots, userLocation, onFilteredChange])
 
   const updateFilter = (key, value) => setFilters(p => ({ ...p, [key]: value }))
 
@@ -83,12 +90,24 @@ const ShootFilters = ({
       format: "",
       shootClass: "",
       skillLevel: "",
+      distance: "",
     })
     setSort({ field: "", direction: "asc" })
   }
 
   return (
     <div className="d-flex flex-nowrap align-items-center gap-2 p-3 small overflow-auto border border-2 border-warning bg-warning-subtle">
+      <select
+        className="form-select form-select-sm w-auto"
+        value={filters.distance}
+        onChange={e => updateFilter("distance", e.target.value)}
+        aria-label="Filter by distance"
+      >
+        <option value="">All distances</option>
+        <option value="50" disabled={!userLocation}>Within 50 miles</option>
+        <option value="100" disabled={!userLocation}>Within 100 miles</option>
+      </select>
+
       {/* State filter – shows every state that has shoots */}
       <select
         className="form-select form-select-sm w-auto"

@@ -3,9 +3,9 @@ import { useState, useMemo, useRef, useEffect } from "react"
 import PropTypes from "prop-types"
 import {
   GoogleMap,
-  LoadScript,
   Marker,
   InfoWindow,
+  useJsApiLoader,
 } from "@react-google-maps/api"
 import { Link } from "gatsby"
 import { getDistance } from "../../utils/distance"
@@ -32,6 +32,8 @@ const MapComponent = ({
   const [map, setMap] = useState(null)
   const [center, setCenter] = useState(defaultCenter)
   const infoWindowRef = useRef(null)
+  const googleMapsApiKey = process.env.GATSBY_GOOGLE_MAPS_API_KEY
+  const { isLoaded, loadError } = useJsApiLoader({ googleMapsApiKey })
 
   useEffect(() => {
     if (userLocation && map) {
@@ -89,7 +91,7 @@ const MapComponent = ({
           return {
             position,
             venue, // Use 'venue' key for this type
-            key: venue.id,
+            key: venue.venueId || venue.id || `${venue.vname}-${lat}-${lng}`,
           }
         })
         .filter(Boolean) // Remove null entries
@@ -124,7 +126,7 @@ const MapComponent = ({
         return {
           position,
           shoot,
-          key: shoot.id,
+          key: shoot.shootId || shoot.id || `${shoot.sname}-${lat}-${lng}`,
         }
       })
       .filter(Boolean) // Remove null entries
@@ -190,27 +192,46 @@ const MapComponent = ({
     return { lat, lng }
   }, [selectedItem])
 
-  return (
-    <LoadScript googleMapsApiKey={process.env.GATSBY_GOOGLE_MAPS_API_KEY}>
-      <GoogleMap
-        mapContainerStyle={mapContainerStyle}
-        center={center}
-        zoom={5}
-        onLoad={setMap}
-        onClick={handleMapClick}
-        options={{
-          styles: [
-            {
-              featureType: "poi",
-              elementType: "labels",
-              stylers: [{ visibility: "off" }],
-            },
-          ],
-          disableDefaultUI: true,
-          zoomControl: true,
-          mapTypeControl: true,
-        }}
+  if (!googleMapsApiKey || loadError) {
+    return (
+      <div className="alert alert-danger m-3" role="alert">
+        Google Maps could not load. Check the local Google Maps API key and
+        browser console for the Maps JavaScript API error.
+      </div>
+    )
+  }
+
+  if (!isLoaded) {
+    return (
+      <div
+        className="d-flex align-items-center justify-content-center"
+        style={mapContainerStyle}
       >
+        Loading map…
+      </div>
+    )
+  }
+
+  return (
+    <GoogleMap
+      mapContainerStyle={mapContainerStyle}
+      center={center}
+      zoom={5}
+      onLoad={setMap}
+      onClick={handleMapClick}
+      options={{
+        styles: [
+          {
+            featureType: "poi",
+            elementType: "labels",
+            stylers: [{ visibility: "off" }],
+          },
+        ],
+        disableDefaultUI: true,
+        zoomControl: true,
+        mapTypeControl: true,
+      }}
+    >
         {markers.map(marker => (
           <Marker
             key={marker.key}
@@ -340,16 +361,17 @@ const MapComponent = ({
             })()}
           </InfoWindow>
         )}
-      </GoogleMap>
-    </LoadScript>
+    </GoogleMap>
   )
 }
 
 MapComponent.propTypes = {
   shoots: PropTypes.arrayOf(
     PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
+      id: PropTypes.string,
+      shootId: PropTypes.string,
+      name: PropTypes.string,
+      sname: PropTypes.string,
       venueId: PropTypes.string, // For joining
       date: PropTypes.string.isRequired,
       shootFormat: PropTypes.array,
@@ -363,13 +385,14 @@ MapComponent.propTypes = {
       }),
       description: PropTypes.string,
       time: PropTypes.string,
-      slug: PropTypes.string.isRequired,
     })
   ),
   venues: PropTypes.arrayOf(
     PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
+      id: PropTypes.string,
+      venueId: PropTypes.string,
+      name: PropTypes.string,
+      vname: PropTypes.string,
       location: PropTypes.shape({
         lat: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
         lng: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),

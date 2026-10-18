@@ -6,15 +6,13 @@ import PropTypes from "prop-types"
 import Layout from "../components/layout/Layout"
 import Seo from "../components/seo"
 import Direct from "../components/list/VenueDirectory"
-import { filterByDistance } from "../utils/shootFilters" // Using the exact same streamlined utility
 
 const Directory = ({ data, location }) => {
   const Venues = data.allVenuesJson.nodes
   const [view, setView] = useState("map")
 
   const [userLocation, setUserLocation] = useState(null)
-  const [filteredVenues, setFilteredVenues] = useState(Venues) // Geolocation preloaded list
-  const [displayedVenues, setDisplayedVenues] = useState(Venues) // Active toolbar filtered list
+  const [displayedVenues, setDisplayedVenues] = useState(Venues)
 
   // Standardized browser coordinate lookup loop
   useEffect(() => {
@@ -27,23 +25,17 @@ const Directory = ({ data, location }) => {
           lng: position.coords.longitude,
         }
         setUserLocation(loc)
-
-        // Preload only venues within 50 miles using the shared utility engine
-        const nearby = filterByDistance(Venues, loc, 10000)
-        setFilteredVenues(nearby)
-        setDisplayedVenues(nearby)
       },
       error => {
         console.warn("Geolocation skipped/failed:", error)
-        setFilteredVenues(Venues)
-        setDisplayedVenues(Venues)
       }
     )
   }, [Venues])
 
   const listProps = useMemo(() => {
     return {
-      venues: filteredVenues, // Passes down the 50-mile bounded core array
+      venues: Venues,
+      allVenues: Venues,
       userLocation: userLocation,
       currentShoots: [],
       upcomingShoots: [],
@@ -51,7 +43,7 @@ const Directory = ({ data, location }) => {
       location: location, // Checks URL parameter contexts
       onFilterChange: setDisplayedVenues,
     }
-  }, [filteredVenues, userLocation, location])
+  }, [Venues, userLocation, location])
 
   const mapProps = useMemo(() => {
     return {

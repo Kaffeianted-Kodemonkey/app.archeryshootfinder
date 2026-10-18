@@ -7,19 +7,29 @@ import { getDistance } from "./distance"
 const extractCoordinates = item => {
   if (!item) return null
 
-  // If it's a venue node directly
-  if (item.location?.lat && item.location?.lng) return item.location
+  const location =
+    item.effectiveLocation ||
+    item.location ||
+    item.shootLocation ||
+    item.venue?.location
 
-  // If it's a shoot node
-  const venue = item.venue
-  const effectiveLocation =
-    item.useVenueLocation !== false && venue?.location
-      ? venue.location
-      : item.shootLocation || venue?.location
+  if (!location) return null
 
-  return effectiveLocation?.lat && effectiveLocation?.lng
-    ? effectiveLocation
-    : null
+  if (
+    location.lat === null ||
+    location.lat === undefined ||
+    location.lat === "" ||
+    location.lng === null ||
+    location.lng === undefined ||
+    location.lng === ""
+  ) {
+    return null
+  }
+
+  const lat = Number(location.lat)
+  const lng = Number(location.lng)
+
+  return Number.isFinite(lat) && Number.isFinite(lng) ? { lat, lng } : null
 }
 
 const toDateKey = input => {
@@ -54,8 +64,11 @@ export const filterByDateRange = (shoots, startDate, endDate) => {
  * Polymorphic Distance Filter - Streamlined to process BOTH Shoots and Venues
  */
 export const filterByDistance = (items = [], userLocation, maxMiles = 50) => {
-  if (!userLocation?.lat || !userLocation?.lng) {
-    return items
+  const userLat = Number(userLocation?.lat)
+  const userLng = Number(userLocation?.lng)
+
+  if (!Number.isFinite(userLat) || !Number.isFinite(userLng)) {
+    return []
   }
 
   const nearby = items.filter(item => {
@@ -64,6 +77,5 @@ export const filterByDistance = (items = [], userLocation, maxMiles = 50) => {
     return getDistance(userLocation, loc) <= maxMiles
   })
 
-  // Fallback pattern: if nothing matches within the radius loop, return the full list baseline
-  return nearby.length > 0 ? nearby : items
+  return nearby
 }

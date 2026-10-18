@@ -9,6 +9,8 @@ import ShootAccordionItem from "./ShootAccordionItem"
  */
 const DestList = ({
   shoots = [],
+  allShoots = shoots,
+  onVisibleShootsChange,
   selectedVenueId = null,
   userLocation,
   onSelectShoot,
@@ -49,7 +51,15 @@ const DestList = ({
     ])
   }, [filteredShoots])
 
-  if (destinationShoots.length === 0) {
+  const handleFilteredChange = React.useCallback(
+    results => {
+      setFilteredShoots(results)
+      onVisibleShootsChange?.(results)
+    },
+    [onVisibleShootsChange]
+  )
+
+  if (allShoots.length === 0) {
     return (
       <div className="alert alert-info text-center py-5 my-4">
         No Destination Shoots listed.
@@ -61,9 +71,15 @@ const DestList = ({
     <div>
       <ShootFilters
         shoots={destinationShoots}
-        onFilteredChange={setFilteredShoots}
+        allShoots={allShoots}
+        onFilteredChange={handleFilteredChange}
         userLocation={userLocation}
       />
+      {filteredShoots.length === 0 && (
+        <div className="alert alert-info text-center py-5 my-4">
+          No results found. Please use filters to adjust your results.
+        </div>
+      )}
       <div className="accordion accordion-flush" id="shootAccordion">
         {eventGroups.map(([groupId, groupShoots], gIndex) => (
           <ShootAccordionItem
@@ -84,6 +100,8 @@ const DestList = ({
 
 DestList.propTypes = {
   shoots: PropTypes.array,
+  allShoots: PropTypes.array,
+  onVisibleShootsChange: PropTypes.func,
   selectedVenueId: PropTypes.string,
   userLocation: PropTypes.object,
   onSelectShoot: PropTypes.func,

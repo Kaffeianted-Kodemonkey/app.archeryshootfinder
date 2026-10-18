@@ -3,7 +3,6 @@ import { useState, useEffect, useMemo } from "react"
 import { navigate } from "gatsby"
 import Layout from "./Layout"
 import EventTabs from "../list/EventTabs"
-import { filterByDistance } from "../../utils/shootFilters"
 
 /** True if shoot is still relevant from today forward (not fully in the past). */
 function isFromTodayOnward(shoot, todayStart) {
@@ -15,7 +14,9 @@ function isFromTodayOnward(shoot, todayStart) {
 
 const EventLayout = ({ masterRawShoots = [], location, children }) => {
   const [view, setView] = useState("map")
-  const [filteredEventsShoots, setFilteredEventsShoots] = useState([])
+  const [eventListResults, setEventListResults] = useState(null)
+  const [destinationListResults, setDestinationListResults] = useState(null)
+  const [associationListResults, setAssociationListResults] = useState(null)
   const [userLocation, setUserLocation] = useState(null)
   const [activeTab, setActiveTab] = useState("events")
 
@@ -86,46 +87,41 @@ const EventLayout = ({ masterRawShoots = [], location, children }) => {
     })
   }, [shootsWithVenues, todayStart])
 
-  // Geolocation distance filter for main Events list
+  // Capture device location for optional distance filtering and distance labels.
   useEffect(() => {
-    setFilteredEventsShoots(computedEventsShoots)
-
     if (typeof window === "undefined" || !navigator.geolocation) return
 
     navigator.geolocation.getCurrentPosition(
-      position => {
-        const loc = {
+      position =>
+        setUserLocation({
           lat: position.coords.latitude,
           lng: position.coords.longitude,
-        }
-        setUserLocation(loc)
-
-        const dist = filterByDistance(
-          computedEventsShoots,
-          loc,
-          500,
-          computedEventsShoots
-        )
-        setFilteredEventsShoots(dist)
-      },
+        }),
       error => console.warn("Geolocation unavailable:", error)
     )
-  }, [computedEventsShoots])
+  }, [])
 
   // Optional ?search= on main Events list
   const displayEventsShoots = useMemo(() => {
-    let result = filteredEventsShoots
+    let result = computedEventsShoots
     if (URLSearchQuery) {
       const q = URLSearchQuery.replace(/,/g, "").replace(/\s+/g, " ").toLowerCase()
       result = result.filter(shoot =>
-        [shoot.sname, shoot.venue?.vname, shoot.effectiveLocation?.city, shoot.effectiveLocation?.state]
+        [
+          shoot.sname,
+          shoot.venue?.vname,
+          shoot.effectiveLocation?.address,
+          shoot.effectiveLocation?.city,
+          shoot.effectiveLocation?.state,
+          shoot.effectiveLocation?.zip,
+        ]
           .join(" ")
           .toLowerCase()
           .includes(q)
       )
     }
     return result
-  }, [filteredEventsShoots, URLSearchQuery])
+  }, [computedEventsShoots, URLSearchQuery])
 
   const handleTabChangeWithReset = tab => {
     setActiveTab(tab)
@@ -135,18 +131,21 @@ const EventLayout = ({ masterRawShoots = [], location, children }) => {
   const activeMapShoots = useMemo(() => {
     switch (activeTab) {
       case "destination":
-        return computedDestinationShoots
+        return destinationListResults || computedDestinationShoots
       case "association":
-        return computedAssociationsShoots
+        return associationListResults || computedAssociationsShoots
       case "events":
       default:
-        return displayEventsShoots
+        return eventListResults || displayEventsShoots
     }
   }, [
     activeTab,
     displayEventsShoots,
+    eventListResults,
     computedDestinationShoots,
     computedAssociationsShoots,
+    destinationListResults,
+    associationListResults,
   ])
 
   const mapProps = useMemo(
@@ -162,14 +161,22 @@ const EventLayout = ({ masterRawShoots = [], location, children }) => {
   const listProps = useMemo(
     () => ({
       eventsShoots: displayEventsShoots,
+      allEventsShoots: URLSearchQuery ? displayEventsShoots : computedEventsShoots,
       destinationShoots: computedDestinationShoots,
+      allDestinationShoots: computedDestinationShoots,
       associationsShoots: computedAssociationsShoots,
+      allAssociationShoots: computedAssociationsShoots,
       userLocation,
       activeTab,
       setActiveTab: handleTabChangeWithReset,
+      onEventResultsChange: setEventListResults,
+      onDestinationResultsChange: setDestinationListResults,
+      onAssociationResultsChange: setAssociationListResults,
     }),
     [
       displayEventsShoots,
+      computedEventsShoots,
+      URLSearchQuery,
       computedDestinationShoots,
       computedAssociationsShoots,
       userLocation,

@@ -7,6 +7,8 @@ import ShootAccordionItem from "./ShootAccordionItem"
 
 const ShootList = ({
   shoots = [],
+  allShoots = shoots,
+  onVisibleShootsChange,
   userLocation,
   sortField = "date",
   sortDirection = "asc",
@@ -71,7 +73,15 @@ const ShootList = ({
     return Object.entries(grouped)
   }, [filteredShoots])
 
-  if (sortedShoots.length === 0) {
+  const handleFilteredChange = React.useCallback(
+    results => {
+      setFilteredShoots(results)
+      onVisibleShootsChange?.(results)
+    },
+    [onVisibleShootsChange]
+  )
+
+  if (allShoots.length === 0) {
     return (
       <div className="alert alert-info text-center py-5 my-4">
         No upcoming events found.
@@ -83,9 +93,15 @@ const ShootList = ({
     <div className="flex-wrap">
       <ShootFilters
         shoots={sortedShoots}
-        onFilteredChange={setFilteredShoots}
+        allShoots={allShoots}
+        onFilteredChange={handleFilteredChange}
         userLocation={userLocation}
       />
+      {filteredShoots.length === 0 && (
+        <div className="alert alert-info text-center py-5 my-4">
+          No results found. Please use filters to adjust your results.
+        </div>
+      )}
       <div className="accordion accordion-flush" id="shootAccordion">
         {eventGroups.map(([groupId, groupShoots], gIndex) => (
           <ShootAccordionItem
@@ -106,6 +122,8 @@ const ShootList = ({
 
 ShootList.propTypes = {
   shoots: PropTypes.array,
+  allShoots: PropTypes.array,
+  onVisibleShootsChange: PropTypes.func,
   userLocation: PropTypes.object,
   sortField: PropTypes.string,
   sortDirection: PropTypes.string,

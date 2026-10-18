@@ -11,12 +11,18 @@ import AssocList from "./AssocList"
  */
 const EventTabs = ({
   eventsShoots = [],
+  allEventsShoots = eventsShoots,
   destinationShoots = [],
+  allDestinationShoots = destinationShoots,
   associationsShoots = [],
+  allAssociationShoots = associationsShoots,
   userLocation,
   onSelectShoot,
   activeTab = "events",
   setActiveTab,
+  onEventResultsChange,
+  onDestinationResultsChange,
+  onAssociationResultsChange,
 }) => {
   const handleTabClick = tab => {
     if (setActiveTab) setActiveTab(tab)
@@ -27,6 +33,8 @@ const EventTabs = ({
       return (
         <DestList
           shoots={destinationShoots}
+          allShoots={allDestinationShoots}
+          onVisibleShootsChange={onDestinationResultsChange}
           userLocation={userLocation}
           onSelectShoot={onSelectShoot}
         />
@@ -37,6 +45,8 @@ const EventTabs = ({
       return (
         <AssocList
           shoots={associationsShoots}
+          allShoots={allAssociationShoots}
+          onVisibleShootsChange={onAssociationResultsChange}
           userLocation={userLocation}
           onSelectShoot={onSelectShoot}
         />
@@ -44,7 +54,7 @@ const EventTabs = ({
     }
 
     // Default: Events (from today onward, non-destination)
-    if (eventsShoots.length === 0) {
+    if (eventsShoots.length === 0 && allEventsShoots.length === 0) {
       return (
         <div className="alert alert-info text-center py-5 my-4">
           No upcoming events found.
@@ -55,6 +65,8 @@ const EventTabs = ({
     return (
       <ShootList
         shoots={eventsShoots}
+        allShoots={allEventsShoots}
+        onVisibleShootsChange={onEventResultsChange}
         userLocation={userLocation}
         onSelectShoot={onSelectShoot}
       />
@@ -113,12 +125,18 @@ const EventTabs = ({
 
 EventTabs.propTypes = {
   eventsShoots: PropTypes.array,
+  allEventsShoots: PropTypes.array,
   destinationShoots: PropTypes.array,
+  allDestinationShoots: PropTypes.array,
   associationsShoots: PropTypes.array,
+  allAssociationShoots: PropTypes.array,
   userLocation: PropTypes.object,
   onSelectShoot: PropTypes.func,
   activeTab: PropTypes.string,
   setActiveTab: PropTypes.func,
+  onEventResultsChange: PropTypes.func,
+  onDestinationResultsChange: PropTypes.func,
+  onAssociationResultsChange: PropTypes.func,
 }
 
 export default React.memo(EventTabs)

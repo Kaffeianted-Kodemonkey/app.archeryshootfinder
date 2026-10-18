@@ -6,6 +6,8 @@ import { getStatusInfo, formatDateShort, humanizeEnum } from "../../utils/shootU
 
 const AssocList = ({
   shoots = [],
+  allShoots = shoots,
+  onVisibleShootsChange,
   userLocation,
   onSelectShoot,
 }) => {
@@ -27,7 +29,15 @@ const AssocList = ({
     }, {})
   }, [filteredShoots])
 
-  if (filteredShoots.length === 0) {
+  const handleFilteredChange = React.useCallback(
+    results => {
+      setFilteredShoots(results)
+      onVisibleShootsChange?.(results)
+    },
+    [onVisibleShootsChange]
+  )
+
+  if (allShoots.length === 0) {
     return (
       <div className="alert alert-info text-center py-5 my-4">
         No Association Shoots found matching selected filters.
@@ -39,9 +49,15 @@ const AssocList = ({
     <div>
       <ShootFilters
         shoots={shoots}
-        onFilteredChange={setFilteredShoots}
+        allShoots={allShoots}
+        onFilteredChange={handleFilteredChange}
         userLocation={userLocation}
       />
+      {filteredShoots.length === 0 && (
+        <div className="alert alert-info text-center py-5 my-4">
+          No results found. Please use filters to adjust your results.
+        </div>
+      )}
 
       <div className="accordion accordion-flush" id="assocShootAccordion">
         {Object.entries(groupedByAssociation).map(([assocType, assocShoots], index) => {
@@ -159,6 +175,8 @@ const AssocList = ({
 
 AssocList.propTypes = {
   shoots: PropTypes.array,
+  allShoots: PropTypes.array,
+  onVisibleShootsChange: PropTypes.func,
   userLocation: PropTypes.object,
   onSelectShoot: PropTypes.func,
 }
