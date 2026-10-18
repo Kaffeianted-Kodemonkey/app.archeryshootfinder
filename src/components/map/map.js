@@ -214,24 +214,24 @@ const MapComponent = ({
 
   return (
     <GoogleMap
-      mapContainerStyle={mapContainerStyle}
-      center={center}
-      zoom={5}
-      onLoad={setMap}
-      onClick={handleMapClick}
-      options={{
-        styles: [
-          {
-            featureType: "poi",
-            elementType: "labels",
-            stylers: [{ visibility: "off" }],
-          },
-        ],
-        disableDefaultUI: true,
-        zoomControl: true,
-        mapTypeControl: true,
-      }}
-    >
+        mapContainerStyle={mapContainerStyle}
+        center={center}
+        zoom={5}
+        onLoad={setMap}
+        onClick={handleMapClick}
+        options={{
+          styles: [
+            {
+              featureType: "poi",
+              elementType: "labels",
+              stylers: [{ visibility: "off" }],
+            },
+          ],
+          disableDefaultUI: true,
+          zoomControl: true,
+          mapTypeControl: true,
+        }}
+      >
         {markers.map(marker => (
           <Marker
             key={marker.key}
