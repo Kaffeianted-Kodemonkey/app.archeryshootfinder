@@ -14,6 +14,24 @@ const Layout = ({
   listProps,
   listViewContent,
 }) => {
+  React.useEffect(() => {
+    const closeSnipcartOnOutsideClick = event => {
+      const target = event.target
+      if (!(target instanceof Element)) return
+
+      const snipcartControl = target.closest(
+        "#snipcart-main-container, .snipcart-user-profile, .snipcart-add-item, .snipcart-edit-profile"
+      )
+      if (snipcartControl) return
+
+      window.Snipcart?.api?.modal?.close?.()
+    }
+
+    document.addEventListener("click", closeSnipcartOnOutsideClick, true)
+    return () =>
+      document.removeEventListener("click", closeSnipcartOnOutsideClick, true)
+  }, [])
+
   const data = useStaticQuery(graphql`
     query SiteTitleQuery {
       site {

@@ -61,6 +61,14 @@ Public directory data is sourced from MongoDB during Gatsby's `sourceNodes` life
 
 Pages use Gatsby GraphQL data such as `allShootsJson` and `allVenuesJson`. The events page renders shoot data through `EventLayout`; the venues page renders the venue directory. `createPages` creates `/venues/{venueId}` pages from venue nodes using `src/templates/spotlight.js`. Shoots and venues are not maintained in a local `src/data/shoots.json` file. Update records through the application's authorized data workflow or MongoDB process, preserving the existing document fields and relationships.
 
+### MVP source, account scope, and launch boundary
+
+- **Directory source:** MongoDB is the sole source for public venue, shoot, and association records. Gatsby reads the `ASFinder` collections at build time and exposes them as GraphQL nodes. There is no local JSON fallback. A deployment without a MongoDB URI does not have the public directory data required by the pages.
+- **Required identifiers:** venue records need `venueId`; shoot records need `shootId` and `venueId`; association records need `acronym` for the current Gatsby schema and links. The schema also marks venue `isClaimed` and `isClass` as non-nullable. Validate real documents against those requirements before a production build.
+- **Account scope:** Snipcart supplies portal sign-in. The order webhook associates a venue with a Snipcart user ID, but the portal does not yet persist venue or shoot edits, and subscription lifecycle state is not fully synchronized. Do not treat the portal as self-service venue management or subscription status as authoritative until those write and lifecycle paths are implemented and verified.
+- **MVP launch scope:** the implemented public experience is browsing/filtering event and venue directories, viewing map pins, and opening venue spotlight pages. Snipcart login and checkout UI are present. Venue/shoot editing, analytics, and dependable subscription lifecycle management are not launch-ready capabilities. Pricing copy that advertises analytics should be considered a product claim to resolve before launch.
+- **Legacy scaffolding:** current source inspection found no `shootService.js` or local shoot/venue JSON data files. Recheck before adding replacements; do not maintain a second source of truth.
+
 Filter behavior lives in `src/utils/shootFilters.js` and `src/utils/venueFilters.js`. The Google Maps component is `src/components/map/map.js` and uses `@react-google-maps/api`.
 
 ## Production

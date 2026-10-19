@@ -109,111 +109,138 @@ const ShootFilters = ({
     setSort({ field: "", direction: "asc" })
   }
 
+  const activeFilterCount = Object.values(filters).filter(Boolean).length
+
   return (
-    <div className="d-flex flex-nowrap align-items-center gap-2 p-3 small overflow-auto border border-2 border-warning bg-warning-subtle">
-      <select
-        className="form-select form-select-sm w-auto"
-        value={filters.distance}
-        onChange={e => updateFilter("distance", e.target.value)}
-        aria-label="Filter by distance"
-      >
-        <option value="">All distances</option>
-        <option value="50" disabled={!userLocation}>
-          Within 50 miles
-        </option>
-        <option value="100" disabled={!userLocation}>
-          Within 100 miles
-        </option>
-      </select>
-
-      {/* State filter – shows every state that has shoots */}
-      <select
-        className="form-select form-select-sm w-auto"
-        value={filters.state}
-        onChange={e => updateFilter("state", e.target.value)}
-      >
-        <option value="">All States</option>
-        {options.states.map(st => (
-          <option key={st} value={st}>
-            {st}
+    <section
+      className="border border-warning rounded bg-warning-subtle p-3 mb-3"
+      aria-label="Refine event results"
+    >
+      <div className="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+        <div>
+          <h2 className="h6 mb-1">Refine results</h2>
+          <p className="small text-body-secondary mb-0">
+            Choose one or more filters to narrow the events.
+          </p>
+        </div>
+        {activeFilterCount > 0 && (
+          <button
+            type="button"
+            className="btn btn-sm btn-outline-dark"
+            onClick={reset}
+          >
+            Clear {activeFilterCount} {activeFilterCount === 1 ? "filter" : "filters"}
+          </button>
+        )}
+      </div>
+      <div className="d-flex flex-wrap align-items-center gap-2 small">
+        <select
+          className="form-select form-select-sm flex-grow-1"
+          style={{ minWidth: "10rem", maxWidth: "15rem" }}
+          value={filters.distance}
+          onChange={e => updateFilter("distance", e.target.value)}
+          aria-label="Filter by distance"
+        >
+          <option value="">Any distance</option>
+          <option value="50" disabled={!userLocation}>
+            Within 50 miles
           </option>
-        ))}
-      </select>
-
-      <select
-        className="form-select form-select-sm w-auto"
-        value={filters.city}
-        onChange={e => updateFilter("city", e.target.value)}
-        aria-label="Filter by city"
-      >
-        <option value="">All Cities</option>
-        {options.cities.map(city => (
-          <option key={city} value={city}>
-            {city}
+          <option value="100" disabled={!userLocation}>
+            Within 100 miles
           </option>
-        ))}
-      </select>
+        </select>
 
-      <select
-        className="form-select form-select-sm w-auto"
-        value={filters.bowType}
-        onChange={e => updateFilter("bowType", e.target.value)}
-      >
-        <option value="">Bow</option>
-        {options.bowTypes.map(b => (
-          <option key={b} value={b}>
-            {b}
-          </option>
-        ))}
-      </select>
+        <select
+          className="form-select form-select-sm flex-grow-1"
+          style={{ minWidth: "8rem", maxWidth: "12rem" }}
+          value={filters.state}
+          onChange={e => updateFilter("state", e.target.value)}
+          aria-label="Filter by state"
+        >
+          <option value="">Any state</option>
+          {options.states.map(st => (
+            <option key={st} value={st}>
+              {st}
+            </option>
+          ))}
+        </select>
 
-      <select
-        className="form-select form-select-sm w-auto"
-        value={filters.format}
-        onChange={e => updateFilter("format", e.target.value)}
-      >
-        <option value="">Format</option>
-        {options.formats.map(f => (
-          <option key={f} value={f}>
-            {f}
-          </option>
-        ))}
-      </select>
+        <select
+          className="form-select form-select-sm flex-grow-1"
+          style={{ minWidth: "9rem", maxWidth: "14rem" }}
+          value={filters.city}
+          onChange={e => updateFilter("city", e.target.value)}
+          aria-label="Filter by city"
+        >
+          <option value="">Any city</option>
+          {options.cities.map(city => (
+            <option key={city} value={city}>
+              {city}
+            </option>
+          ))}
+        </select>
 
-      <select
-        className="form-select form-select-sm w-auto"
-        value={filters.shootClass}
-        onChange={e => updateFilter("shootClass", e.target.value)}
-      >
-        <option value="">Class</option>
-        {options.classes.map(c => (
-          <option key={c} value={c}>
-            {c}
-          </option>
-        ))}
-      </select>
+        <select
+          className="form-select form-select-sm flex-grow-1"
+          style={{ minWidth: "9rem", maxWidth: "14rem" }}
+          value={filters.bowType}
+          onChange={e => updateFilter("bowType", e.target.value)}
+          aria-label="Filter by bow type"
+        >
+          <option value="">Any bow type</option>
+          {options.bowTypes.map(b => (
+            <option key={b} value={b}>
+              {b}
+            </option>
+          ))}
+        </select>
 
-      <select
-        className="form-select form-select-sm w-auto"
-        value={filters.skillLevel}
-        onChange={e => updateFilter("skillLevel", e.target.value)}
-      >
-        <option value="">Level</option>
-        {options.levels.map(l => (
-          <option key={l} value={l}>
-            {l}
-          </option>
-        ))}
-      </select>
+        <select
+          className="form-select form-select-sm flex-grow-1"
+          style={{ minWidth: "9rem", maxWidth: "14rem" }}
+          value={filters.format}
+          onChange={e => updateFilter("format", e.target.value)}
+          aria-label="Filter by format"
+        >
+          <option value="">Any format</option>
+          {options.formats.map(f => (
+            <option key={f} value={f}>
+              {f}
+            </option>
+          ))}
+        </select>
 
-      <button
-        type="button"
-        className="btn btn-sm btn-link text-decoration-none px-1"
-        onClick={reset}
-      >
-        Reset
-      </button>
-    </div>
+        <select
+          className="form-select form-select-sm flex-grow-1"
+          style={{ minWidth: "8rem", maxWidth: "12rem" }}
+          value={filters.shootClass}
+          onChange={e => updateFilter("shootClass", e.target.value)}
+          aria-label="Filter by class"
+        >
+          <option value="">Any class</option>
+          {options.classes.map(c => (
+            <option key={c} value={c}>
+              {c}
+            </option>
+          ))}
+        </select>
+
+        <select
+          className="form-select form-select-sm flex-grow-1"
+          style={{ minWidth: "8rem", maxWidth: "12rem" }}
+          value={filters.skillLevel}
+          onChange={e => updateFilter("skillLevel", e.target.value)}
+          aria-label="Filter by skill level"
+        >
+          <option value="">Any level</option>
+          {options.levels.map(l => (
+            <option key={l} value={l}>
+              {l}
+            </option>
+          ))}
+        </select>
+      </div>
+    </section>
   )
 }
 

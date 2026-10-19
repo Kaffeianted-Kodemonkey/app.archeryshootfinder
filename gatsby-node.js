@@ -31,8 +31,8 @@ const VENUE_PROJECTION = {
   targetType: 1,
   tuningIndoor: 1,
   tuningOutdoor: 1,
-  maDistIndoor: 1,
-  maDistOutdoor: 1,
+  maxDistIndoor: 1,
+  maxDistOutdoor: 1,
   laneCapIndoor: 1,
   laneCapOutdoor: 1,
   amenities: 1,
@@ -269,8 +269,8 @@ exports.createSchemaCustomization = ({ actions }) => {
       targetType: [String]
       tuningIndoor: [String]
       tuningOutdoor: [String]
-      maDistIndoor: String
-      maDistOutdoor: String
+      maxDistIndoor: String
+      maxDistOutdoor: String
       laneCapIndoor: String
       laneCapOutdoor: String
       amenities: [String]

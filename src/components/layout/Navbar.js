@@ -129,7 +129,7 @@ const Navbar = ({ siteTitle, siteDesc }) => {
             </li>
           </ul>
 
-          <hr class="text-light py-1" />
+          <hr className="text-light py-1" />
 
           {/* RIGHT SIDE: Dynamic Auth Navigation Panel */}
           <ul className="navbar-nav ms-auto gap-2">
