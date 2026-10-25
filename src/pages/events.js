@@ -43,7 +43,24 @@ export const query = graphql`
         isLeague
         seriesName
         associationType
+        association {
+          acronym
+          assocName
+          ruleBooks {
+            ruleName
+            rulebookUrl
+          }
+        }
+        useVenueLocation
         location {
+          address
+          city
+          state
+          zip
+          lat
+          lng
+        }
+        shootLocation {
           address
           city
           state
@@ -67,8 +84,10 @@ export const query = graphql`
             membershipUrl
           }
           location {
+            address
             city
             state
+            zip
             lat
             lng
           }

@@ -5,8 +5,9 @@ import ShootFilters from "./ShootFilters"
 import {
   getStatusInfo,
   formatDateShort,
-  humanizeEnum,
+  getAssociationBadge,
 } from "../../utils/shootUiHelpers"
+import { getEffectiveShootLocation } from "../../utils/shootFilters"
 
 const AssocList = ({
   shoots = [],
@@ -21,13 +22,10 @@ const AssocList = ({
     setFilteredShoots(shoots)
   }, [shoots])
 
-  // Grouping collection array properties securely
+  // Group each shoot under its single association acronym.
   const groupedByAssociation = React.useMemo(() => {
     return filteredShoots.reduce((acc, shoot) => {
-      const rawType = shoot.associationType
-      const type = Array.isArray(rawType)
-        ? rawType[0] || "General"
-        : rawType || "General"
+      const type = getAssociationBadge(shoot.associationType) || "General"
 
       if (!acc[type]) acc[type] = []
       acc[type].push(shoot)
@@ -142,10 +140,7 @@ const AssocList = ({
                         <tbody>
                           {assocShoots.map((s, idx) => {
                             const venue = s.venue || {}
-                            const sLoc =
-                              s.useVenueLocation !== false && venue.location
-                                ? venue.location
-                                : s.shootLocation
+                            const sLoc = getEffectiveShootLocation(s)
                             const sCity =
                               sLoc?.city && sLoc?.state
                                 ? `${sLoc.city}, ${sLoc.state}`

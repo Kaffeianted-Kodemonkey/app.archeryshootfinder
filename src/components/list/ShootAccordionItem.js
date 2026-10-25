@@ -9,13 +9,10 @@ import {
   formatDateShort,
   getAssociationBadge,
 } from "../../utils/shootUiHelpers"
+import { getEffectiveShootLocation } from "../../utils/shootFilters"
 
 function resolveLoc(shoot) {
-  const venue = shoot?.venue || {}
-  if (shoot?.useVenueLocation !== false && venue.location) return venue.location
-  return (
-    shoot?.effectiveLocation || shoot?.location || shoot?.shootLocation || {}
-  )
+  return getEffectiveShootLocation(shoot) || {}
 }
 
 function venueLabel(shoot) {
@@ -28,13 +25,7 @@ function venueLabel(shoot) {
 }
 
 function assocPrefix(associationType) {
-  const label = getAssociationBadge?.(associationType)
-  if (label) return label
-  if (Array.isArray(associationType) && associationType[0])
-    return associationType[0]
-  if (typeof associationType === "string" && associationType)
-    return associationType
-  return null
+  return getAssociationBadge(associationType)
 }
 
 function displayTitle(shoot, { includeAssoc = true } = {}) {
@@ -405,11 +396,32 @@ const ShootAccordionItem = ({
               )}
               {assocLabel && (
                 <span className="small text-muted">
-                  See {assocLabel} rulebooks on the Associations tab /
-                  association site
+                  Rules association: {first.association?.assocName || assocLabel}
                 </span>
               )}
             </div>
+            {first.association?.ruleBooks?.length > 0 && (
+              <div className="mt-2">
+                <strong className="small">Association rulebooks:</strong>
+                <ul className="mb-0">
+                  {first.association.ruleBooks.map((rulebook, index) => (
+                    <li key={`${rulebook.ruleName}-${index}`}>
+                      {rulebook.rulebookUrl ? (
+                        <a
+                          href={rulebook.rulebookUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {rulebook.ruleName}
+                        </a>
+                      ) : (
+                        rulebook.ruleName
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
         </div>
       </div>

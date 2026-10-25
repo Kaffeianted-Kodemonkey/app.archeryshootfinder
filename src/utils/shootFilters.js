@@ -1,17 +1,25 @@
 // src/utils/shootFilters.js
 import { getDistance } from "./distance"
 
+/** Resolve the location an event should use across lists, filters, and maps. */
+export const getEffectiveShootLocation = shoot => {
+  if (!shoot) return null
+  if (shoot.effectiveLocation) return shoot.effectiveLocation
+
+  const venueLocation = shoot.venue?.location
+  if (shoot.useVenueLocation !== false && venueLocation) return venueLocation
+
+  return shoot.location || shoot.shootLocation || venueLocation || null
+}
+
 /**
  * Safely extracts coordinates from either a Shoot layout or a Venue layout node object.
  */
 const extractCoordinates = item => {
   if (!item) return null
 
-  const location =
-    item.effectiveLocation ||
-    item.location ||
-    item.shootLocation ||
-    item.venue?.location
+  const isShoot = item.shootId != null || item.venue != null
+  const location = isShoot ? getEffectiveShootLocation(item) : item.location
 
   if (!location) return null
 

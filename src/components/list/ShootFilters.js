@@ -1,5 +1,8 @@
 import * as React from "react"
-import { filterByDistance } from "../../utils/shootFilters"
+import {
+  filterByDistance,
+  getEffectiveShootLocation,
+} from "../../utils/shootFilters"
 
 const ShootFilters = ({
   shoots,
@@ -35,10 +38,7 @@ const ShootFilters = ({
       s.shootClass?.forEach(c => classes.add(c))
       s.skillLevel?.forEach(l => levels.add(l))
 
-      const loc =
-        s.useVenueLocation !== false && s.venue?.location
-          ? s.venue.location
-          : s.effectiveLocation || s.shootLocation || s.location
+      const loc = getEffectiveShootLocation(s)
       if (loc?.state) states.add(loc.state)
       if (loc?.city) cities.add(loc.city.trim())
     })
@@ -60,19 +60,13 @@ const ShootFilters = ({
     // STATE FILTER (new)
     if (filters.state) {
       result = result.filter(s => {
-        const loc =
-          s.useVenueLocation !== false && s.venue?.location
-            ? s.venue.location
-            : s.effectiveLocation || s.shootLocation || s.location
+        const loc = getEffectiveShootLocation(s)
         return loc?.state === filters.state
       })
     }
     if (filters.city) {
       result = result.filter(s => {
-        const loc =
-          s.useVenueLocation !== false && s.venue?.location
-            ? s.venue.location
-            : s.effectiveLocation || s.shootLocation || s.location
+        const loc = getEffectiveShootLocation(s)
         return loc?.city?.toLowerCase() === filters.city.toLowerCase()
       })
     }

@@ -3,6 +3,7 @@ import { useState, useEffect, useMemo } from "react"
 import { navigate } from "gatsby"
 import Layout from "./Layout"
 import EventTabs from "../list/EventTabs"
+import { getEffectiveShootLocation } from "../../utils/shootFilters"
 
 /** True if shoot is still relevant from today forward (not fully in the past). */
 function isFromTodayOnward(shoot, todayStart) {
@@ -51,15 +52,9 @@ const EventLayout = ({ masterRawShoots = [], location, children }) => {
   // Attach effectiveLocation once
   const shootsWithVenues = useMemo(() => {
     return masterRawShoots.map(shoot => {
-      const venue = shoot.venue
-      const effectiveLocation =
-        shoot.useVenueLocation !== false && venue?.location
-          ? venue.location
-          : shoot.location || shoot.shootLocation || venue?.location
-
       return {
         ...shoot,
-        effectiveLocation,
+        effectiveLocation: getEffectiveShootLocation(shoot),
       }
     })
   }, [masterRawShoots])
@@ -84,8 +79,10 @@ const EventLayout = ({ masterRawShoots = [], location, children }) => {
   const computedAssociationsShoots = useMemo(() => {
     return shootsWithVenues.filter(shoot => {
       if (!isFromTodayOnward(shoot, todayStart)) return false
-      const type = shoot.associationType
-      return Array.isArray(type) ? type.length > 0 : !!type
+      return (
+        typeof shoot.associationType === "string" &&
+        shoot.associationType.trim().length > 0
+      )
     })
   }, [shootsWithVenues, todayStart])
 

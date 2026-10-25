@@ -9,6 +9,34 @@ const SpotlightTemplate = ({ data }) => {
 
   if (!venue) return null
 
+  const mapQuery =
+    venue.location?.lat != null && venue.location?.lng != null
+      ? `${venue.location.lat},${venue.location.lng}`
+      : [
+          venue.location?.address,
+          venue.location?.city,
+          venue.location?.state,
+          venue.location?.zip,
+        ]
+          .filter(Boolean)
+          .join(", ")
+  const directionsUrl = mapQuery
+    ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQuery)}`
+    : null
+  const venueTypes = Array.isArray(venue.venueType)
+    ? venue.venueType
+    : venue.venueType
+    ? [venue.venueType]
+    : []
+  const facilityDetails = [
+    ["Range types", venue.rangeType?.join(", ")],
+    ["Target types", venue.targetType?.join(", ")],
+    ["Indoor maximum distance", venue.maxDistIndoor],
+    ["Outdoor maximum distance", venue.maxDistOutdoor],
+    ["Indoor lane capacity", venue.laneCapIndoor],
+    ["Outdoor lane capacity", venue.laneCapOutdoor],
+  ].filter(([, value]) => value)
+
   return (
     <Layout>
       <Seo title={venue.vname} description={venue.description} />
@@ -32,227 +60,300 @@ const SpotlightTemplate = ({ data }) => {
         ✕
       </button>
 
-      <main className="container py-5 border border-2 border-warning-subtle bg-white rounded shadow-sm">
-        {/* TITLE AND TAGLINE & HERO IMAGE */}
-        <div className="row px-3 py-5 mb-4  text-body-emphasis">
-          <div className="col">
-            {venue.img ? (
-              <img
-                src={venue.img}
-                alt={venue.vname || "Venue Image"}
-                className="img-fluid rounded"
-              />
-            ) : (
-              <span className="text-muted small">
-                Update image in the Dashboard
-              </span>
-            )}
-          </div>
-        </div>
-        {/* TITLE AND TAGLINE */}
-        <div className="row px-3 pt-3 mb-4 text-body-emphasis border-top border-bottom border-2 border-success bg-success-subtle">
-          <div className="col">
-            {Array.isArray(venue.venueType) ? (
-              venue.venueType.map((type, index) => (
-                <span
-                  key={index}
-                  className="badge bg-primary mb-3 py-2 px-3 fw-bold small me-2"
-                >
-                  <i className="bi bi-building-gear"></i>{" "}
-                  {typeof type === "string" ? type.replace("_", " ") : ""}
+      <main className="container py-3 py-md-5">
+        <div className="card border-0 shadow-sm mb-4 overflow-hidden">
+          {venue.img ? (
+            <img
+              src={venue.img}
+              alt={venue.vname || "Venue"}
+              className="w-100"
+              style={{ maxHeight: "360px", objectFit: "cover" }}
+            />
+          ) : (
+            <div className="bg-body-tertiary text-muted text-center py-5">
+              Venue image not available
+            </div>
+          )}
+          <div className="card-body p-3 p-md-4">
+            <div className="d-flex flex-wrap gap-2 mb-2">
+              {venueTypes.map((type, index) => (
+                <span key={`${type}-${index}`} className="badge bg-primary">
+                  {typeof type === "string" ? type.replace(/_/g, " ") : ""}
                 </span>
-              ))
-            ) : venue.venueType ? (
-              <span className="badge bg-primary mb-3 py-2 px-3 fw-bold small">
-                <i className="bi bi-building-gear"></i>{" "}
-                {typeof venue.venueType === "string"
-                  ? venue.venueType.replace("_", " ")
-                  : ""}
-              </span>
-            ) : null}
-
-            <h1 className="display-6 fst-italic">{venue.vname}</h1>
-            <p className="lead my-3">{venue.tagline}</p>
+              ))}
+            </div>
+            <h1 className="h2 mb-2">{venue.vname}</h1>
+            <p className="lead mb-0">
+              {venue.tagline || "No tagline provided."}
+            </p>
           </div>
         </div>
-        {/* CONTACT & LOCATION INFO */}
-        <div className="row g-4 justify-content-center">
-          <div className="col-md-6">
-            <div className="p-3 border border-2 border-dark-subtle bg-body-tertiary rounded shadow-sm h-100">
-              <h2 className="fs-2">Contact Info</h2>
-              <p className="fs-5">
-                <strong>Phone:</strong>{" "}
-                {venue.contact?.phone || "No Phone Listed"}
-              </p>
-              <p className="fs-5">
-                <strong>Email:</strong>{" "}
-                {venue.contact?.email || "No Email Listed"}
-              </p>
-              <p className="fs-5">
-                <strong>Website:</strong>{" "}
-                {venue.contact?.website || " No Website listed"}
-              </p>
-              <p className="fs-5">
-                <strong>Socials:</strong>{" "}
-                {venue.contact?.socials?.length > 0 ? (
-                  venue.contact.socials.map((social, idx) => (
+
+        <div className="row g-3 g-lg-4">
+          <div className="col-12 col-lg-5">
+            <section className="card h-100 shadow-sm">
+              <div className="card-body p-3 p-md-4">
+                <h2 className="h4">Plan your visit</h2>
+                <address className="mb-3">
+                  {venue.location?.address && (
+                    <>
+                      {venue.location.address}
+                      <br />
+                    </>
+                  )}
+                  {[
+                    venue.location?.city,
+                    venue.location?.state,
+                    venue.location?.zip,
+                  ]
+                    .filter(Boolean)
+                    .join(", ") || "Location not listed"}
+                </address>
+                {venue.hours?.length > 0 ? (
+                  <div className="mb-3">
+                    <h3 className="h6">Hours</h3>
+                    <ul className="list-unstyled mb-0">
+                      {venue.hours.map((hours, index) => (
+                        <li key={`${(hours.day || []).join("-")}-${index}`}>
+                          {(hours.day || []).join(", ")}: {hours.open || "Hours unavailable"}
+                          {hours.close ? `–${hours.close}` : ""}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ) : (
+                  <p className="text-muted mb-3">Hours not listed.</p>
+                )}
+                {directionsUrl && (
+                  <a
+                    href={directionsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn btn-primary w-100 mb-3"
+                  >
+                    <i className="bi bi-geo-alt-fill me-2" aria-hidden="true"></i>
+                    Get directions
+                  </a>
+                )}
+                <div className="d-grid gap-2">
+                  {venue.contact?.phone ? (
                     <a
-                      key={idx}
-                      href={social.url}
+                      className="btn btn-outline-secondary"
+                      href={`tel:${venue.contact.phone}`}
+                    >
+                      Call venue
+                    </a>
+                  ) : (
+                    <span className="small text-muted">No phone listed</span>
+                  )}
+                  {venue.contact?.email ? (
+                    <a
+                      className="btn btn-outline-secondary"
+                      href={`mailto:${venue.contact.email}`}
+                    >
+                      Email venue
+                    </a>
+                  ) : (
+                    <span className="small text-muted">No email listed</span>
+                  )}
+                  {venue.contact?.membershipUrl && (
+                    <a
+                      className="btn btn-outline-primary"
+                      href={venue.contact.membershipUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="badge bg-secondary text-decoration-none text-white px-2 py-1"
                     >
-                      {social.name}
+                      Membership information
                     </a>
-                  ))
+                  )}
+                  {venue.contact?.website ? (
+                    <a
+                      className="btn btn-outline-secondary"
+                      href={venue.contact.website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Visit website
+                    </a>
+                  ) : (
+                    <span className="small text-muted">No website listed</span>
+                  )}
+                </div>
+                {venue.contact?.socials?.length > 0 ? (
+                  <div className="d-flex flex-wrap gap-2 mt-3">
+                    {venue.contact.socials.map((social, index) => (
+                      <a
+                        key={`${social.name}-${index}`}
+                        href={social.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="btn btn-sm btn-outline-primary"
+                      >
+                        {social.name}
+                      </a>
+                    ))}
+                  </div>
                 ) : (
-                  <span className="text-muted fs-6">No Socials Listed</span>
+                  <p className="small text-muted mt-3 mb-0">
+                    No social links listed.
+                  </p>
                 )}
-              </p>
-            </div>
+              </div>
+            </section>
           </div>
-          <div className="col-md-6">
-            <div className="p-3 border border-2 border-dark-subtle bg-body-tertiary rounded shadow-sm h-100">
-              <h2 className="fs-2">Location & Directions</h2>
-              <p className="fs-5">
-                <strong>Address:</strong>{" "}
-                {venue.location?.address || "No Address listed"}
-              </p>
-              <p className="fs-5">
-                <strong>City:</strong> {venue.location?.city || "No City Listed"}
-              </p>
-              <p className="fs-5">
-                <strong>State:</strong>{" "}
-                {venue.location?.state || "No State Listed"}
-              </p>
-              {venue.hours?.length > 0 && (
-                <div>
-                  <strong>Hours:</strong>
-                  <ul className="mb-0">
-                    {venue.hours.map((hours, index) => (
-                      <li key={index}>
-                        {(hours.day || []).join(", ")}: {hours.open || "Hours unavailable"}
-                        {hours.close ? `–${hours.close}` : ""}
-                      </li>
+
+          <div className="col-12 col-lg-7">
+            <section className="card h-100 shadow-sm">
+              <div className="card-body p-3 p-md-4">
+                <h2 className="h4">About the venue</h2>
+                <p className="mb-0">
+                  {venue.bio || "Venue information coming soon."}
+                </p>
+              </div>
+            </section>
+          </div>
+
+          <div className="col-12 col-md-6">
+            <section className="card h-100 shadow-sm">
+              <div className="card-body p-3 p-md-4">
+                <h2 className="h4">Amenities & services</h2>
+                <h3 className="h6">Amenities</h3>
+                {venue.amenities?.length > 0 ? (
+                  <ul className="mb-3">
+                    {venue.amenities.map((item, index) => (
+                      <li key={`${item}-${index}`}>{item}</li>
                     ))}
                   </ul>
-                </div>
-              )}
-              <button>Directions</button>
-              {/* This needs to be linked to the map on the homepage */}
-            </div>
+                ) : (
+                  <p className="text-muted">No amenities listed.</p>
+                )}
+                <h3 className="h6">Services</h3>
+                {venue.services?.length > 0 ? (
+                  <ul className="mb-3">
+                    {venue.services.map((item, index) => (
+                      <li key={`${item}-${index}`}>{item}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-muted">No services listed.</p>
+                )}
+                <p className="mb-0">
+                  <strong>Bow types:</strong>{" "}
+                  {venue.bowTypes?.length
+                    ? venue.bowTypes.join(", ")
+                    : "Not listed"}
+                </p>
+              </div>
+            </section>
           </div>
-        </div>
-        {/* ABOUT & AMENITIES*/}
-        <div className="row mt-3">
-          <div className="col-12 p-3">
-            <h2 className="fw-bold text-dark border-bottom pb-2 mb-3">
-              Our Facility
-            </h2>
-            <p>{venue.bio || "No Bio Listed"}</p>
+
+          <div className="col-12 col-md-6">
+            <section className="card h-100 shadow-sm">
+              <div className="card-body p-3 p-md-4">
+                <h2 className="h4">Facility details</h2>
+                <dl className="row mb-0">
+                  {facilityDetails.length ? (
+                    facilityDetails.map(([label, value]) => (
+                      <React.Fragment key={label}>
+                        <dt className="col-7">{label}</dt>
+                        <dd className="col-5">{value}</dd>
+                      </React.Fragment>
+                    ))
+                  ) : (
+                    <dd className="col-12 text-muted">
+                      Facility details not listed.
+                    </dd>
+                  )}
+                </dl>
+              </div>
+            </section>
           </div>
-          <div className="col p-3">
-            <h3 className="fw-bold text-dark border-bottom pb-2 mb-3">
-              Amenities
-            </h3>
-            {(() => {
-              const amenities = venue.amenities || []
-              const mid = Math.ceil(amenities.length / 2)
-              const left = amenities.slice(0, mid)
-              const right = amenities.slice(mid)
-              return (
+
+          <div className="col-12">
+            <section className="card shadow-sm">
+              <div className="card-body p-3 p-md-4">
+                <h2 className="h4">Association sanctions</h2>
+                {venue.sanctioning?.length ? (
+                  <div className="table-responsive">
+                    <table className="table table-striped align-middle mb-0">
+                      <thead>
+                        <tr>
+                          <th scope="col">Association</th>
+                          <th scope="col">Scope</th>
+                          <th scope="col">Website</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {venue.sanctioning.map((acronym, index) => {
+                          const association = venue.sanctioningAssociations?.find(
+                            item => item?.acronym === acronym
+                          )
+
+                          return (
+                            <tr key={`${acronym}-${index}`}>
+                              <td>
+                                {association?.assocName || acronym}
+                                {association?.assocName && (
+                                  <span className="text-muted"> ({acronym})</span>
+                                )}
+                              </td>
+                              <td>{association?.scope || "—"}</td>
+                              <td>
+                                {association?.websiteUrl ? (
+                                  <a
+                                    href={association.websiteUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                  >
+                                    Visit website
+                                  </a>
+                                ) : (
+                                  "—"
+                                )}
+                              </td>
+                            </tr>
+                          )
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <p className="text-muted mb-0">No sanctions listed.</p>
+                )}
+              </div>
+            </section>
+          </div>
+
+          <div className="col-12">
+            <section className="card border-warning-subtle shadow-sm">
+              <div className="card-body p-3 p-md-4">
+                <h2 className="h4">Rules & safety</h2>
                 <div className="row">
-                  <div className="col">
-                    <ul className="list-unstyled">
-                      {left.map((item, i) => (
-                        <li key={i}>{item}</li>
-                      ))}
-                    </ul>
-                  </div>
-                  <div className="col">
-                    <ul className="list-unstyled">
-                      {right.map((item, i) => (
-                        <li key={i}>{item}</li>
-                      ))}
-                    </ul>
-                  </div>
+                  {[
+                    ["Behavioral rules", venue.behavioralRules],
+                    ["Equipment rules", venue.gearControl],
+                    ["Safety etiquette", venue.safetyEtiquette],
+                  ].map(([heading, rules]) =>
+                    rules?.length > 0 && (
+                      <div className="col-12 col-md-4" key={heading}>
+                        <h3 className="h6">{heading}</h3>
+                        <ul className="mb-3 mb-md-0">
+                          {rules.map((rule, index) => (
+                            <li key={`${heading}-${index}`}>{rule}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )
+                  )}
                 </div>
-              )
-            })()}
+                {!venue.behavioralRules?.length &&
+                  !venue.gearControl?.length &&
+                  !venue.safetyEtiquette?.length && (
+                    <p className="text-muted mb-0">No venue rules listed.</p>
+                  )}
+              </div>
+            </section>
           </div>
-        </div>
-        <hr />
-
-        {/* Database-backed services and equipment */}
-        <div className="row mt-3 mb-3">
-          <h3 className="fs-4 fw-bold text-dark pb-2 mb-1">
-            <i className="bi bi-tools text-primary me-1"></i> Services &
-            Equipment
-          </h3>
-          {venue.services?.length ? (
-            <ul className="list-group">
-              {venue.services.map((service, index) => (
-                <li className="list-group-item" key={index}>{service}</li>
-              ))}
-            </ul>
-          ) : (
-            <p className="text-muted">No services listed.</p>
-          )}
-          {venue.bowTypes?.length > 0 && (
-            <p className="mt-3">
-              <strong>Bow types:</strong> {venue.bowTypes.join(", ")}
-            </p>
-          )}
-        </div>
-
-        {/* RULES & REGULATIONS */}
-        <div className="row">
-          <h3 className="fs-4 fw-bold text-danger">
-            <i className="bi bi-exclamation-triangle-fill me-1"></i> Rules &
-            Regulations
-          </h3>
-          {[
-            ["Behavioral rules", venue.behavioralRules],
-            ["Equipment rules", venue.gearControl],
-            ["Safety etiquette", venue.safetyEtiquette],
-          ].map(
-            ([heading, rules]) =>
-              rules?.length > 0 && (
-                <div className="col-12 mb-3" key={heading}>
-                  <h4 className="fs-6 fw-bold">{heading}</h4>
-                  <ul>
-                    {rules.map((rule, index) => (
-                      <li key={index}>{rule}</li>
-                    ))}
-                  </ul>
-                </div>
-              )
-          )}
-        </div>
-
-        {/* Database-backed range information */}
-        <div className="row mt-3">
-          <h3 className="fs-4 fw-bold text-dark pb-2 mt-3 mb-3">
-            <i className="bi bi-cone-striped text-primary me-1"></i> Range information
-          </h3>
-          <dl className="row">
-            {[
-              ["Range types", venue.rangeType?.join(", ")],
-              ["Target types", venue.targetType?.join(", ")],
-              ["Indoor maximum distance", venue.maxDistIndoor],
-              ["Outdoor maximum distance", venue.maxDistOutdoor],
-              ["Indoor lane capacity", venue.laneCapIndoor],
-              ["Outdoor lane capacity", venue.laneCapOutdoor],
-            ]
-              .filter(([, value]) => value)
-              .map(([label, value]) => (
-                <React.Fragment key={label}>
-                  <dt className="col-sm-4">{label}</dt>
-                  <dd className="col-sm-8">{value}</dd>
-                </React.Fragment>
-              ))}
-          </dl>
         </div>
 
       </main>
@@ -274,6 +375,13 @@ export const query = graphql`
       img
       alt
       sanctioning
+      sanctioningAssociations {
+        acronym
+        assocName
+        websiteUrl
+        logoUrl
+        scope
+      }
       amenities
       services
       bowTypes
@@ -300,6 +408,7 @@ export const query = graphql`
         phone
         email
         website
+        membershipUrl
         socials {
           name
           url

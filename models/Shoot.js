@@ -27,6 +27,15 @@ const ShootSchema = new mongoose.Schema({
     lat: Number, // ← Add this
     lng: Number, // ← Add this
   },
+  shootLocation: {
+    address: String,
+    city: String,
+    state: String,
+    zip: String,
+    lat: Number,
+    lng: Number,
+  },
+  useVenueLocation: Boolean,
 
   // Reference to Venue (for easy population)
   venue: {

@@ -9,6 +9,7 @@ import {
 } from "@react-google-maps/api"
 import { Link } from "gatsby"
 import { getDistance } from "../../utils/distance"
+import { getEffectiveShootLocation } from "../../utils/shootFilters"
 
 const mapContainerStyle = {
   width: "100%",
@@ -45,7 +46,7 @@ const MapComponent = ({
   useEffect(() => {
     if (selectedShoot && map) {
       // Find the location for this shoot
-      const loc = selectedShoot.effectiveLocation || selectedShoot.shootLocation
+      const loc = getEffectiveShootLocation(selectedShoot)
       if (loc) {
         const lat = parseFloat(loc.lat)
         const lng = parseFloat(loc.lng)
@@ -57,7 +58,7 @@ const MapComponent = ({
     }
   }, [selectedShoot, map])
 
-  // effectiveLocation already computed in index.js; no need to enrich here
+  // EventLayout computes effectiveLocation; keep the resolver as a fallback.
   const enrichedShoots = shoots // Direct pass-through
 
   const markers = useMemo(() => {
@@ -68,7 +69,9 @@ const MapComponent = ({
           const location = venue.location
           if (!location) {
             console.warn(
-              `Skipping marker for ${venue.name}: No location available`
+              `Skipping marker for ${
+                venue.vname || "Unknown venue"
+              }: No location available`
             )
             return null
           }
@@ -83,7 +86,9 @@ const MapComponent = ({
             lng > 180
           ) {
             console.warn(
-              `Skipping marker for ${venue.name}: Invalid coordinates (${location.lat}, ${location.lng})`
+              `Skipping marker for ${
+                venue.vname || "Unknown venue"
+              }: Invalid coordinates (${location.lat}, ${location.lng})`
             )
             return null
           }
@@ -100,10 +105,12 @@ const MapComponent = ({
     // Existing shoot markers logic (for non-venue tabs)
     return enrichedShoots
       .map(shoot => {
-        const location = shoot.effectiveLocation
+        const location = getEffectiveShootLocation(shoot)
         if (!location) {
           console.warn(
-            `Skipping marker for ${shoot.name}: No effective location available`
+            `Skipping marker for ${
+              shoot.sname || "Unnamed shoot"
+            }: No effective location available`
           )
           return null
         }
@@ -118,7 +125,9 @@ const MapComponent = ({
           lng > 180
         ) {
           console.warn(
-            `Skipping marker for ${shoot.name}: Invalid coordinates (${location.lat}, ${location.lng})`
+            `Skipping marker for ${
+              shoot.sname || "Unnamed shoot"
+            }: Invalid coordinates (${location.lat}, ${location.lng})`
           )
           return null
         }
@@ -181,10 +190,12 @@ const MapComponent = ({
     []
   )
 
-  // Safe position for InfoWindow (using effectiveLocation for shoots, location for venues)
+  // Use the resolved shoot location or the venue's own location.
   const safeInfoPosition = useMemo(() => {
     if (!selectedItem) return null
-    const loc = selectedItem.effectiveLocation || selectedItem.location
+    const loc = selectedItem.date
+      ? getEffectiveShootLocation(selectedItem)
+      : selectedItem.location
     if (!loc) return null
     const lat = parseFloat(loc.lat)
     const lng = parseFloat(loc.lng)
@@ -252,27 +263,29 @@ const MapComponent = ({
         >
           {(() => {
             const isShoot = selectedItem.date // Simple check: shoots have 'date'
+            const selectedLocation = isShoot
+              ? getEffectiveShootLocation(selectedItem)
+              : selectedItem.location
             if (isShoot) {
               return (
                 <div className="p-2">
-                  <h6 className="mb-2">{selectedItem.name}</h6>
+                  <h6 className="mb-2">
+                    {selectedItem.sname || selectedItem.seriesName || "Event"}
+                  </h6>
                   <p className="mb-2 small">
                     <strong>Date:</strong> {formatDate(selectedItem.date)}
                   </p>
                   <p className="mb-2 small">
                     <strong>Location:</strong>{" "}
-                    {selectedItem.effectiveLocation?.address || "TBD"},{" "}
-                    {selectedItem.effectiveLocation?.city},{" "}
-                    {selectedItem.effectiveLocation?.state}{" "}
-                    {selectedItem.effectiveLocation?.zip || ""}
+                    {selectedLocation?.address || "TBD"},{" "}
+                    {selectedLocation?.city},{" "}
+                    {selectedLocation?.state}{" "}
+                    {selectedLocation?.zip || ""}
                   </p>
-                  {userLocation && selectedItem.effectiveLocation && (
+                  {userLocation && selectedLocation && (
                     <p className="mb-2 small">
                       <strong>Distance:</strong>{" "}
-                      {getDistance(
-                        userLocation,
-                        selectedItem.effectiveLocation
-                      ).toFixed(1)}{" "}
+                      {getDistance(userLocation, selectedLocation).toFixed(1)}{" "}
                       mi
                     </p>
                   )}
@@ -284,7 +297,7 @@ const MapComponent = ({
                   )}
                   <div className="d-flex gap-2">
                     <a
-                      href={`https://www.google.com/maps?q=${selectedItem.effectiveLocation?.lat},${selectedItem.effectiveLocation?.lng}`}
+                      href={`https://www.google.com/maps?q=${selectedLocation?.lat},${selectedLocation?.lng}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="btn btn-sm btn-outline-primary"
@@ -306,7 +319,7 @@ const MapComponent = ({
               // Venue
               return (
                 <div className="p-2">
-                  <h6 className="mb-2">{selectedItem.name}</h6>
+                  <h6 className="mb-2">{selectedItem.vname}</h6>
                   <p className="mb-2 small">
                     <strong>Type:</strong> {selectedItem.venueType || "Venue"}
                   </p>
@@ -332,14 +345,14 @@ const MapComponent = ({
                   )}
                   <p className="mb-2 small">
                     <strong>Location:</strong>{" "}
-                    {selectedItem.location?.address || "TBD"},{" "}
-                    {selectedItem.location?.city},{" "}
-                    {selectedItem.location?.state}{" "}
-                    {selectedItem.location?.zip || ""}
+                    {selectedLocation?.address || "TBD"},{" "}
+                    {selectedLocation?.city},{" "}
+                    {selectedLocation?.state}{" "}
+                    {selectedLocation?.zip || ""}
                   </p>
                   <div className="d-flex gap-2">
                     <a
-                      href={`https://www.google.com/maps?q=${selectedItem.location?.lat},${selectedItem.location?.lng}`}
+                      href={`https://www.google.com/maps?q=${selectedLocation?.lat},${selectedLocation?.lng}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="btn btn-sm btn-outline-primary"
@@ -370,7 +383,6 @@ MapComponent.propTypes = {
     PropTypes.shape({
       id: PropTypes.string,
       shootId: PropTypes.string,
-      name: PropTypes.string,
       sname: PropTypes.string,
       venueId: PropTypes.string, // For joining
       date: PropTypes.string.isRequired,
@@ -391,7 +403,6 @@ MapComponent.propTypes = {
     PropTypes.shape({
       id: PropTypes.string,
       venueId: PropTypes.string,
-      name: PropTypes.string,
       vname: PropTypes.string,
       location: PropTypes.shape({
         lat: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),

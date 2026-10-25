@@ -20,12 +20,6 @@ export const getStatusInfo = target => {
  * Returns a clean string or null if empty/missing.
  */
 export const getAssociationBadge = assocType => {
-  if (!assocType) return null
-
-  if (Array.isArray(assocType)) {
-    return assocType.length > 0 ? assocType.join(", ") : null
-  }
-
   return typeof assocType === "string" && assocType.trim().length > 0
     ? assocType.trim()
     : null

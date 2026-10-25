@@ -279,7 +279,7 @@ exports.createSchemaCustomization = ({ actions }) => {
       parentAssociationID: String
       associationScope: String
       inheritsRulesFromParent: Boolean
-      parentAssociations: [AssociationsJson] @link(by: "acronym", from: "sanctioning")
+      sanctioningAssociations: [AssociationsJson] @link(by: "acronym", from: "sanctioning")
       bowTypes: [String]
       snipcartUserId: String
       subscriptionId: String
@@ -300,6 +300,8 @@ exports.createSchemaCustomization = ({ actions }) => {
       associationID: String
       association: AssociationsJson @link(by: "acronym", from: "associationType")
       location: Location
+      shootLocation: Location
+      useVenueLocation: Boolean
       date: Date
       endDate: Date
       startTime: String
