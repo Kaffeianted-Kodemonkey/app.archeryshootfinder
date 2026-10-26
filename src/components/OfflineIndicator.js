@@ -29,7 +29,7 @@ const OfflineIndicator = () => {
       role="alert"
     >
       <i className="bi bi-wifi-off me-2"></i>
-      You are currently offline. Some features may be limited.
+      You are offline. Showing saved public listings, which may be out of date. Maps and online services may not work.
     </div>
   )
 }

@@ -59,7 +59,10 @@ const Layout = ({
         view={view}
         setView={setView}
       />
-      <main className={finalMainClass}>
+      <a className="skip-link" href="#main-content">
+        Skip to main content
+      </a>
+      <main id="main-content" tabIndex="-1" className={finalMainClass}>
         {isMapView ? (
           <>
             {/* 1. FIXED TOP ELEMENT: Map Row (Stays static, no scrolling) */}

@@ -9,10 +9,8 @@ import { filterByDistance } from "../../utils/shootFilters"
 const Direct = ({
   venues = [],
   allVenues = venues,
+  shoots = [],
   userLocation,
-  currentShoots = [],
-  upcomingShoots = [],
-  destinationShoots = [],
   onSelectShoot,
   location, // URL prop to check for footer filter matches
   onFilterChange, // Optional callback to pass filtered results back to a map view
@@ -231,9 +229,7 @@ const Direct = ({
                 allVenues={filteredVenues}
                 location={userLocation}
                 showUnclaimed={showUnclaimed}
-                currentShoots={currentShoots}
-                upcomingShoots={upcomingShoots}
-                destinationShoots={destinationShoots}
+                shoots={shoots}
                 onSort={handleSort}
                 sortField={sortField}
                 sortDirection={sortDirection}
@@ -250,10 +246,8 @@ const Direct = ({
 Direct.propTypes = {
   venues: PropTypes.array.isRequired,
   allVenues: PropTypes.array,
+  shoots: PropTypes.array,
   userLocation: PropTypes.object,
-  currentShoots: PropTypes.array,
-  upcomingShoots: PropTypes.array,
-  destinationShoots: PropTypes.array,
   onSelectShoot: PropTypes.func,
   location: PropTypes.object,
   onFilterChange: PropTypes.func,

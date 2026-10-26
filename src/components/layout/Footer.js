@@ -5,10 +5,11 @@ import { Link } from "gatsby"
 const Footer = () => {
   return (
     <footer
+      aria-label="Quick navigation"
       className="bg-primary text-light py-3 mb-5 fixed-bottom container-fluid gx-0"
       style={{ height: "80px", zIndex: 1030 }}
     >
-      <div className="row align-items-center justify-content-between pb-3 g-0">
+      <nav className="row footer-nav align-items-center justify-content-between g-0">
         <div className="col d-flex flex-column align-items-center text-nowrap">
           <i className="bi bi-house-door fs-4"></i>
           <Link to="/" className="text-decoration-none text-white ">
@@ -49,7 +50,7 @@ const Footer = () => {
             Pro Shop
           </Link>
         </div>
-      </div>
+      </nav>
       {/* <div className="d-flex align-items-center justify-content-between px-3 px-md-4 h-100">
         <div className="text-start">
           <small>&copy; 2026 Archery Shoot Finder. All rights reserved.</small>

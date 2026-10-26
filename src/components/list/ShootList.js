@@ -9,10 +9,10 @@ const ShootList = ({
   shoots = [],
   allShoots = shoots,
   onVisibleShootsChange,
+  onSelectShoot,
   userLocation,
   sortField = "date",
   sortDirection = "asc",
-  onSelectShoot,
 }) => {
   const sortedShoots = React.useMemo(() => {
     return [...shoots].sort((a, b) => {
@@ -52,19 +52,18 @@ const ShootList = ({
     setFilteredShoots(sortedShoots)
   }, [sortedShoots])
 
-  // Leagues: seriesName (or sname) + venueId; tournaments: one per shootId
-  // Must run every render (before any early return)
+  // Group repeated event titles at the same venue into one card.
+  // Must run every render (before any early return).
   const eventGroups = React.useMemo(() => {
     const grouped = filteredShoots.reduce((acc, shoot) => {
-      const venueId = shoot.venue?.venueId || shoot.venueId || "unknown"
-      const isLeague = shoot.isLeague === true || shoot.isLeague === "true"
-      const series = shoot.seriesName || shoot.sname || "league"
-
-      const groupKey = isLeague
-        ? `league-${String(series)
-            .replace(/\s+/g, "-")
-            .toLowerCase()}-${venueId}`
-        : `tournament-${shoot.shootId || shoot.id || Math.random()}`
+      const venueId = String(
+        shoot.venue?.venueId || shoot.venueId || "unknown"
+      ).toLowerCase()
+      const eventTitle = String(shoot.sname || shoot.seriesName || "event")
+        .trim()
+        .replace(/\s+/g, " ")
+        .toLowerCase()
+      const groupKey = `event-${JSON.stringify([venueId, eventTitle])}`
 
       if (!acc[groupKey]) acc[groupKey] = []
       acc[groupKey].push(shoot)
@@ -124,10 +123,10 @@ ShootList.propTypes = {
   shoots: PropTypes.array,
   allShoots: PropTypes.array,
   onVisibleShootsChange: PropTypes.func,
+  onSelectShoot: PropTypes.func,
   userLocation: PropTypes.object,
   sortField: PropTypes.string,
   sortDirection: PropTypes.string,
-  onSelectShoot: PropTypes.func,
 }
 
 export default ShootList

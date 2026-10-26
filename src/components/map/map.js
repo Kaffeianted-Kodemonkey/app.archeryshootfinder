@@ -29,12 +29,26 @@ const MapComponent = ({
   selectedShoot,
   onClearSelection,
 }) => {
+  const [isOnline, setIsOnline] = useState(true)
   const [selectedItem, setSelectedItem] = useState(null)
   const [map, setMap] = useState(null)
   const [center, setCenter] = useState(defaultCenter)
   const infoWindowRef = useRef(null)
   const googleMapsApiKey = process.env.GATSBY_GOOGLE_MAPS_API_KEY
   const { isLoaded, loadError } = useJsApiLoader({ googleMapsApiKey })
+
+  useEffect(() => {
+    const updateOnlineStatus = () => setIsOnline(navigator.onLine)
+
+    updateOnlineStatus()
+    window.addEventListener("online", updateOnlineStatus)
+    window.addEventListener("offline", updateOnlineStatus)
+
+    return () => {
+      window.removeEventListener("online", updateOnlineStatus)
+      window.removeEventListener("offline", updateOnlineStatus)
+    }
+  }, [])
 
   useEffect(() => {
     if (userLocation && map) {
@@ -205,52 +219,58 @@ const MapComponent = ({
 
   if (!googleMapsApiKey || loadError) {
     return (
-      <div className="alert alert-danger m-3" role="alert">
-        Google Maps could not load. Check the local Google Maps API key and
-        browser console for the Maps JavaScript API error.
+      <div className="m-3">
+        {isOnline ? (
+          <div className="alert alert-danger" role="alert">
+            Google Maps could not load. Check the local Google Maps API key and
+            browser console for the Maps JavaScript API error.
+          </div>
+        ) : (
+          <OfflineMapNotice />
+        )}
       </div>
     )
   }
 
   if (!isLoaded) {
     return (
-      <div
-        className="d-flex align-items-center justify-content-center"
-        style={mapContainerStyle}
-      >
-        Loading map…
+      <div className="position-relative" style={mapContainerStyle}>
+        <div className="d-flex align-items-center justify-content-center h-100">
+          {isOnline ? "Loading map…" : <OfflineMapNotice />}
+        </div>
       </div>
     )
   }
 
   return (
-    <GoogleMap
-      mapContainerStyle={mapContainerStyle}
-      center={center}
-      zoom={5}
-      onLoad={setMap}
-      onClick={handleMapClick}
-      options={{
-        styles: [
-          {
-            featureType: "poi",
-            elementType: "labels",
-            stylers: [{ visibility: "off" }],
-          },
-        ],
-        disableDefaultUI: true,
-        zoomControl: true,
-        mapTypeControl: true,
-      }}
-    >
-      {markers.map(marker => (
-        <Marker
-          key={marker.key}
-          position={marker.position}
-          onClick={() => handleMarkerClick(marker)}
-          icon={geoIcon}
-        />
-      ))}
+    <div className="position-relative" style={mapContainerStyle}>
+      <GoogleMap
+        mapContainerStyle={{ width: "100%", height: "100%" }}
+        center={center}
+        zoom={5}
+        onLoad={setMap}
+        onClick={handleMapClick}
+        options={{
+          styles: [
+            {
+              featureType: "poi",
+              elementType: "labels",
+              stylers: [{ visibility: "off" }],
+            },
+          ],
+          disableDefaultUI: true,
+          zoomControl: true,
+          mapTypeControl: true,
+        }}
+      >
+        {markers.map(marker => (
+          <Marker
+            key={marker.key}
+            position={marker.position}
+            onClick={() => handleMarkerClick(marker)}
+            icon={geoIcon}
+          />
+        ))}
 
       {selectedItem && safeInfoPosition && (
         <InfoWindow
@@ -304,14 +324,18 @@ const MapComponent = ({
                     >
                       Directions
                     </a>
-                    {selectedItem.isVerified && selectedItem.venueId && (
-                      <Link
-                        to={`/venues/${selectedItem.venueId}`}
-                        className="btn btn-sm btn-primary"
-                      >
-                        View Details
-                      </Link>
-                    )}
+                    {selectedItem.venueId &&
+                      (selectedItem.venue?.isClaimed === true ||
+                        selectedItem.venue?.isClaimed === "true" ||
+                        selectedItem.venue?.isClaimed === 1 ||
+                        selectedItem.venue?.isClaimed === "1") && (
+                        <Link
+                          to={`/venues/${selectedItem.venueId}`}
+                          className="btn btn-sm btn-primary"
+                        >
+                          View Details
+                        </Link>
+                      )}
                   </div>
                 </div>
               )
@@ -359,14 +383,18 @@ const MapComponent = ({
                     >
                       Directions
                     </a>
-                    {selectedItem.venueId && (
-                      <Link
-                        to={`/venues/${selectedItem.venueId}`}
-                        className="btn btn-sm btn-primary"
-                      >
-                        View Details
-                      </Link>
-                    )}
+                    {selectedItem.venueId &&
+                      (selectedItem.isClaimed === true ||
+                        selectedItem.isClaimed === "true" ||
+                        selectedItem.isClaimed === 1 ||
+                        selectedItem.isClaimed === "1") && (
+                        <Link
+                          to={`/venues/${selectedItem.venueId}`}
+                          className="btn btn-sm btn-primary"
+                        >
+                          View Details
+                        </Link>
+                      )}
                   </div>
                 </div>
               )
@@ -374,9 +402,23 @@ const MapComponent = ({
           })()}
         </InfoWindow>
       )}
-    </GoogleMap>
+      </GoogleMap>
+      {!isOnline && (
+        <div className="position-absolute top-0 start-0 end-0 p-2">
+          <OfflineMapNotice />
+        </div>
+      )}
+    </div>
   )
 }
+
+const OfflineMapNotice = () => (
+  <div className="alert alert-warning text-center py-2 mb-0" role="status">
+    You’re offline. This map may be unavailable or out of date. Use the{" "}
+    <Link to="/venues/">venue list</Link> for saved locations and contact
+    details.
+  </div>
+)
 
 MapComponent.propTypes = {
   shoots: PropTypes.arrayOf(

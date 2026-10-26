@@ -100,7 +100,7 @@ const Navbar = ({ siteTitle, siteDesc }) => {
                 Home
               </Link>
             </li>
-            <li className="nav-item">
+            {/* <li className="nav-item">
               <Link
                 to="/pricing"
                 className="nav-link"
@@ -108,7 +108,7 @@ const Navbar = ({ siteTitle, siteDesc }) => {
               >
                 Price Tiers
               </Link>
-            </li>
+            </li>*/}
             <li className="nav-item">
               <Link
                 to="https://archeryshootfinder.com"
@@ -132,14 +132,10 @@ const Navbar = ({ siteTitle, siteDesc }) => {
           <hr className="text-light py-1" />
 
           {/* RIGHT SIDE: Dynamic Auth Navigation Panel */}
-          <ul className="navbar-nav ms-auto gap-2">
+          {/* Uncomment when ready to use Login */}
+          {/* <ul className="navbar-nav ms-auto gap-2">
             {loggedInuser ? (
               <>
-                {/* <li className="nav-item d-none d-md-inline">
-                  <span className="text-white small fw-bold me-2">
-                    {loggedInuser.name}
-                  </span>
-                </li>*/}
                 <li className="nav-item">
                   <Link
                     to="/portal/"
@@ -194,7 +190,7 @@ const Navbar = ({ siteTitle, siteDesc }) => {
                 </Link>
               </li>
             )}
-          </ul>
+          </ul>*/}
         </div>
       </div>
     </nav>

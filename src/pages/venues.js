@@ -9,10 +9,35 @@ import Direct from "../components/list/VenueDirectory"
 
 const Directory = ({ data, location }) => {
   const Venues = data.allVenuesJson.nodes
+  const Shoots = data.allShootsJson.nodes
   const [view, setView] = useState("map")
 
   const [userLocation, setUserLocation] = useState(null)
   const [displayedVenues, setDisplayedVenues] = useState(Venues)
+
+  useEffect(() => {
+    if (location.hash) setView("list")
+  }, [location.hash])
+
+  useEffect(() => {
+    const showOfflineDirectory = () => {
+      if (!navigator.onLine) setView("list")
+    }
+
+    window.addEventListener("offline", showOfflineDirectory)
+    showOfflineDirectory()
+
+    return () => window.removeEventListener("offline", showOfflineDirectory)
+  }, [])
+
+  useEffect(() => {
+    if (view !== "list" || !location.hash) return
+    const scrollTimeout = window.setTimeout(() => {
+      document.getElementById(location.hash.slice(1))?.scrollIntoView()
+    }, 100)
+
+    return () => window.clearTimeout(scrollTimeout)
+  }, [view, location.hash])
 
   // Standardized browser coordinate lookup loop
   useEffect(() => {
@@ -37,13 +62,11 @@ const Directory = ({ data, location }) => {
       venues: Venues,
       allVenues: Venues,
       userLocation: userLocation,
-      currentShoots: [],
-      upcomingShoots: [],
-      destinationShoots: [],
+      shoots: Shoots,
       location: location, // Checks URL parameter contexts
       onFilterChange: setDisplayedVenues,
     }
-  }, [Venues, userLocation, location])
+  }, [Venues, Shoots, userLocation, location])
 
   const mapProps = useMemo(() => {
     return {
@@ -72,6 +95,9 @@ Directory.propTypes = {
     allVenuesJson: PropTypes.shape({
       nodes: PropTypes.array.isRequired,
     }),
+    allShootsJson: PropTypes.shape({
+      nodes: PropTypes.array.isRequired,
+    }),
   }).isRequired,
   location: PropTypes.object.isRequired,
 }
@@ -82,6 +108,21 @@ export default Directory
 
 export const query = graphql`
   query VenuesPageData {
+    allShootsJson {
+      nodes {
+        shootId
+        sname
+        venueId
+        venue {
+          venueId
+        }
+        date
+        endDate
+        isDestination
+        isLeague
+        seriesName
+      }
+    }
     allVenuesJson {
       nodes {
         venueId
@@ -101,7 +142,9 @@ export const query = graphql`
         contact {
           phone
           email
+          membershipUrl
         }
+        isMembership
         hours {
           day
           open

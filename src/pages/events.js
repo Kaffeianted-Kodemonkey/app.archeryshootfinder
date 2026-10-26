@@ -37,8 +37,13 @@ export const query = graphql`
         date
         endDate
         shootFormat
+        shootClass
+        bowTypes
+        skillLevel
         entryFee
         description
+        amenities
+        registrationUrl
         isDestination
         isLeague
         seriesName
@@ -46,6 +51,7 @@ export const query = graphql`
         association {
           acronym
           assocName
+          websiteUrl
           ruleBooks {
             ruleName
             rulebookUrl
@@ -73,6 +79,7 @@ export const query = graphql`
           vname
           venueType
           isClaimed
+          isMembership
           contact {
             phone
             email

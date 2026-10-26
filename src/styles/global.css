@@ -50,8 +50,15 @@
   /* Body and global link layout configurations */
   --bs-body-bg: #faf7f0; /* Soft warm light tone instead of blinding clinical white */
   --bs-body-color: #1e1e1c;
-  --bs-link-color: #d05a3f; /* Sandstone action items */
+  --bs-link-color: #8f351f; /* Accessible sandstone action items */
   --bs-link-hover-color: #b84126;
+
+  --app-surface: #fffdf8;
+  --app-surface-muted: #f1eadb;
+  --app-border: #d7cebc;
+  --app-ink-muted: #514d45;
+  --app-focus: #125c93;
+  --app-radius: 1rem;
 
   /* App-specific transitions */
   --app-transition: 250ms ease;
@@ -77,6 +84,37 @@ body {
   flex-direction: column;
   transition: background-color var(--app-transition);
   overflow-y: auto !important;
+  color: var(--bs-body-color);
+  font-family: Inter, "Segoe UI", system-ui, -apple-system, sans-serif;
+  line-height: 1.55;
+}
+
+/* Consistent, visible keyboard focus (WCAG 2.2, 2.4.7 and 2.4.11). */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 3px solid var(--app-focus) !important;
+  outline-offset: 3px;
+  box-shadow: 0 0 0 3px var(--bs-body-bg) !important;
+}
+
+::selection {
+  color: #fff;
+  background: #563d20;
+}
+
+.skip-link {
+  position: fixed;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 2000;
+  padding: 0.75rem 1rem;
+  transform: translateY(-160%);
+  color: #fff;
+  background: #1e1e1c;
+  border-radius: 0.5rem;
+}
+
+.skip-link:focus {
+  transform: translateY(0);
 }
 
 main {
@@ -95,6 +133,145 @@ main {
   height: 120px;
   color: #ffffff;
   font-size: 1.5em;
+}
+
+.home-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: clamp(1.5rem, 5vw, 3.5rem) !important;
+  background: var(--app-surface) !important;
+  border: 1px solid var(--app-border) !important;
+  border-radius: 1.5rem !important;
+  box-shadow: 0 1rem 3rem rgba(48, 39, 24, 0.09) !important;
+}
+
+.home-hero::before {
+  position: absolute;
+  z-index: -1;
+  top: -7rem;
+  right: -6rem;
+  width: 18rem;
+  height: 18rem;
+  content: "";
+  background: radial-gradient(circle, rgba(230, 161, 0, 0.2), transparent 68%);
+  border-radius: 50%;
+}
+
+.home-page {
+  padding-top: 5rem;
+}
+
+.home-page h1 {
+  letter-spacing: -0.035em;
+}
+
+.home-page .form-control {
+  min-height: 3.25rem;
+  border-color: #887d68;
+}
+
+.home-page .btn {
+  min-height: 3rem;
+  font-weight: 650;
+}
+
+.home-page .btn-success {
+  color: #fff;
+  background-color: #175638;
+  border-color: #175638;
+}
+
+.home-page .btn-success:hover {
+  background-color: #10452c;
+  border-color: #10452c;
+}
+
+.home-page .account-link {
+  color: #175638;
+  border-color: #175638;
+  background: var(--app-surface);
+}
+
+.home-page .account-link:hover {
+  color: #fff;
+  background: #175638;
+}
+
+.navbar {
+  min-height: 4.25rem;
+  background: #202724 !important;
+  border-bottom: 3px solid #b87932;
+}
+
+.navbar .nav-link {
+  min-height: 2.75rem;
+  display: inline-flex;
+  align-items: center;
+  padding-inline: 0.85rem !important;
+  color: #f5f1e8 !important;
+}
+
+.navbar .nav-link:hover,
+.navbar .nav-link[aria-current="page"] {
+  color: #f2c46b !important;
+}
+
+.navbar .btn,
+.footer-nav a {
+  min-height: 2.75rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+footer.fixed-bottom {
+  height: auto !important;
+  min-height: 5rem;
+  padding: 0.5rem max(0.5rem, env(safe-area-inset-right)) calc(0.5rem + env(safe-area-inset-bottom)) max(0.5rem, env(safe-area-inset-left)) !important;
+  background: #202724 !important;
+  border-top: 2px solid #b87932;
+}
+
+.footer-nav {
+  max-width: 52rem;
+  margin: 0 auto;
+}
+
+.footer-nav a {
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 3rem;
+  color: #fff !important;
+  font-size: 0.8rem;
+  text-decoration: none;
+}
+
+.footer-nav a:hover {
+  color: #f2c46b !important;
+}
+
+.card,
+.accordion-item,
+.alert {
+  border-color: var(--app-border);
+  border-radius: var(--app-radius);
+}
+
+.text-muted,
+.text-secondary {
+  color: var(--app-ink-muted) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 /* Footer and offcanvas positioning */
@@ -174,6 +351,29 @@ main.map-view .col[style*="height"] {
    CONSOLIDATED RESPONSIVE MEDIA QUERIES - Mobile Viewports
    ========================================================================== */
 @media (max-width: 768px) {
+  main {
+    scroll-margin-top: 4.5rem;
+  }
+
+  .home-page {
+    padding-top: 4.75rem;
+  }
+
+  .navbar .navbar-collapse {
+    padding: 0.5rem 0 1rem;
+  }
+
+  .navbar .navbar-nav .nav-link,
+  .navbar .navbar-nav .btn {
+    width: 100%;
+    justify-content: flex-start;
+    min-height: 2.75rem;
+  }
+
+  footer.fixed-bottom {
+    min-height: 4.5rem;
+  }
+
   main {
     min-height: calc(100vh - 150px); /* Reduced buffer */
     padding-bottom: 5rem; /* Increased clearance */

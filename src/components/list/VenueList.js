@@ -12,7 +12,7 @@ const venueTypeMapping = {
     rowBg: "bg-light",
   },
   Range: {
-    icon: "bi-crosshairs",
+    icon: "bi-bullseye",
     className: "bg-success text-white",
     rowBg: "bg-light",
   },
@@ -31,16 +31,11 @@ const venueTypeMapping = {
 
 const VenueList = ({
   allVenues,
+  shoots = [],
   location,
   showUnclaimed = false,
-  currentShoots = [],
-  upcomingShoots = [],
-  destinationShoots = [],
-  setActiveTab,
-  setSelectedVenueId,
 }) => {
   let venues = Array.isArray(allVenues) ? [...allVenues] : []
-  const allShoots = [...currentShoots, ...upcomingShoots, ...destinationShoots]
 
   if (venues.length === 0) {
     return (
@@ -65,38 +60,26 @@ const VenueList = ({
   }
 
   const getVenueShootCounts = venueId => {
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
-    const horizon = new Date(today)
-    horizon.setDate(today.getDate() + 21)
-    horizon.setHours(23, 59, 59, 999)
-
-    const venueShoots = allShoots.filter(s => {
-      const vid = s.venue?.venueId || s.venueId
-      return vid === venueId
+    const venueShoots = shoots.filter(shoot => {
+      const shootVenueId = shoot.venue?.venueId || shoot.venueId
+      return String(shootVenueId) === String(venueId)
     })
 
-    let current = 0,
-      upcoming = 0,
-      destination = 0
-
-    venueShoots.forEach(shoot => {
-      if (shoot.isDestination) {
-        destination++
-      } else {
-        const start = new Date(shoot.date)
-        const end = shoot.endDate ? new Date(shoot.endDate) : start
-        start.setHours(0, 0, 0, 0)
-        end.setHours(23, 59, 59, 999)
-        if (start <= horizon && end >= today) current++
-        else if (start > horizon) upcoming++
-      }
-    })
+    const isSeriesShoot = shoot =>
+      Boolean(String(shoot.seriesName || "").trim()) ||
+      shoot.isLeague === true ||
+      shoot.isLeague === "true"
+    const isDestinationShoot = shoot =>
+      shoot.isDestination === true || shoot.isDestination === "true"
 
     return {
-      currentCount: current,
-      upcomingCount: upcoming,
-      destinationCount: destination,
+      eventCount: venueShoots.filter(
+        shoot => !isDestinationShoot(shoot) && !isSeriesShoot(shoot)
+      ).length,
+      seriesCount: venueShoots.filter(isSeriesShoot).length,
+      destinationCount: venueShoots.filter(
+        shoot => isDestinationShoot(shoot) && !isSeriesShoot(shoot)
+      ).length,
     }
   }
 
@@ -105,8 +88,8 @@ const VenueList = ({
       {venues.map(venue => {
         const venueLocation = venue.location || {}
         const contact = venue.contact || {}
-        const hours = venue.hours || {}
-        const membership = venue.membership || {}
+        const hours = Array.isArray(venue.hours) ? venue.hours : []
+        const membership = String(venue.isMembership || "").trim()
 
         const distanceValue =
           location && venueLocation.lat != null && venueLocation.lng != null
@@ -119,8 +102,14 @@ const VenueList = ({
           "No Location"
 
         // venueType is a string – look up mapping directly
-        const mapping =
-          venueTypeMapping[venue.venueType] || venueTypeMapping.default
+        const normalizedVenueType = String(venue.venueType || "")
+          .trim()
+          .toLowerCase()
+        const hostType =
+          Object.keys(venueTypeMapping).find(
+            type => type.toLowerCase() === normalizedVenueType
+          ) || "Club"
+        const mapping = venueTypeMapping[hostType]
 
         const isClaimed =
           venue.isClaimed === true ||
@@ -128,24 +117,34 @@ const VenueList = ({
           venue.isClaimed === 1 ||
           venue.isClaimed === "1"
 
-        const isUnclaimed = !isClaimed
         const isNonProfit = venue.subscriptionPlan === "Freemium"
 
         const hasPhone = contact.phone && contact.phone.trim().length > 0
         const hasEmail = contact.email && contact.email.trim().length > 0
 
-        const { currentCount, upcomingCount, destinationCount } =
+        const { eventCount, seriesCount, destinationCount } =
           getVenueShootCounts(venue.venueId)
 
         return (
-          <div key={venue.id || venue.venueId} className="col-12 mb-3">
+          <div
+            key={venue.id || venue.venueId}
+            id={`venue-${venue.venueId}`}
+            className="col-12 mb-3"
+          >
             <div className={`card ${mapping.rowBg}`}>
               {/* Card Header */}
               <div className="card-header pt-3">
-                <span className={`badge ${mapping.className}`}>
-                  <i className={`bi ${venue.icon || mapping.icon} me-1`}></i>
-                  {venue.venueType || "Venue"}
-                </span>{" "}
+                <Link
+                  to={
+                    isClaimed
+                      ? `/venues/${venue.venueId}`
+                      : `/venues#venue-${venue.venueId}`
+                  }
+                  className={`badge ${mapping.className} text-decoration-none`}
+                >
+                  <i className={`bi ${mapping.icon} me-1`}></i>
+                  {hostType}
+                </Link>{" "}
                 <h2 className="card-title fs-3 mt-2 mb-0">{venue.vname}</h2>
                 <p className="fs-6 mt-2">
                   <i className="bi bi-geo-alt"></i> {distance} | {cityState}
@@ -164,12 +163,25 @@ const VenueList = ({
                 </div>
                 <div className="row">
                   <div className="col-sm-6">
-                    {hours && (hours.weekday || hours.weekend) ? (
+                    {hours.length > 0 ? (
                       <p className="card-text mb-1">
                         <strong>Hours:</strong>
-                        <br />
-                        Weekdays: {hours.weekday || "TBD"} <br />
-                        Weekends: {hours.weekend || "TBD"}
+                        {hours.map((schedule, index) => {
+                          const days = Array.isArray(schedule.day)
+                            ? schedule.day.join(", ")
+                            : schedule.day
+                          const time = [schedule.open, schedule.close]
+                            .filter(Boolean)
+                            .join(" - ")
+
+                          return (
+                            <React.Fragment key={`${days || "hours"}-${index}`}>
+                              <br />
+                              {days ? `${days}: ` : ""}
+                              {time || "TBD"}
+                            </React.Fragment>
+                          )
+                        })}
                       </p>
                     ) : (
                       <p className="card-text mb-1">
@@ -177,32 +189,46 @@ const VenueList = ({
                       </p>
                     )}
 
-                    {membership && membership.required !== undefined ? (
+                    {membership ? (
                       <p className="card-text mb-1">
                         <strong>Membership:</strong>{" "}
-                        {membership.required ? (
+                        {/^(true|1)$/i.test(membership) ? (
                           <>
                             Required
-                            {membership.url && (
-                              <a
-                                href={membership.url}
-                                className="ms-1"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                              >
-                                Join
-                              </a>
-                            )}
-                            {membership.details && ` - ${membership.details}`}
                           </>
-                        ) : (
+                        ) : /^(false|0)$/i.test(membership) ? (
                           "No membership required"
+                        ) : (
+                          membership
+                        )}
+                        {contact.membershipUrl && (
+                          <a
+                            href={contact.membershipUrl}
+                            className="ms-1"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            Join
+                          </a>
                         )}
                       </p>
                     ) : (
-                      <p className="card-text mb-1">
-                        <strong>Membership:</strong> TBD
-                      </p>
+                      contact.membershipUrl ? (
+                        <p className="card-text mb-1">
+                          <strong>Membership:</strong>{" "}
+                          <a
+                            href={contact.membershipUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            Join
+                          </a>
+                        </p>
+                      ) : (
+                        <p className="card-text mb-1">
+                          <strong>Membership:</strong> TBD
+                        </p>
+                      )
                     )}
                   </div>
                   <div className="col-sm-6">
@@ -239,55 +265,40 @@ const VenueList = ({
                 <div className="row">
                   <div className="col-sm-12">
                     <h3 className="fs-5">
-                      <strong>Number of Shoots:</strong>
+                      <strong>Event listings:</strong>
                     </h3>
 
-                    {currentCount > 0 ? (
-                      <button
-                        onClick={() => {
-                          if (setSelectedVenueId && setActiveTab) {
-                            setSelectedVenueId(venue.venueId)
-                            setActiveTab("current")
-                          }
-                        }}
+                    {eventCount > 0 ? (
+                      <Link
+                        to={`/events?activeTab=events&venueId=${encodeURIComponent(venue.venueId)}`}
                         className="btn btn-sm btn-link p-0 text-decoration-none"
                       >
-                        ({currentCount}) Current
-                      </button>
+                        ({eventCount}) Events
+                      </Link>
                     ) : (
-                      <span className="text-muted">(0) Current</span>
+                      <span className="text-muted">(0) Events</span>
                     )}
                     <span className="text-muted"> | </span>
-                    {upcomingCount > 0 ? (
-                      <button
-                        onClick={() => {
-                          if (setSelectedVenueId && setActiveTab) {
-                            setSelectedVenueId(venue.venueId)
-                            setActiveTab("upcoming")
-                          }
-                        }}
+                    {seriesCount > 0 ? (
+                      <Link
+                        to={`/events?activeTab=series&venueId=${encodeURIComponent(venue.venueId)}`}
                         className="btn btn-sm btn-link p-0 text-decoration-none"
                       >
-                        ({upcomingCount}) Upcoming
-                      </button>
+                        ({seriesCount}) Leagues &amp; Series
+                      </Link>
                     ) : (
-                      <span className="text-muted">(0) Upcoming</span>
+                      <span className="text-muted">(0) Leagues &amp; Series</span>
                     )}
                     <span className="text-muted"> | </span>
                     {destinationCount > 0 ? (
-                      <button
-                        onClick={() => {
-                          if (setSelectedVenueId && setActiveTab) {
-                            setSelectedVenueId(venue.venueId)
-                            setActiveTab("destination")
-                          }
-                        }}
+                      <Link
+                        to={`/events?activeTab=destination&venueId=${encodeURIComponent(venue.venueId)}`}
                         className="btn btn-sm btn-link p-0 text-decoration-none"
                       >
-                        ({destinationCount}) Destination
-                      </button>
+                        ({destinationCount}) Destinations
+                      </Link>
                     ) : (
-                      <span className="text-muted">(0) Destination</span>
+                      <span className="text-muted">(0) Destinations</span>
                     )}
                   </div>
                 </div>
@@ -314,7 +325,7 @@ const VenueList = ({
                       <i className="bi bi-question-circle"></i> Unclaimed
                     </span>
                     <Link
-                      to="/pricing"
+                      to="/venue-feedback"
                       className="btn btn-sm btn-outline-warning"
                     >
                       Claim Listing

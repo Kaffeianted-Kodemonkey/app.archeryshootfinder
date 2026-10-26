@@ -1,29 +1,18 @@
 import * as React from "react"
-import { useState, useEffect } from "react"
 import Layout from "../components/layout/Layout"
 import Seo from "../components/seo"
 
 /**
  * LoginPage Component
  *
- * Uses the `signin` search parameter to show a specific login option when
- * requested, while keeping both options visible by default.
+ * Uses the `signin` search parameter to show the requested login option.
  */
 const LoginPage = ({ location }) => {
-  const [currentView, setCurrentView] = useState("both")
-
-  useEffect(() => {
-    if (location?.search) {
-      const params = new URLSearchParams(location.search)
-      const signinValue = params.get("signin")
-
-      if (signinValue === "shooter") {
-        setCurrentView("shooter")
-      } else if (signinValue === "venue") {
-        setCurrentView("venue")
-      }
-    }
-  }, [location])
+  const params = new URLSearchParams(location?.search || "")
+  const signinValue = params.get("signin")
+  const currentView = ["shooter", "venue"].includes(signinValue)
+    ? signinValue
+    : "both"
 
   return (
     <Layout>
@@ -43,19 +32,17 @@ const LoginPage = ({ location }) => {
                   </p>
                   <div className="border rounded p-4 bg-light text-center flex-grow-1 d-flex flex-column justify-content-center">
                     <h5 className="fw-bold">
-                      Shooter accounts are coming soon
+                      Shooter sign in
                     </h5>
                     <p className="text-muted small mb-3">
-                      We’re working on a way to save your shoots and scores.
-                      Have an idea for shooter accounts? Let us know.
+                      Shooter accounts will use Stytch. Sign in will be
+                      available soon.
                     </p>
                     <a
                       className="btn btn-outline-primary align-self-center"
-                      href="https://archeryshootfinder.com"
-                      target="_blank"
-                      rel="noreferrer"
+                      href="/shooter-feedback"
                     >
-                      Share feedback
+                      Share shooter feedback
                     </a>
                   </div>
                 </div>
@@ -67,9 +54,25 @@ const LoginPage = ({ location }) => {
             <div className="col-lg-5 col-md-6">
               <div className="card h-100 shadow-sm border">
                 <div className="card-header bg-dark text-white py-3 text-center">
-                  <h4 className="mb-0 fs-5 fw-bold">Venue Admin Portal</h4>
+                  <h4 className="mb-0 fs-5 fw-bold">Venue - Admin Portal</h4>
                 </div>
                 <div className="card-body p-4 d-flex flex-column justify-content-between">
+                  <p className="text-muted small text-center mb-4">
+                    Manage your venue profile, shoots, and account details.
+                  </p>
+                  <div className="border rounded p-4 bg-light text-center flex-grow-1 d-flex flex-column justify-content-center">
+                    <h5 className="fw-bold">Venue accounts are coming</h5>
+                    <p className="text-muted small mb-3">
+                      Accounts will be subscription based.
+                    </p>
+                    <a
+                      className="btn btn-dark align-self-center"
+                      href="/venue-feedback"
+                    >
+                      Share venue feedback
+                    </a>
+                  </div>
+                  {/* Previous Snipcart sign-in and registration actions:
                   <div>
                     <p className="text-muted small text-center mb-4">
                       Access your venue statistics, manage target directories,
@@ -94,6 +97,7 @@ const LoginPage = ({ location }) => {
                   <p className="text-center mt-3 mb-0">
                     <a href="/pricing">New Venue Registrations</a>
                   </p>
+                  */}
                 </div>
               </div>
             </div>

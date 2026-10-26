@@ -11,9 +11,9 @@ const DestList = ({
   shoots = [],
   allShoots = shoots,
   onVisibleShootsChange,
+  onSelectShoot,
   selectedVenueId = null,
   userLocation,
-  onSelectShoot,
 }) => {
   const destinationShoots = React.useMemo(() => {
     return shoots.filter(s => {
@@ -102,9 +102,9 @@ DestList.propTypes = {
   shoots: PropTypes.array,
   allShoots: PropTypes.array,
   onVisibleShootsChange: PropTypes.func,
+  onSelectShoot: PropTypes.func,
   selectedVenueId: PropTypes.string,
   userLocation: PropTypes.object,
-  onSelectShoot: PropTypes.func,
 }
 
 export default DestList

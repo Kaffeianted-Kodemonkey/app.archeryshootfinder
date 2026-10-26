@@ -3,26 +3,25 @@ import * as React from "react"
 import PropTypes from "prop-types"
 import ShootList from "./ShootList"
 import DestList from "./DestList"
-import AssocList from "./AssocList"
+import SeriesList from "./SeriesList"
 
 /**
- * Tabs: Events (all from today) | Destination | Associations
- * Current + Upcoming are merged into Events.
+ * Tabs: Events | Leagues & Series | Destination
  */
 const EventTabs = ({
   eventsShoots = [],
   allEventsShoots = eventsShoots,
   destinationShoots = [],
   allDestinationShoots = destinationShoots,
-  associationsShoots = [],
-  allAssociationShoots = associationsShoots,
+  seriesShoots = [],
+  allSeriesShoots = seriesShoots,
   userLocation,
-  onSelectShoot,
   activeTab = "events",
   setActiveTab,
   onEventResultsChange,
   onDestinationResultsChange,
-  onAssociationResultsChange,
+  onSeriesResultsChange,
+  onSelectShoot,
 }) => {
   const handleTabClick = tab => {
     if (setActiveTab) setActiveTab(tab)
@@ -35,20 +34,20 @@ const EventTabs = ({
           shoots={destinationShoots}
           allShoots={allDestinationShoots}
           onVisibleShootsChange={onDestinationResultsChange}
-          userLocation={userLocation}
           onSelectShoot={onSelectShoot}
+          userLocation={userLocation}
         />
       )
     }
 
-    if (activeTab === "association") {
+    if (activeTab === "series") {
       return (
-        <AssocList
-          shoots={associationsShoots}
-          allShoots={allAssociationShoots}
-          onVisibleShootsChange={onAssociationResultsChange}
-          userLocation={userLocation}
+        <SeriesList
+          shoots={seriesShoots}
+          allShoots={allSeriesShoots}
+          onVisibleShootsChange={onSeriesResultsChange}
           onSelectShoot={onSelectShoot}
+          userLocation={userLocation}
         />
       )
     }
@@ -67,8 +66,8 @@ const EventTabs = ({
         shoots={eventsShoots}
         allShoots={allEventsShoots}
         onVisibleShootsChange={onEventResultsChange}
-        userLocation={userLocation}
         onSelectShoot={onSelectShoot}
+        userLocation={userLocation}
       />
     )
   }
@@ -97,22 +96,22 @@ const EventTabs = ({
                 <button
                   type="button"
                   className={`nav-link ${
-                    activeTab === "destination" ? "active" : ""
+                    activeTab === "series" ? "active" : ""
                   }`}
-                  onClick={() => handleTabClick("destination")}
+                  onClick={() => handleTabClick("series")}
                 >
-                  Destination ({destinationShoots.length})
+                  Leagues &amp; Series ({seriesShoots.length})
                 </button>
               </li>
               <li className="nav-item">
                 <button
                   type="button"
                   className={`nav-link ${
-                    activeTab === "association" ? "active" : ""
+                    activeTab === "destination" ? "active" : ""
                   }`}
-                  onClick={() => handleTabClick("association")}
+                  onClick={() => handleTabClick("destination")}
                 >
-                  Associations ({associationsShoots.length})
+                  Destination ({destinationShoots.length})
                 </button>
               </li>
             </ul>
@@ -134,15 +133,15 @@ EventTabs.propTypes = {
   allEventsShoots: PropTypes.array,
   destinationShoots: PropTypes.array,
   allDestinationShoots: PropTypes.array,
-  associationsShoots: PropTypes.array,
-  allAssociationShoots: PropTypes.array,
+  seriesShoots: PropTypes.array,
+  allSeriesShoots: PropTypes.array,
   userLocation: PropTypes.object,
-  onSelectShoot: PropTypes.func,
   activeTab: PropTypes.string,
   setActiveTab: PropTypes.func,
   onEventResultsChange: PropTypes.func,
   onDestinationResultsChange: PropTypes.func,
-  onAssociationResultsChange: PropTypes.func,
+  onSeriesResultsChange: PropTypes.func,
+  onSelectShoot: PropTypes.func,
 }
 
 export default React.memo(EventTabs)

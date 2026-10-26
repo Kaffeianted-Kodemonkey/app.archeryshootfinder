@@ -183,6 +183,7 @@ exports.sourceNodes = async ({
         type: "ShootsJson",
         prefix: "mongo-shoot",
         doc: shoot,
+        extra: { shootId: String(shoot.shootId) },
       })
     })
 
@@ -212,6 +213,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
         nodes {
           id
           venueId
+          isClaimed
         }
       }
     }
@@ -224,16 +226,24 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
 
   const spotlightTemplate = path.resolve("src/templates/spotlight.js")
 
-  result.data.allVenuesJson.nodes.forEach(venue => {
-    createPage({
-      path: `/venues/${venue.venueId}`,
-      component: spotlightTemplate,
-      context: {
-        id: venue.id,
-        venueId: venue.venueId,
-      },
+  result.data.allVenuesJson.nodes
+    .filter(venue =>
+      venue.isClaimed === true ||
+      venue.isClaimed === "true" ||
+      venue.isClaimed === 1 ||
+      venue.isClaimed === "1"
+    )
+    .forEach(venue => {
+      createPage({
+        path: `/venues/${venue.venueId}`,
+        component: spotlightTemplate,
+        defer: true,
+        context: {
+          id: venue.id,
+          venueId: venue.venueId,
+        },
+      })
     })
-  })
 }
 
 exports.onCreatePage = async ({ page, actions }) => {
@@ -253,6 +263,7 @@ exports.createSchemaCustomization = ({ actions }) => {
       accOwner: String
       venueType: String
       isClaimed: Boolean!
+      isMembership: String
       isClass: Boolean!
       slug: String
       img: String

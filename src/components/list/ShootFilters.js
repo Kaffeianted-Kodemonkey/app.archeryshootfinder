@@ -19,6 +19,7 @@ const ShootFilters = ({
     format: "",
     shootClass: "",
     skillLevel: "",
+    association: "",
     distance: "",
   })
 
@@ -31,12 +32,15 @@ const ShootFilters = ({
     const levels = new Set()
     const states = new Set()
     const cities = new Set()
+    const associations = new Set()
 
     allShoots.forEach(s => {
       s.bowTypes?.forEach(b => bowTypes.add(b))
       s.shootFormat?.forEach(f => formats.add(f))
       s.shootClass?.forEach(c => classes.add(c))
       s.skillLevel?.forEach(l => levels.add(l))
+      const association = s.associationType || s.association?.acronym
+      if (association) associations.add(association)
 
       const loc = getEffectiveShootLocation(s)
       if (loc?.state) states.add(loc.state)
@@ -50,6 +54,7 @@ const ShootFilters = ({
       levels: [...levels].sort(),
       states: [...states].sort(), // ← new
       cities: [...cities].filter(Boolean).sort(),
+      associations: [...associations].sort(),
     }
   }, [allShoots])
 
@@ -81,6 +86,11 @@ const ShootFilters = ({
       result = result.filter(s => s.shootClass?.includes(filters.shootClass))
     if (filters.skillLevel)
       result = result.filter(s => s.skillLevel?.includes(filters.skillLevel))
+    if (filters.association)
+      result = result.filter(
+        s =>
+          (s.associationType || s.association?.acronym) === filters.association
+      )
     if (filters.distance && userLocation) {
       result = filterByDistance(result, userLocation, Number(filters.distance))
     }
@@ -98,6 +108,7 @@ const ShootFilters = ({
       format: "",
       shootClass: "",
       skillLevel: "",
+      association: "",
       distance: "",
     })
     setSort({ field: "", direction: "asc" })
@@ -142,6 +153,21 @@ const ShootFilters = ({
           <option value="100" disabled={!userLocation}>
             Within 100 miles
           </option>
+        </select>
+
+        <select
+          className="form-select form-select-sm flex-grow-1"
+          style={{ minWidth: "9rem", maxWidth: "14rem" }}
+          value={filters.association}
+          onChange={e => updateFilter("association", e.target.value)}
+          aria-label="Filter by rules association"
+        >
+          <option value="">Any rules association</option>
+          {options.associations.map(association => (
+            <option key={association} value={association}>
+              {association}
+            </option>
+          ))}
         </select>
 
         <select

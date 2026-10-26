@@ -32,7 +32,7 @@ module.exports = {
         description: `Find archery shoots, tournaments, and events near you`,
         start_url: `/`,
         scope: `/`,
-        display: `fullscreen`,
+        display: `standalone`,
         orientation: `portrait`,
         background_color: `#ffffff`,
         theme_color: `#C2410C`,
@@ -49,16 +49,8 @@ module.exports = {
     {
       resolve: `gatsby-plugin-offline`,
       options: {
-        workboxConfig: {
-          runtimeCaching: [
-            {
-              // Intercept your dynamic MongoDB routes
-              urlPattern: /(\/api\/venues|\/api\/events|graphql)/,
-              // NetworkFirst forces a live DB look, instantly serving the last cache if offline
-              handler: `NetworkFirst`,
-            },
-          ],
-        },
+        // Keep the public directory and venue detail page data available offline.
+        precachePages: [`/`, `/venues/`, `/venues/*`, `/events/`],
       },
     },
     `gatsby-transformer-json`,

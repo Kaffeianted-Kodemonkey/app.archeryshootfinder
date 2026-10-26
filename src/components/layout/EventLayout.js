@@ -13,15 +13,24 @@ function isFromTodayOnward(shoot, todayStart) {
   return end >= todayStart
 }
 
+function isSeriesShoot(shoot) {
+  return (
+    Boolean(String(shoot.seriesName || "").trim()) ||
+    shoot.isLeague === true ||
+    shoot.isLeague === "true"
+  )
+}
+
 const EventLayout = ({ masterRawShoots = [], location, children }) => {
   const [view, setView] = useState("map")
   const [eventListResults, setEventListResults] = useState(null)
+  const [seriesListResults, setSeriesListResults] = useState(null)
   const [destinationListResults, setDestinationListResults] = useState(null)
-  const [associationListResults, setAssociationListResults] = useState(null)
   const [userLocation, setUserLocation] = useState(null)
   const [activeTab, setActiveTab] = useState("events")
+  const [selectedShoot, setSelectedShoot] = useState(null)
 
-  // URL ?activeTab=destination|association|events
+  // URL ?activeTab=destination|events|series
   useEffect(() => {
     const params = new URLSearchParams(
       typeof window !== "undefined"
@@ -29,8 +38,10 @@ const EventLayout = ({ masterRawShoots = [], location, children }) => {
         : location?.search || ""
     )
     const tab = params.get("activeTab")
-    if (tab === "destination" || tab === "association" || tab === "events") {
+    if (tab === "destination" || tab === "events" || tab === "series") {
       setActiveTab(tab)
+    } else if (tab === "association") {
+      setActiveTab("events")
     } else if (tab === "current" || tab === "upcoming") {
       // legacy URLs → main Events tab
       setActiveTab("events")
@@ -43,6 +54,11 @@ const EventLayout = ({ masterRawShoots = [], location, children }) => {
     return params.get("search")?.toLowerCase().trim() || ""
   }, [location])
 
+  const URLVenueId = useMemo(() => {
+    if (!location?.search) return ""
+    return new URLSearchParams(location.search).get("venueId") || ""
+  }, [location])
+
   const todayStart = useMemo(() => {
     const d = new Date()
     d.setHours(0, 0, 0, 0)
@@ -51,18 +67,36 @@ const EventLayout = ({ masterRawShoots = [], location, children }) => {
 
   // Attach effectiveLocation once
   const shootsWithVenues = useMemo(() => {
-    return masterRawShoots.map(shoot => {
-      return {
-        ...shoot,
-        effectiveLocation: getEffectiveShootLocation(shoot),
-      }
-    })
-  }, [masterRawShoots])
+    return masterRawShoots
+      .filter(shoot => {
+        if (!URLVenueId) return true
+        const shootVenueId = shoot.venue?.venueId || shoot.venueId
+        return String(shootVenueId) === String(URLVenueId)
+      })
+      .map(shoot => {
+        return {
+          ...shoot,
+          effectiveLocation: getEffectiveShootLocation(shoot),
+        }
+      })
+  }, [masterRawShoots, URLVenueId])
 
-  // Main Events tab: not destination, from today onward
+  // Series names explicitly group separate shoots into one series card.
+  const computedSeriesShoots = useMemo(
+    () =>
+      shootsWithVenues.filter(
+        s => isSeriesShoot(s) && isFromTodayOnward(s, todayStart)
+      ),
+    [shootsWithVenues, todayStart]
+  )
+
+  // Main Events tab excludes destinations and shoots assigned to a series.
   const computedEventsShoots = useMemo(() => {
     return shootsWithVenues.filter(
-      s => !s.isDestination && isFromTodayOnward(s, todayStart)
+      s =>
+        !s.isDestination &&
+        !isSeriesShoot(s) &&
+        isFromTodayOnward(s, todayStart)
     )
   }, [shootsWithVenues, todayStart])
 
@@ -71,20 +105,11 @@ const EventLayout = ({ masterRawShoots = [], location, children }) => {
       shootsWithVenues.filter(
         s =>
           (s.isDestination === true || s.isDestination === "true") &&
+          !isSeriesShoot(s) &&
           isFromTodayOnward(s, todayStart)
       ),
     [shootsWithVenues, todayStart]
   )
-
-  const computedAssociationsShoots = useMemo(() => {
-    return shootsWithVenues.filter(shoot => {
-      if (!isFromTodayOnward(shoot, todayStart)) return false
-      return (
-        typeof shoot.associationType === "string" &&
-        shoot.associationType.trim().length > 0
-      )
-    })
-  }, [shootsWithVenues, todayStart])
 
   // Capture device location for optional distance filtering and distance labels.
   useEffect(() => {
@@ -124,6 +149,27 @@ const EventLayout = ({ masterRawShoots = [], location, children }) => {
     return result
   }, [computedEventsShoots, URLSearchQuery])
 
+  const displaySeriesShoots = useMemo(() => {
+    if (!URLSearchQuery) return computedSeriesShoots
+    const q = URLSearchQuery.replace(/,/g, "")
+      .replace(/\s+/g, " ")
+      .toLowerCase()
+    return computedSeriesShoots.filter(shoot =>
+      [
+        shoot.seriesName,
+        shoot.sname,
+        shoot.venue?.vname,
+        shoot.effectiveLocation?.address,
+        shoot.effectiveLocation?.city,
+        shoot.effectiveLocation?.state,
+        shoot.effectiveLocation?.zip,
+      ]
+        .join(" ")
+        .toLowerCase()
+        .includes(q)
+    )
+  }, [computedSeriesShoots, URLSearchQuery])
+
   const handleTabChangeWithReset = tab => {
     setActiveTab(tab)
     if (URLSearchQuery) navigate("/events")
@@ -133,8 +179,8 @@ const EventLayout = ({ masterRawShoots = [], location, children }) => {
     switch (activeTab) {
       case "destination":
         return destinationListResults || computedDestinationShoots
-      case "association":
-        return associationListResults || computedAssociationsShoots
+      case "series":
+        return seriesListResults || displaySeriesShoots
       case "events":
       default:
         return eventListResults || displayEventsShoots
@@ -142,11 +188,11 @@ const EventLayout = ({ masterRawShoots = [], location, children }) => {
   }, [
     activeTab,
     displayEventsShoots,
+    displaySeriesShoots,
     eventListResults,
+    seriesListResults,
     computedDestinationShoots,
-    computedAssociationsShoots,
     destinationListResults,
-    associationListResults,
   ])
 
   const mapProps = useMemo(
@@ -155,8 +201,9 @@ const EventLayout = ({ masterRawShoots = [], location, children }) => {
       venues: [],
       userLocation,
       activeTab,
+      selectedShoot,
     }),
-    [activeTab, activeMapShoots, userLocation]
+    [activeTab, activeMapShoots, userLocation, selectedShoot]
   )
 
   const listProps = useMemo(
@@ -167,23 +214,31 @@ const EventLayout = ({ masterRawShoots = [], location, children }) => {
         : computedEventsShoots,
       destinationShoots: computedDestinationShoots,
       allDestinationShoots: computedDestinationShoots,
-      associationsShoots: computedAssociationsShoots,
-      allAssociationShoots: computedAssociationsShoots,
+      seriesShoots: displaySeriesShoots,
+      allSeriesShoots: URLSearchQuery
+        ? displaySeriesShoots
+        : computedSeriesShoots,
       userLocation,
       activeTab,
       setActiveTab: handleTabChangeWithReset,
       onEventResultsChange: setEventListResults,
+      onSeriesResultsChange: setSeriesListResults,
       onDestinationResultsChange: setDestinationListResults,
-      onAssociationResultsChange: setAssociationListResults,
+      onSelectShoot: shoot => {
+        setSelectedShoot({ ...shoot })
+        setView("map")
+      },
     }),
     [
       displayEventsShoots,
+      displaySeriesShoots,
       computedEventsShoots,
+      computedSeriesShoots,
       URLSearchQuery,
       computedDestinationShoots,
-      computedAssociationsShoots,
       userLocation,
       activeTab,
+      setView,
     ]
   )
 

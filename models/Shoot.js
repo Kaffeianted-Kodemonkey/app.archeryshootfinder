@@ -3,6 +3,8 @@ import mongoose from "mongoose"
 const ShootSchema = new mongoose.Schema({
   shootId: { type: Number, required: true, unique: true },
   sname: { type: String, default: "" },
+  seriesName: { type: String, default: "" },
+  isLeague: { type: Boolean, default: false },
   slug: { type: String, default: "" },
   venueId: { type: String, required: true },
 

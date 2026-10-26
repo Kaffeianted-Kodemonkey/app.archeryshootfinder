@@ -6,6 +6,13 @@ import Seo from "../components/seo"
 
 const SpotlightTemplate = ({ data }) => {
   const venue = data?.venuesJson
+  const relatedShoots = data?.allShootsJson?.nodes || []
+  const relatedEvents = relatedShoots.filter(
+    shoot => shoot.isDestination !== true && shoot.isDestination !== "true"
+  )
+  const relatedDestinations = relatedShoots.filter(
+    shoot => shoot.isDestination === true || shoot.isDestination === "true"
+  )
 
   if (!venue) return null
 
@@ -270,9 +277,61 @@ const SpotlightTemplate = ({ data }) => {
           </div>
 
           <div className="col-12">
+            <section id="related-events" className="card shadow-sm">
+              <div className="card-body p-3 p-md-4">
+                <h2 className="h4">Events</h2>
+                {relatedEvents.length ? (
+                  <ul className="list-group list-group-flush">
+                    {relatedEvents.map(shoot => (
+                      <li
+                        key={shoot.shootId}
+                        className="list-group-item d-flex justify-content-between gap-3 px-0"
+                      >
+                        <span>{shoot.sname || "Untitled shoot"}</span>
+                        <span className="text-muted text-nowrap">
+                          {shoot.date || "Date not listed"}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-muted mb-0">No events listed for this venue.</p>
+                )}
+              </div>
+            </section>
+          </div>
+
+          <div className="col-12">
+            <section id="related-destinations" className="card shadow-sm">
+              <div className="card-body p-3 p-md-4">
+                <h2 className="h4">Destinations</h2>
+                {relatedDestinations.length ? (
+                  <ul className="list-group list-group-flush">
+                    {relatedDestinations.map(shoot => (
+                      <li
+                        key={shoot.shootId}
+                        className="list-group-item d-flex justify-content-between gap-3 px-0"
+                      >
+                        <span>{shoot.sname || "Untitled shoot"}</span>
+                        <span className="text-muted text-nowrap">
+                          {shoot.date || "Date not listed"}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-muted mb-0">
+                    No destinations listed for this venue.
+                  </p>
+                )}
+              </div>
+            </section>
+          </div>
+
+          <div className="col-12">
             <section className="card shadow-sm">
               <div className="card-body p-3 p-md-4">
-                <h2 className="h4">Association sanctions</h2>
+                <h2 className="h4">Venue associations & rulebooks</h2>
                 {venue.sanctioning?.length ? (
                   <div className="table-responsive">
                     <table className="table table-striped align-middle mb-0">
@@ -281,6 +340,7 @@ const SpotlightTemplate = ({ data }) => {
                           <th scope="col">Association</th>
                           <th scope="col">Scope</th>
                           <th scope="col">Website</th>
+                          <th scope="col">Rulebooks</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -297,7 +357,9 @@ const SpotlightTemplate = ({ data }) => {
                                   <span className="text-muted"> ({acronym})</span>
                                 )}
                               </td>
-                              <td>{association?.scope || "—"}</td>
+                              <td>
+                                {association?.scope || "—"}
+                              </td>
                               <td>
                                 {association?.websiteUrl ? (
                                   <a
@@ -311,6 +373,33 @@ const SpotlightTemplate = ({ data }) => {
                                   "—"
                                 )}
                               </td>
+                              <td>
+                                {association?.ruleBooks?.length ? (
+                                  <ul className="list-unstyled mb-0">
+                                    {association.ruleBooks.map(
+                                      (rulebook, ruleIndex) => (
+                                        <li
+                                          key={`${rulebook.ruleName}-${ruleIndex}`}
+                                        >
+                                          {rulebook.rulebookUrl ? (
+                                            <a
+                                              href={rulebook.rulebookUrl}
+                                              target="_blank"
+                                              rel="noopener noreferrer"
+                                            >
+                                              {rulebook.ruleName || "View rulebook"}
+                                            </a>
+                                          ) : (
+                                            rulebook.ruleName || "Rulebook"
+                                          )}
+                                        </li>
+                                      )
+                                    )}
+                                  </ul>
+                                ) : (
+                                  "—"
+                                )}
+                              </td>
                             </tr>
                           )
                         })}
@@ -318,7 +407,9 @@ const SpotlightTemplate = ({ data }) => {
                     </table>
                   </div>
                 ) : (
-                  <p className="text-muted mb-0">No sanctions listed.</p>
+                  <p className="text-muted mb-0">
+                    No venue associations listed.
+                  </p>
                 )}
               </div>
             </section>
@@ -363,7 +454,7 @@ const SpotlightTemplate = ({ data }) => {
 
 // FULL ENUM-SAFE INJECTION PAGE QUERY
 export const query = graphql`
-  query GetVersatileSpotlightVenue($id: String!) {
+  query GetVersatileSpotlightVenue($id: String!, $venueId: String!) {
     venuesJson(id: { eq: $id }) {
       vname
       venueType
@@ -381,6 +472,10 @@ export const query = graphql`
         websiteUrl
         logoUrl
         scope
+        ruleBooks {
+          ruleName
+          rulebookUrl
+        }
       }
       amenities
       services
@@ -413,6 +508,14 @@ export const query = graphql`
           name
           url
         }
+      }
+    }
+    allShootsJson(filter: { venueId: { eq: $venueId } }) {
+      nodes {
+        shootId
+        sname
+        date
+        isDestination
       }
     }
   }
