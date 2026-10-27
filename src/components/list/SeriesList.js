@@ -11,6 +11,7 @@ const SeriesList = ({
   userLocation,
 }) => {
   const [filteredShoots, setFilteredShoots] = React.useState(shoots)
+  const [openGroupId, setOpenGroupId] = React.useState(null)
 
   React.useEffect(() => {
     setFilteredShoots(shoots)
@@ -71,6 +72,10 @@ const SeriesList = ({
             venueId={groupId}
             venueShoots={groupShoots}
             vIndex={index}
+            isOpen={openGroupId === groupId}
+            onToggle={groupId =>
+              setOpenGroupId(current => (current === groupId ? null : groupId))
+            }
             userLocation={userLocation}
             onSelectShoot={onSelectShoot}
             variant="series"

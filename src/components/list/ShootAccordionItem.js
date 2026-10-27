@@ -90,11 +90,29 @@ function venueMembershipRequirement(value) {
   return requirement
 }
 
+function venueTypeBadge(venue) {
+  const types = {
+    Club: { icon: "bi-building", className: "bg-primary" },
+    Range: { icon: "bi-bullseye", className: "bg-success" },
+    "Pro Shop": { icon: "bi-shop", className: "bg-danger" },
+  }
+  const venueType = Object.keys(types).find(
+    type => type.toLowerCase() === String(venue?.venueType || "").trim().toLowerCase()
+  ) || "Club"
+
+  return { label: venueType, ...types[venueType] }
+}
+
+function hasVenueContact(contact) {
+  return Boolean(contact?.phone || contact?.email || contact?.website)
+}
+
 const ShootAccordionItem = ({
   venueId,
   venueShoots = [],
   vIndex,
   isOpen = false,
+  onToggle,
   userLocation,
   onSelectShoot,
   variant,
@@ -151,6 +169,7 @@ const ShootAccordionItem = ({
   ]
   const eventVenue = first.venue || {}
   const eventContact = eventVenue.contact || {}
+  const eventVenueBadge = venueTypeBadge(eventVenue)
   const membershipRequirement = venueMembershipRequirement(
     eventVenue.isMembership
   )
@@ -159,19 +178,6 @@ const ShootAccordionItem = ({
     eventVenue.isClaimed === "true" ||
     eventVenue.isClaimed === 1 ||
     eventVenue.isClaimed === "1"
-  const hostTypes = {
-    Club: { icon: "bi-building", className: "bg-primary" },
-    Range: { icon: "bi-bullseye", className: "bg-success" },
-    "Pro Shop": { icon: "bi-shop", className: "bg-danger" },
-  }
-  const normalizedVenueType = String(eventVenue.venueType || "")
-    .trim()
-    .toLowerCase()
-  const hostType =
-    Object.keys(hostTypes).find(
-      type => type.toLowerCase() === normalizedVenueType
-    ) || "Club"
-  const hostTypeStyle = hostTypes[hostType]
   const hostHref = eventVenue.venueId
     ? claimedVenue
       ? `/venues/${eventVenue.venueId}`
@@ -180,20 +186,15 @@ const ShootAccordionItem = ({
 
   const renderEventDetails = () => (
     <>
-      {first.description && (
-        <section className="bg-light rounded p-3 mb-3">
-          <p className="mb-0 lh-lg">{first.description}</p>
-        </section>
-      )}
-
       <section className="d-flex flex-column flex-md-row justify-content-between gap-2 border-bottom pb-3 mb-3">
         <div>
-          <h3 className="fs-6 text-uppercase text-muted fw-bold mb-1">Venue</h3>
-          <p className="mb-0 fw-semibold">
+          <p className="mb-2 fw-semibold d-flex flex-wrap align-items-center gap-2">
+            <span className={`badge ${eventVenueBadge.className} text-white`}>
+              <i className={`bi ${eventVenueBadge.icon} me-1`} aria-hidden="true" />
+              {eventVenueBadge.label}
+            </span>
             {hostHref ? (
-              <Link to={hostHref}>
-                {venueLabel(first)}
-              </Link>
+              <Link to={hostHref}>{venueLabel(first)}</Link>
             ) : (
               venueLabel(first)
             )}
@@ -220,8 +221,17 @@ const ShootAccordionItem = ({
               </a>
             </li>
           )}
+          {!hasVenueContact(eventContact) && (
+            <li className="text-muted">Contact info has not been added.</li>
+          )}
         </ul>
       </section>
+
+      {first.description && (
+        <section className="bg-light rounded p-3 mb-3">
+          <p className="mb-0 lh-lg">{first.description}</p>
+        </section>
+      )}
 
       <section>
         <h3 className="fs-5 fw-bold mb-2">Event details</h3>
@@ -340,18 +350,13 @@ const ShootAccordionItem = ({
 
     return (
       <>
-        {sharedDescription && (
-          <section className="bg-light rounded p-3 mb-3">
-            <p className="mb-0 lh-lg">{sharedDescription}</p>
-          </section>
-        )}
-
         <section className="border-bottom pb-3 mb-3">
-          <h3 className="fs-6 text-uppercase text-muted fw-bold mb-2">Venues!</h3>
+          <h3 className="fs-6 text-uppercase text-muted fw-bold mb-2">Venues</h3>
           <div className="row g-3">
             {registrationVenues.map((shoot, index) => {
               const venue = shoot.venue || {}
               const contact = venue.contact || {}
+              const venueBadge = venueTypeBadge(venue)
               const claimed =
                 venue.isClaimed === true ||
                 venue.isClaimed === "true" ||
@@ -364,7 +369,11 @@ const ShootAccordionItem = ({
                   key={`${venue.venueId || venueLabel(shoot)}-${index}`}
                 >
                   <div className="border rounded p-3 h-100">
-                    <p className="mb-2 fw-semibold">
+                    <p className="mb-2 fw-semibold d-flex flex-wrap align-items-center gap-2">
+                      <span className={`badge ${venueBadge.className} text-white`}>
+                        <i className={`bi ${venueBadge.icon} me-1`} aria-hidden="true" />
+                        {venueBadge.label}
+                      </span>
                       {venue.venueId && claimed ? (
                         <Link to={`/venues/${venue.venueId}`}>
                           {venueLabel(shoot)}
@@ -394,6 +403,9 @@ const ShootAccordionItem = ({
                           </a>
                         </li>
                       )}
+                      {!hasVenueContact(contact) && (
+                        <li className="text-muted">Contact info has not been added.</li>
+                      )}
                     </ul>
                   </div>
                 </div>
@@ -401,6 +413,14 @@ const ShootAccordionItem = ({
             })}
           </div>
         </section>
+
+        {sharedDescription && (
+          <section className="bg-light rounded p-3 mb-3">
+            <p className="mb-0 lh-lg">{sharedDescription}</p>
+          </section>
+        )}
+
+
 
         <section>
           <h3 className="fs-5 fw-bold mb-2">
@@ -544,7 +564,7 @@ const ShootAccordionItem = ({
     ? "League / Series"
     : isLeagueGroup
     ? "League"
-    : "Tournament"
+    : "Event"
 
   return (
     <div className="accordion-item border mb-3 rounded shadow-sm">
@@ -553,12 +573,11 @@ const ShootAccordionItem = ({
         id={headingId}
       >
         <button
-          className={`accordion-button align-items-start w-auto flex-grow-1 ${
+          className={`accordion-button align-items-start w-100 flex-grow-1 ${
             isOpen ? "" : "collapsed"
           } bg-success-subtle border border-2 border-success shadow-none`}
           type="button"
-          data-bs-toggle="collapse"
-          data-bs-target={`#${collapseId}`}
+          onClick={() => onToggle?.(venueId)}
           aria-expanded={isOpen}
           aria-controls={collapseId}
         >
@@ -593,28 +612,11 @@ const ShootAccordionItem = ({
             </div>
           </div>
         </button>
-        {hostHref && (
-          <Link
-            to={hostHref}
-            className="d-flex flex-column justify-content-start gap-1 px-2 pt-3 border border-2 border-start-0 border-success-subtle bg-light text-decoration-none overflow-hidden"
-            style={{ width: "14rem", minWidth: 0, flexShrink: 0, alignSelf: "stretch" }}
-            onClick={e => e.stopPropagation()}
-          >
-            <span className={`badge align-self-start text-wrap lh-sm px-2 py-1 ${hostTypeStyle.className} text-white`} style={{ fontSize: "0.8rem" }}>
-              <i className={`bi ${hostTypeStyle.icon} me-1`} aria-hidden="true" />
-              {hostType}
-            </span>
-            <span className="fs-4 fw-bold lh-sm text-truncate text-dark w-100">
-              {eventVenue.vname || venueLabel(first)}
-            </span>
-          </Link>
-        )}
       </h2>
 
       <div
         id={collapseId}
         className={`accordion-collapse collapse${isOpen ? " show" : ""}`}
-        data-bs-parent="#shootAccordion"
       >
         <div className="accordion-body bg-white border border-2 border-success-subtle">
           {variant === "events" ? (
@@ -839,6 +841,7 @@ ShootAccordionItem.propTypes = {
   venueShoots: PropTypes.array,
   vIndex: PropTypes.number,
   isOpen: PropTypes.bool,
+  onToggle: PropTypes.func,
   userLocation: PropTypes.object,
   onSelectShoot: PropTypes.func,
   variant: PropTypes.oneOf(["events", "destination", "series"]),

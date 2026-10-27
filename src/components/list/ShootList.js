@@ -47,6 +47,7 @@ const ShootList = ({
   }, [shoots, sortField, sortDirection, userLocation])
 
   const [filteredShoots, setFilteredShoots] = React.useState(sortedShoots)
+  const [openGroupId, setOpenGroupId] = React.useState(null)
 
   React.useEffect(() => {
     setFilteredShoots(sortedShoots)
@@ -108,7 +109,10 @@ const ShootList = ({
             venueId={groupId}
             venueShoots={groupShoots}
             vIndex={gIndex}
-            isOpen={false}
+            isOpen={openGroupId === groupId}
+            onToggle={groupId =>
+              setOpenGroupId(current => (current === groupId ? null : groupId))
+            }
             userLocation={userLocation}
             onSelectShoot={onSelectShoot}
             variant="events"

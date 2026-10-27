@@ -56,3 +56,16 @@ Do not claim that a build or test passed if it was not run.
 - Do not repeat these instructions in responses.
 - Prefer concise, actionable explanations.
 - If unsure, ask.
+
+## Full-App Code Review & Audit Rules
+
+When explicitly asked to run a full app code review, adhere to these analytical constraints:
+- **Trace Cross-File Dependencies:** Focus heavily on the data flow from your MongoDB `models/` through `gatsby-node.js` into your GraphQL queries (`allShootsJson` and `allVenuesJson`). Audit for schema mismatches or field deprecations.
+- **Identify Dead Code and Unused Files:** Actively scan for orphaned components, unused utility modules, or asset files that are no longer imported or referenced anywhere in the active dependency tree, marking them as candidates for removal.
+- **Audit Core Modules:** Prioritize auditing your core filtering engine (`src/utils/shootFilters.js`, `src/utils/venueFilters.js`) and map integration (`src/components/map/map.js`) for edge cases or multi-conditional array leaks.
+- **Security Check:** Scan specifically for accidentally hardcoded Google Maps keys, Snipcart credentials, or database connection strings. Verify they are properly referenced via environment variables.
+- **Deliver Findings as a List:** Do not rewrite or modify files during the review phase. Deliver all findings as a structured, prioritized text list inside the chat, categorized by:
+  1. Critical Bugs / Potential Runtime Crashes
+  2. Dead Code & Unused Files (Candidates for deletion)
+  3. Security & Credential Isolation Gaps
+  4. Architectural Violations

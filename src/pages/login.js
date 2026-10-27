@@ -35,14 +35,13 @@ const LoginPage = ({ location }) => {
                       Shooter sign in
                     </h5>
                     <p className="text-muted small mb-3">
-                      Shooter accounts will use Stytch. Sign in will be
-                      available soon.
+                      Shooter accounts will be available soon.
                     </p>
                     <a
-                      className="btn btn-outline-primary align-self-center"
+                      className="btn btn-dark align-self-center"
                       href="/shooter-feedback"
                     >
-                      Share shooter feedback
+                      What you would like to see?
                     </a>
                   </div>
                 </div>
@@ -58,7 +57,7 @@ const LoginPage = ({ location }) => {
                 </div>
                 <div className="card-body p-4 d-flex flex-column justify-content-between">
                   <p className="text-muted small text-center mb-4">
-                    Manage your venue profile, shoots, and account details.
+                    Manage your venue, shoots, and account details.
                   </p>
                   <div className="border rounded p-4 bg-light text-center flex-grow-1 d-flex flex-column justify-content-center">
                     <h5 className="fw-bold">Venue accounts are coming</h5>
@@ -69,7 +68,7 @@ const LoginPage = ({ location }) => {
                       className="btn btn-dark align-self-center"
                       href="/venue-feedback"
                     >
-                      Share venue feedback
+                      What would help you?
                     </a>
                   </div>
                   {/* Previous Snipcart sign-in and registration actions:

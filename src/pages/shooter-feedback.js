@@ -51,6 +51,7 @@ const ShooterFeedbackPage = () => (
                     ["scores", "Track my scores"],
                     ["preferences", "Customize my shoot finder preferences"],
                     ["history", "Keep a history of shoots I’ve attended"],
+                    ["rating", "Reveiw for courses and/or venues"]
                   ].map(([value, label]) => (
                     <div className="form-check" key={value}>
                       <input

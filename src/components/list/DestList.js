@@ -23,10 +23,15 @@ const DestList = ({
   }, [shoots])
 
   const [filteredShoots, setFilteredShoots] = React.useState(destinationShoots)
+  const [openGroupId, setOpenGroupId] = React.useState(selectedVenueId)
 
   React.useEffect(() => {
     setFilteredShoots(destinationShoots)
   }, [destinationShoots])
+
+  React.useEffect(() => {
+    setOpenGroupId(selectedVenueId)
+  }, [selectedVenueId])
 
   const eventGroups = React.useMemo(() => {
     const grouped = filteredShoots.reduce((acc, s) => {
@@ -87,7 +92,10 @@ const DestList = ({
             venueId={groupId}
             venueShoots={groupShoots}
             vIndex={gIndex}
-            isOpen={groupId === selectedVenueId}
+            isOpen={groupId === openGroupId}
+            onToggle={groupId =>
+              setOpenGroupId(current => (current === groupId ? null : groupId))
+            }
             userLocation={userLocation}
             onSelectShoot={onSelectShoot}
             variant="destination"
