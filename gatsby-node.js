@@ -193,6 +193,11 @@ exports.sourceNodes = async ({
         doc: venue,
         extra: {
           vname: venue.vname || venue.name,
+          isClaimed:
+            venue.isClaimed === true ||
+            venue.isClaimed === "true" ||
+            venue.isClaimed === 1 ||
+            venue.isClaimed === "1",
           hours: Array.isArray(venue.hours) ? venue.hours : [],
           safetyEtiquette: Array.isArray(venue.safetyEtiquette)
             ? venue.safetyEtiquette
