@@ -9,45 +9,44 @@ const Footer = () => {
       className="bg-primary text-light py-3 mb-5 fixed-bottom container-fluid gx-0"
       style={{ height: "80px", zIndex: 1030 }}
     >
-      <nav className="row footer-nav align-items-center justify-content-between g-0">
-        <div className="col d-flex flex-column align-items-center text-nowrap">
-          <i className="bi bi-house-door fs-4"></i>
-          <Link to="/" className="text-decoration-none text-white ">
-            Home
+      <nav className="row footer-nav align-items-center g-0">
+        <div className="col">
+          <Link to="/" className="text-decoration-none text-white">
+            <i className="bi bi-house-door fs-4" aria-hidden="true"></i>
+            <span>Home</span>
           </Link>
         </div>
-        <div className="col d-flex flex-column align-items-center text-nowrap">
-          <i className="bi bi-person fs-4"></i>
-          <Link to="/events" className="text-decoration-none text-white ">
-            Events
+        <div className="col">
+          <Link to="/events?mode=events" className="text-decoration-none text-white">
+            <i className="bi bi-calendar-event fs-4" aria-hidden="true"></i>
+            <span>Event</span>
           </Link>
         </div>
-
-        <div className="col d-flex flex-column align-items-center text-nowrap">
-          <i className="bi bi-trophy fs-4"></i>
+        <div className="col">
           <Link
-            to="/venues?type=Club"
-            className="text-decoration-none text-white "
+            to="/events?mode=destination"
+            className="text-decoration-none text-white"
           >
-            Clubs
+            <i className="bi bi-signpost-split fs-4" aria-hidden="true"></i>
+            <span>Destination</span>
           </Link>
         </div>
-        <div className="col d-flex flex-column align-items-center text-nowrap">
-          <i className="bi bi-bullseye fs-4"></i>
+        <div className="col">
           <Link
-            to="/venues?type=Range"
-            className="text-decoration-none text-white "
+            to="/venues?type=Club%2CRange"
+            className="text-decoration-none text-white"
           >
-            Ranges
+            <i className="bi bi-trophy fs-4" aria-hidden="true"></i>
+            <span>Clubs &amp; Ranges</span>
           </Link>
         </div>
-        <div className="col d-flex flex-column align-items-center text-nowrap">
-          <i className="bi bi-shop-window fs-4"></i>
+        <div className="col">
           <Link
             to="/venues?type=Pro%20Shop"
-            className="text-decoration-none text-white "
+            className="text-decoration-none text-white"
           >
-            Pro Shop
+            <i className="bi bi-shop-window fs-4" aria-hidden="true"></i>
+            <span>Pro Shop</span>
           </Link>
         </div>
       </nav>

@@ -10,6 +10,26 @@
 - Portal: Snipcart and `/portal/*`. Logged-out users are redirected to `/pricing`.
 - MongoDB/Mongoose access is limited to `gatsby-node.js` and `models/` unless I authorize a change.
 
+## Domain model and ShootingEvents rules
+
+These are the intended product meanings. Keep them distinct from current field names and legacy data when implementing changes.
+
+- **Venue** means the organization running an event: Club, Range, Pro Shop, or Association. It is conceptually separate from the event's physical location. Venue contact details belong to the organization. Do not infer a missing venue type as `Club`; show a type badge only when the type is known.
+- **Event/Shoot** means one actual shoot occurrence. It has its own event title, date range, organizer (Venue), and physical location. A multi-stop program has a distinct shoot occurrence for each stop/location. The organizer's base address may also be the event location only when the shoot explicitly uses that location.
+- **League/Series** groups related shoot occurrences. When a shoot belongs to a League/Series, use that League/Series title as the accordion heading and group its matching shoots under it.
+- **Destination** means an event intended for overnight/travel planning, generally lasting two or more days. It is an independent classification and can coexist with League/Series membership.
+- Route each shoot by its own `isDestination` value: `true` appears in Destination mode; `false` or missing appears in Events mode. Do not force all shoots in a League/Series into the same mode. The same League/Series title may therefore appear in both modes, each grouping only the shoots assigned to that mode.
+- Use one `ShootingEvents` listing page with no tabs. Homepage Events and Destination buttons open that page in the corresponding mode. Events mode shows non-destination shoots; Destination mode shows destination shoots. Do not apply a distance radius. Preserve the current Events filters, Google map, and accordion presentation, and keep map and list results in sync.
+- Exclude completed shoots before grouping: use `endDate` when present, otherwise `date`; a shoot whose resulting date is before today is expired. Keep a group visible while it has at least one non-expired shoot.
+- For a standalone shoot, use its event title as the accordion heading. For a League/Series member, use the League/Series title in either mode. For a destination group that is not already grouped as a League/Series, use its destination/program title (for example `TAC-2027`) and show the individual stop/event titles and locations inside it. Do not substitute the physical location name for the organizing group title.
+
+### Current field mapping constraints
+
+- `Shoot.venueId` / `Shoot.venue` currently link a shoot to a `VenuesJson` record; under the intended model this record represents the organizing organization. `Venue.location` is the organization's base address; shoot location fields (`location`, `shootLocation`, `useVenueLocation`) determine the physical event site. Treat the base address as the event site only when the shoot explicitly uses it.
+- Current shoot grouping uses `seriesName` and `isLeague`. Confirm source records before assuming these fields distinguish every League, Series, or Destination title; do not invent or derive a parent title from a location.
+- `isDestination` is projected and exposed in Gatsby's `ShootsJson` schema, but is not currently declared in `models/Shoot.js`. Reconcile this mismatch before relying on Mongoose validation or adding destination behavior there.
+- Do not assume a dedicated destination title or a normalized group identifier exists in MongoDB. Inspect current records and preserve legacy values when designing any new fields or migration.
+
 ## Development rules
 
 - Match the nearest existing implementation and coding conventions.

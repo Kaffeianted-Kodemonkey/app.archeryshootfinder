@@ -47,6 +47,11 @@ export const query = graphql`
         isDestination
         isLeague
         seriesName
+        group {
+          groupId
+          groupName
+          groupType
+        }
         associationType
         association {
           acronym

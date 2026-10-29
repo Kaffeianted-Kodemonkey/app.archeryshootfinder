@@ -123,7 +123,11 @@ const ShootAccordionItem = ({
   const loc = resolveLoc(first)
 
   // Must be inside the component — after first/venue exist
-  const isLeagueGroup = first.isLeague === true || first.isLeague === "true"
+  const groupType = String(first.group?.groupType || "").toLowerCase()
+  const isLeagueGroup =
+    groupType === "league" ||
+    first.isLeague === true ||
+    first.isLeague === "true"
   const isDestinationGroup = variant === "destination"
   const isSeriesGroup = variant === "series"
   const assocLabel = assocPrefix(first.associationType)
@@ -133,9 +137,9 @@ const ShootAccordionItem = ({
     className: "bg-secondary",
   }
   const title = isSeriesGroup
-    ? first.seriesName || first.sname || "Series"
+    ? first.group?.groupName || first.seriesName || first.sname || "Series"
     : isDestinationGroup
-    ? first.seriesName || first.sname || "Event"
+    ? first.group?.groupName || first.seriesName || first.sname || "Event"
     : displayTitle(first)
   const whenLabel = isLeagueGroup
     ? shoots.length > 1

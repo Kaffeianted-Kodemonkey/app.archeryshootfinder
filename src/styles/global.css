@@ -239,12 +239,20 @@ footer.fixed-bottom {
 }
 
 .footer-nav a {
+  width: 100%;
   flex-direction: column;
+  text-align: center;
   gap: 0.1rem;
-  min-width: 3rem;
+  min-width: 0;
   color: #fff !important;
   font-size: 0.8rem;
   text-decoration: none;
+  line-height: 1.1;
+}
+
+.footer-nav a span {
+  max-width: 100%;
+  white-space: normal;
 }
 
 .footer-nav a:hover {

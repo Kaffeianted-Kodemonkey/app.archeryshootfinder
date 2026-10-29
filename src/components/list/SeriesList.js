@@ -20,11 +20,11 @@ const SeriesList = ({
   const seriesGroups = React.useMemo(() => {
     const grouped = filteredShoots.reduce((acc, shoot) => {
       const title = String(
-        shoot.seriesName || shoot.sname || "Untitled series"
+        shoot.group?.groupName || shoot.seriesName || shoot.sname || "Untitled series"
       )
         .trim()
         .replace(/\s+/g, " ")
-      const key = `series-${title.toLowerCase()}`
+      const key = `series-${shoot.group?.groupId || title.toLowerCase()}`
       if (!acc[key]) acc[key] = []
       acc[key].push(shoot)
       return acc

@@ -36,10 +36,11 @@ const DestList = ({
   const eventGroups = React.useMemo(() => {
     const grouped = filteredShoots.reduce((acc, s) => {
       const series =
+        s.group?.groupName ||
         s.seriesName ||
         s.sname ||
         `destination-${s.shootId || s.id || Math.random()}`
-      const groupKey = `dest-${String(series)
+      const groupKey = `dest-${s.group?.groupId || String(series)
         .trim()
         .toLowerCase()
         .replace(/\s+/g, "-")}`

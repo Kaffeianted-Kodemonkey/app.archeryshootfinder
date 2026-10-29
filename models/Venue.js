@@ -33,10 +33,16 @@ const VenueSchema = new mongoose.Schema({
   venueType: String,
   isMembership: String,
   isLeague: String,
-  isClass: String,
 
   amenities: [String],
   sanctioning: [String],
+  // V2 canonical Association.AssocID values; keep legacy `sanctioning` intact.
+  sanctions: [String],
+  source: {
+    name: String,
+    url: String,
+    externalId: String,
+  },
   services: [String],
   hours: {
     day: [String],

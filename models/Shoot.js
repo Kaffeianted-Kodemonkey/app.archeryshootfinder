@@ -5,6 +5,7 @@ const ShootSchema = new mongoose.Schema({
   sname: { type: String, default: "" },
   seriesName: { type: String, default: "" },
   isLeague: { type: Boolean, default: false },
+  isDestination: { type: Boolean, default: null },
   slug: { type: String, default: "" },
   venueId: { type: String, required: true },
 
@@ -38,6 +39,33 @@ const ShootSchema = new mongoose.Schema({
     lng: Number,
   },
   useVenueLocation: Boolean,
+
+  // V2 fields are additive so existing records and consumers remain supported.
+  eventLocations: [
+    {
+      name: String,
+      address: String,
+      city: String,
+      state: String,
+      zip: String,
+      lat: Number,
+      lng: Number,
+    },
+  ],
+  group: {
+    groupId: String,
+    groupName: String,
+    groupType: String,
+    ownerAssociationId: String,
+  },
+  sanctioningAssociationIds: [String],
+  source: {
+    name: String,
+    url: String,
+    externalId: String,
+    relatedUrls: [String],
+    lastSeenAt: Date,
+  },
 
   // Reference to Venue (for easy population)
   venue: {

@@ -13,7 +13,6 @@ const VENUE_PROJECTION = {
   accOwner: 1,
   venueType: 1,
   isClaimed: 1,
-  isClass: 1,
   isMembership: 1,
   slug: 1,
   img: 1,
@@ -38,6 +37,8 @@ const VENUE_PROJECTION = {
   amenities: 1,
   services: 1,
   sanctioning: 1,
+  sanctions: 1,
+  source: 1,
   bowTypes: 1,
   snipcartUserId: 1,
   subscriptionId: 1,
@@ -81,6 +82,20 @@ const SHOOT_PROJECTION = {
   isLeague: 1,
   rulesReg: 1,
   guidelines: 1,
+  eventLocations: 1,
+  group: 1,
+  sanctioningAssociationIds: 1,
+  source: 1,
+}
+
+const SHOOT_GROUP_PROJECTION = {
+  _id: 1,
+  groupId: 1,
+  groupName: 1,
+  groupType: 1,
+  ownerAssociationId: 1,
+  description: 1,
+  source: 1,
 }
 
 const ASSOCIATION_PROJECTION = {
@@ -144,22 +159,32 @@ exports.sourceNodes = async ({
 
   try {
     await client.connect()
-    const db = client.db("ASFinder")
+    // Local development uses the isolated dev database by default. Production keeps
+    // the existing live database unless MONGODB_DATABASE explicitly overrides it.
+    const databaseName =
+      process.env.MONGODB_DATABASE ||
+      (process.env.NODE_ENV === "development" ? "ASFinder-Dev" : "ASFinder")
+    const db = client.db(databaseName)
 
-    const [venuesData, shootsData, associationsData] = await Promise.all([
-      db
-        .collection("venues")
-        .find({}, { projection: VENUE_PROJECTION })
-        .toArray(),
-      db
-        .collection("shoots")
-        .find({}, { projection: SHOOT_PROJECTION })
-        .toArray(),
-      db
-        .collection("associations")
-        .find({}, { projection: ASSOCIATION_PROJECTION })
-        .toArray(),
-    ])
+    const [venuesData, shootsData, associationsData, shootGroupsData] =
+      await Promise.all([
+        db
+          .collection("venues")
+          .find({}, { projection: VENUE_PROJECTION })
+          .toArray(),
+        db
+          .collection("shoots")
+          .find({}, { projection: SHOOT_PROJECTION })
+          .toArray(),
+        db
+          .collection("associations")
+          .find({}, { projection: ASSOCIATION_PROJECTION })
+          .toArray(),
+        db
+          .collection("shootGroups")
+          .find({}, { projection: SHOOT_GROUP_PROJECTION })
+          .toArray(),
+      ])
 
     venuesData.forEach(venue => {
       createMongoNode(nodeApi, {
@@ -183,7 +208,10 @@ exports.sourceNodes = async ({
         type: "ShootsJson",
         prefix: "mongo-shoot",
         doc: shoot,
-        extra: { shootId: String(shoot.shootId) },
+        extra: {
+          shootId: String(shoot.shootId),
+          groupId: shoot.group?.groupId,
+        },
       })
     })
 
@@ -195,8 +223,16 @@ exports.sourceNodes = async ({
       })
     })
 
+    shootGroupsData.forEach(group => {
+      createMongoNode(nodeApi, {
+        type: "ShootGroupsJson",
+        prefix: "mongo-shoot-group",
+        doc: group,
+      })
+    })
+
     reporter.info(
-      `Successfully sourced node data collections -> Venues: ${venuesData.length} | Shoots: ${shootsData.length} | Associations: ${associationsData.length}`
+      `Successfully sourced node data collections -> Venues: ${venuesData.length} | Shoots: ${shootsData.length} | Associations: ${associationsData.length} | Shoot groups: ${shootGroupsData.length}`
     )
   } catch (error) {
     reporter.panicOnBuild("MongoDB sourceNodes failed", error)
@@ -264,7 +300,6 @@ exports.createSchemaCustomization = ({ actions }) => {
       venueType: String
       isClaimed: Boolean!
       isMembership: String
-      isClass: Boolean!
       slug: String
       img: String
       alt: String
@@ -291,6 +326,9 @@ exports.createSchemaCustomization = ({ actions }) => {
       associationScope: String
       inheritsRulesFromParent: Boolean
       sanctioningAssociations: [AssociationsJson] @link(by: "acronym", from: "sanctioning")
+      sanctions: [String]
+      sanctionsAssociations: [AssociationsJson] @link(by: "AssocID", from: "sanctions")
+      source: VenueSource
       bowTypes: [String]
       snipcartUserId: String
       subscriptionId: String
@@ -331,6 +369,23 @@ exports.createSchemaCustomization = ({ actions }) => {
       isDestination: Boolean
       isVerified: Boolean
       isLeague: Boolean
+      groupId: String
+      eventLocations: [EventLocation]
+      group: ShootGroupMetadata
+      shootGroup: ShootGroupsJson @link(by: "groupId", from: "groupId")
+      sanctioningAssociationIds: [String]
+      sanctioningAssociations: [AssociationsJson] @link(by: "AssocID", from: "sanctioningAssociationIds")
+      source: ShootSource
+    }
+
+    type ShootGroupsJson implements Node {
+      groupId: String!
+      groupName: String!
+      groupType: String
+      ownerAssociationId: String
+      ownerAssociation: AssociationsJson @link(by: "AssocID", from: "ownerAssociationId")
+      description: String
+      source: ShootSource
     }
 
     type AssociationsJson implements Node {
@@ -359,6 +414,37 @@ exports.createSchemaCustomization = ({ actions }) => {
       zip: String
       lat: Float
       lng: Float
+    }
+
+    type EventLocation {
+      name: String
+      address: String
+      city: String
+      state: String
+      zip: String
+      lat: Float
+      lng: Float
+    }
+
+    type ShootGroupMetadata {
+      groupId: String
+      groupName: String
+      groupType: String
+      ownerAssociationId: String
+    }
+
+    type ShootSource {
+      name: String
+      url: String
+      externalId: String
+      relatedUrls: [String]
+      lastSeenAt: Date
+    }
+
+    type VenueSource {
+      name: String
+      url: String
+      externalId: String
     }
 
     type Contact {

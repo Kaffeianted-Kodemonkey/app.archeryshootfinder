@@ -4,7 +4,7 @@ import * as React from "react"
 import { Link } from "gatsby"
 import { getDistance } from "../../utils/distance"
 
-// venueType is a single string: "Club" | "Pro Shop" | "Range"
+// Venue type is usually a string, but legacy records may contain an array.
 const venueTypeMapping = {
   Club: {
     icon: "bi-building",
@@ -65,21 +65,12 @@ const VenueList = ({
       return String(shootVenueId) === String(venueId)
     })
 
-    const isSeriesShoot = shoot =>
-      Boolean(String(shoot.seriesName || "").trim()) ||
-      shoot.isLeague === true ||
-      shoot.isLeague === "true"
     const isDestinationShoot = shoot =>
       shoot.isDestination === true || shoot.isDestination === "true"
 
     return {
-      eventCount: venueShoots.filter(
-        shoot => !isDestinationShoot(shoot) && !isSeriesShoot(shoot)
-      ).length,
-      seriesCount: venueShoots.filter(isSeriesShoot).length,
-      destinationCount: venueShoots.filter(
-        shoot => isDestinationShoot(shoot) && !isSeriesShoot(shoot)
-      ).length,
+      eventCount: venueShoots.filter(shoot => !isDestinationShoot(shoot)).length,
+      destinationCount: venueShoots.filter(isDestinationShoot).length,
     }
   }
 
@@ -101,15 +92,14 @@ const VenueList = ({
           `${venueLocation.city || ""}, ${venueLocation.state || ""}`.trim() ||
           "No Location"
 
-        // venueType is a string – look up mapping directly
-        const normalizedVenueType = String(venue.venueType || "")
-          .trim()
-          .toLowerCase()
-        const hostType =
-          Object.keys(venueTypeMapping).find(
-            type => type.toLowerCase() === normalizedVenueType
-          ) || "Club"
-        const mapping = venueTypeMapping[hostType]
+        const venueTypes = Array.isArray(venue.venueType)
+          ? venue.venueType
+          : [venue.venueType]
+        const hostType = venueTypes
+          .map(type => String(type || "").trim().replace(/_/g, " ").toLowerCase())
+          .map(type => Object.keys(venueTypeMapping).find(key => key.toLowerCase() === type))
+          .find(Boolean)
+        const mapping = hostType ? venueTypeMapping[hostType] : null
 
         const isClaimed =
           venue.isClaimed === true ||
@@ -122,7 +112,7 @@ const VenueList = ({
         const hasPhone = contact.phone && contact.phone.trim().length > 0
         const hasEmail = contact.email && contact.email.trim().length > 0
 
-        const { eventCount, seriesCount, destinationCount } =
+        const { eventCount, destinationCount } =
           getVenueShootCounts(venue.venueId)
 
         return (
@@ -131,20 +121,22 @@ const VenueList = ({
             id={`venue-${venue.venueId}`}
             className="col-12 mb-3"
           >
-            <div className={`card ${mapping.rowBg}`}>
+            <div className={`card ${mapping?.rowBg || "bg-light"}`}>
               {/* Card Header */}
               <div className="card-header pt-3">
-                <Link
-                  to={
-                    isClaimed
-                      ? `/venues/${venue.venueId}`
-                      : `/venues#venue-${venue.venueId}`
-                  }
-                  className={`badge ${mapping.className} text-decoration-none`}
-                >
-                  <i className={`bi ${mapping.icon} me-1`}></i>
-                  {hostType}
-                </Link>{" "}
+                {mapping && (
+                  <Link
+                    to={
+                      isClaimed
+                        ? `/venues/${venue.venueId}`
+                        : `/venues#venue-${venue.venueId}`
+                    }
+                    className={`badge ${mapping.className} text-decoration-none`}
+                  >
+                    <i className={`bi ${mapping.icon} me-1`}></i>
+                    {hostType}
+                  </Link>
+                )}{" "}
                 <h2 className="card-title fs-3 mt-2 mb-0">{venue.vname}</h2>
                 <p className="fs-6 mt-2">
                   <i className="bi bi-geo-alt"></i> {distance} | {cityState}
@@ -270,7 +262,7 @@ const VenueList = ({
 
                     {eventCount > 0 ? (
                       <Link
-                        to={`/events?activeTab=events&venueId=${encodeURIComponent(venue.venueId)}`}
+                        to={`/events?mode=events&venueId=${encodeURIComponent(venue.venueId)}`}
                         className="btn btn-sm btn-link p-0 text-decoration-none"
                       >
                         ({eventCount}) Events
@@ -279,20 +271,9 @@ const VenueList = ({
                       <span className="text-muted">(0) Events</span>
                     )}
                     <span className="text-muted"> | </span>
-                    {seriesCount > 0 ? (
-                      <Link
-                        to={`/events?activeTab=series&venueId=${encodeURIComponent(venue.venueId)}`}
-                        className="btn btn-sm btn-link p-0 text-decoration-none"
-                      >
-                        ({seriesCount}) Leagues &amp; Series
-                      </Link>
-                    ) : (
-                      <span className="text-muted">(0) Leagues &amp; Series</span>
-                    )}
-                    <span className="text-muted"> | </span>
                     {destinationCount > 0 ? (
                       <Link
-                        to={`/events?activeTab=destination&venueId=${encodeURIComponent(venue.venueId)}`}
+                        to={`/events?mode=destination&venueId=${encodeURIComponent(venue.venueId)}`}
                         className="btn btn-sm btn-link p-0 text-decoration-none"
                       >
                         ({destinationCount}) Destinations

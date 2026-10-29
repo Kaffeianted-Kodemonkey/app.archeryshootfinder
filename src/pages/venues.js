@@ -1,92 +1,19 @@
 // src/pages/venue.js
 import * as React from "react"
-import { useState, useEffect, useMemo } from "react"
 import { graphql } from "gatsby"
 import PropTypes from "prop-types"
-import Layout from "../components/layout/Layout"
 import Seo from "../components/seo"
-import Direct from "../components/list/VenueDirectory"
+import VenueLayout from "../components/layout/VenueLayout"
 
 const Directory = ({ data, location }) => {
-  const Venues = data.allVenuesJson.nodes
-  const Shoots = data.allShootsJson.nodes
-  const [view, setView] = useState("map")
-
-  const [userLocation, setUserLocation] = useState(null)
-  const [displayedVenues, setDisplayedVenues] = useState(Venues)
-
-  useEffect(() => {
-    if (location.hash) setView("list")
-  }, [location.hash])
-
-  useEffect(() => {
-    const showOfflineDirectory = () => {
-      if (!navigator.onLine) setView("list")
-    }
-
-    window.addEventListener("offline", showOfflineDirectory)
-    showOfflineDirectory()
-
-    return () => window.removeEventListener("offline", showOfflineDirectory)
-  }, [])
-
-  useEffect(() => {
-    if (view !== "list" || !location.hash) return
-    const scrollTimeout = window.setTimeout(() => {
-      document.getElementById(location.hash.slice(1))?.scrollIntoView()
-    }, 100)
-
-    return () => window.clearTimeout(scrollTimeout)
-  }, [view, location.hash])
-
-  // Standardized browser coordinate lookup loop
-  useEffect(() => {
-    if (!navigator.geolocation) return
-
-    navigator.geolocation.getCurrentPosition(
-      position => {
-        const loc = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-        }
-        setUserLocation(loc)
-      },
-      error => {
-        console.warn("Geolocation skipped/failed:", error)
-      }
-    )
-  }, [Venues])
-
-  const listProps = useMemo(() => {
-    return {
-      venues: Venues,
-      allVenues: Venues,
-      userLocation: userLocation,
-      shoots: Shoots,
-      location: location, // Checks URL parameter contexts
-      onFilterChange: setDisplayedVenues,
-    }
-  }, [Venues, Shoots, userLocation, location])
-
-  const mapProps = useMemo(() => {
-    return {
-      shoots: [],
-      venues: displayedVenues, // Markers react to user filtering strings
-      userLocation: userLocation,
-      activeTab: "venue",
-    }
-  }, [displayedVenues, userLocation])
-
   return (
-    <Layout
-      view={view}
-      setView={setView}
-      mapProps={view === "map" ? mapProps : null}
-      listProps={listProps}
-      listViewContent={<Direct {...listProps} />}
+    <VenueLayout
+      venues={data.allVenuesJson.nodes}
+      shoots={data.allShootsJson.nodes}
+      location={location}
     >
       <Seo title="Venue Directory" />
-    </Layout>
+    </VenueLayout>
   )
 }
 
@@ -121,6 +48,11 @@ export const query = graphql`
         isDestination
         isLeague
         seriesName
+        group {
+          groupId
+          groupName
+          groupType
+        }
       }
     }
     allVenuesJson {

@@ -6,6 +6,15 @@ import PropTypes from "prop-types"
 import VenueList from "./VenueList"
 import { filterByDistance } from "../../utils/shootFilters"
 
+const normalizeVenueType = type => {
+  const normalized = String(type || "")
+    .trim()
+    .toUpperCase()
+    .replace(/[ _-]+/g, " ")
+
+  return normalized === "PRO SHOPS" ? "PRO SHOP" : normalized
+}
+
 const Direct = ({
   venues = [],
   allVenues = venues,
@@ -56,10 +65,12 @@ const Direct = ({
     const typeParam = params.get("type")
 
     if (typeParam) {
-      const t = typeParam.trim().toUpperCase()
-      if (t === "CLUB" || t === "Club") setSelectedType("Club")
-      else if (t === "RANGE" || t === "Range") setSelectedType("Range")
-      else if (["PRO_SHOP", "PRO_SHOPS", "PRO SHOP"].includes(t))
+      const types = typeParam.split(",").map(type => type.trim().toUpperCase())
+      if (types.includes("CLUB") && types.includes("RANGE"))
+        setSelectedType("Club,Range")
+      else if (types.includes("CLUB")) setSelectedType("Club")
+      else if (types.includes("RANGE")) setSelectedType("Range")
+      else if (types.some(type => ["PRO_SHOP", "PRO_SHOPS", "PRO SHOP"].includes(type)))
         setSelectedType("Pro Shop")
     }
   }, [location])
@@ -73,16 +84,12 @@ const Direct = ({
 
     // 1. Filter by Venue Type Classification (Handles both Arrays and Legacy Strings)
     if (selectedType) {
+      const selectedTypes = selectedType.split(",").map(normalizeVenueType)
       result = result.filter(v => {
         if (!v.venueType) return false
 
-        if (Array.isArray(v.venueType)) {
-          return v.venueType.some(
-            type => type?.toUpperCase() === selectedType.toUpperCase()
-          )
-        }
-
-        return v.venueType.toUpperCase() === selectedType.toUpperCase()
+        const venueTypes = Array.isArray(v.venueType) ? v.venueType : [v.venueType]
+        return venueTypes.some(type => selectedTypes.includes(normalizeVenueType(type)))
       })
     }
 
@@ -174,6 +181,7 @@ const Direct = ({
             onChange={e => setSelectedType(e.target.value)}
           >
             <option value="">All Venue Types</option>
+            <option value="Club,Range">Clubs &amp; Ranges</option>
             <option value="Club">Clubs</option>
             <option value="Range">Ranges</option>
             <option value="Pro Shop">Pro Shops</option>

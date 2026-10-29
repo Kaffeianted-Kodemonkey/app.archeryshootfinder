@@ -53,14 +53,33 @@ const ShootList = ({
     setFilteredShoots(sortedShoots)
   }, [sortedShoots])
 
-  // Group repeated event titles at the same venue into one card.
-  // Must run every render (before any early return).
+  // Group league/series members together; keep standalone events grouped by venue and title.
   const eventGroups = React.useMemo(() => {
     const grouped = filteredShoots.reduce((acc, shoot) => {
+      const groupType = String(shoot.group?.groupType || "").toLowerCase()
+      const isSeries =
+        groupType === "league" ||
+        groupType === "series" ||
+        Boolean(String(shoot.seriesName || "").trim()) ||
+        shoot.isLeague === true ||
+        shoot.isLeague === "true"
+
+      if (isSeries) {
+        const title = String(
+          shoot.group?.groupName || shoot.seriesName || shoot.sname || "Series"
+        )
+          .trim()
+          .replace(/\s+/g, " ")
+        const key = `series-${shoot.group?.groupId || title.toLowerCase()}`
+        if (!acc[key]) acc[key] = []
+        acc[key].push(shoot)
+        return acc
+      }
+
       const venueId = String(
         shoot.venue?.venueId || shoot.venueId || "unknown"
       ).toLowerCase()
-      const eventTitle = String(shoot.sname || shoot.seriesName || "event")
+      const eventTitle = String(shoot.sname || "event")
         .trim()
         .replace(/\s+/g, " ")
         .toLowerCase()
@@ -70,7 +89,14 @@ const ShootList = ({
       acc[groupKey].push(shoot)
       return acc
     }, {})
-    return Object.entries(grouped)
+    return Object.entries(grouped).map(([key, group]) => {
+      const first = group[0] || {}
+      const groupType = String(first.group?.groupType || "").toLowerCase()
+      const isSeries = groupType === "league" || groupType === "series" ||
+        Boolean(String(first.seriesName || "").trim()) ||
+        first.isLeague === true || first.isLeague === "true"
+      return [key, group, isSeries ? "series" : "events"]
+    })
   }, [filteredShoots])
 
   const handleFilteredChange = React.useCallback(
@@ -103,7 +129,7 @@ const ShootList = ({
         </div>
       )}
       <div className="accordion accordion-flush" id="shootAccordion">
-        {eventGroups.map(([groupId, groupShoots], gIndex) => (
+        {eventGroups.map(([groupId, groupShoots, variant], gIndex) => (
           <ShootAccordionItem
             key={groupId}
             venueId={groupId}
@@ -115,7 +141,7 @@ const ShootList = ({
             }
             userLocation={userLocation}
             onSelectShoot={onSelectShoot}
-            variant="events"
+            variant={variant}
           />
         ))}
       </div>
