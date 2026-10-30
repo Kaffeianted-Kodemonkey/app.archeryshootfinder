@@ -18,9 +18,9 @@ Archery Shoot Finder is a Gatsby 5 and React 18 web app for finding archery shoo
 
 ## Configuration
 
-Gatsby loads environment variables from `.env.${NODE_ENV}` in `gatsby-node.js`. For local development, create `.env.development` in the project root. For a production build, configure the corresponding production environment file or deployment environment variables.
+Gatsby loads environment variables from `.env.${NODE_ENV}` in `gatsby-node.js`. For local development, configure `.env.development` in the project root. For production builds, configure `.env.production` or the deployment environment variables.
 
-The data source accepts `MONGO_URI`, `GATSBY_MONGO_URI`, or `GATSBY_MONGODB_URI`. The database name is `ASFinder`; Gatsby reads the `venues`, `shoots`, and `associations` collections. Configure `GATSBY_GOOGLE_MAPS_API_KEY` for the Google Maps integration. Do not commit credentials or environment files containing secrets.
+MongoDB connection strings are accepted in this order: `MONGO_URI`, `GATSBY_MONGO_URI`, then `GATSBY_MONGODB_URI`. Gatsby selects `ASFinder-Dev` when `NODE_ENV=development` and `ASFinder` otherwise. Set `MONGODB_DATABASE` to override the selected database name. Gatsby reads the `venues`, `shoots`, `associations`, and `shootGroups` collections. If no MongoDB URI is configured, Gatsby skips MongoDB sourcing and pages that depend on those nodes will not have directory data. Configure `GATSBY_GOOGLE_MAPS_API_KEY` for the Google Maps integration. Do not commit credentials or environment files containing secrets.
 
 ## Development
 
@@ -57,13 +57,13 @@ Gatsby serves the site at `http://localhost:8000` by default. The available pack
 
 ## Data workflow
 
-Public directory data is sourced from MongoDB during Gatsby's `sourceNodes` lifecycle in `gatsby-node.js`. The loader reads the `venues`, `shoots`, and `associations` collections in the `ASFinder` database, applies projections, and creates Gatsby nodes with the types `VenuesJson`, `ShootsJson`, and `AssociationsJson`. A missing MongoDB URI causes sourcing to be skipped; Gatsby queries that require those nodes will therefore have no directory data.
+Public directory data is sourced from MongoDB during Gatsby's `sourceNodes` lifecycle in `gatsby-node.js`. The loader reads the `venues`, `shoots`, `associations`, and `shootGroups` collections from the selected database, applies projections, and creates Gatsby nodes with the types `VenuesJson`, `ShootsJson`, `AssociationsJson`, and `ShootGroupsJson`. Database selection defaults to `ASFinder-Dev` for development and `ASFinder` otherwise; `MONGODB_DATABASE` overrides that choice. A missing MongoDB URI causes sourcing to be skipped, so pages that query these nodes will not have directory data.
 
 Pages use Gatsby GraphQL data such as `allShootsJson` and `allVenuesJson`. The events page renders shoot data through `EventLayout`; the venues page renders the venue directory. `createPages` creates `/venues/{venueId}` pages from venue nodes using `src/templates/spotlight.js`. Shoots and venues are not maintained in a local `src/data/shoots.json` file. Update records through the application's authorized data workflow or MongoDB process, preserving the existing document fields and relationships.
 
 ### MVP source, account scope, and launch boundary
 
-- **Directory source:** MongoDB is the sole source for public venue, shoot, and association records. Gatsby reads the `ASFinder` collections at build time and exposes them as GraphQL nodes. There is no local JSON fallback. A deployment without a MongoDB URI does not have the public directory data required by the pages.
+- **Directory source:** MongoDB is the sole source for public venue, shoot, association, and shoot group records. Gatsby reads the selected database at build time and exposes these records as GraphQL nodes. There is no local JSON fallback. A deployment without a MongoDB URI does not have the public directory data required by the pages.
 - **Required identifiers:** venue records need `venueId`; shoot records need `shootId` and `venueId`; association records need `acronym` for the current Gatsby schema and links. The schema also marks venue `isClaimed` as non-nullable. Validate real documents against that requirement before a production build.
 - **Account scope:** Snipcart supplies portal sign-in. The order webhook associates a venue with a Snipcart user ID, but the portal does not yet persist venue or shoot edits, and subscription lifecycle state is not fully synchronized. Do not treat the portal as self-service venue management or subscription status as authoritative until those write and lifecycle paths are implemented and verified.
 - **MVP launch scope:** the implemented public experience is browsing/filtering event and venue directories, viewing map pins, and opening venue spotlight pages. Snipcart login and checkout UI are present. Venue/shoot editing, analytics, and dependable subscription lifecycle management are not launch-ready capabilities. Pricing copy that advertises analytics should be considered a product claim to resolve before launch.

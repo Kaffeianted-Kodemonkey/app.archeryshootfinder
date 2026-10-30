@@ -66,6 +66,19 @@ function dateRangeLabel(shoots) {
   return formatDateShort(first.start, last.end)
 }
 
+function locationCount(shoots) {
+  const keys = shoots
+    .map(shoot => {
+      const loc = resolveLoc(shoot)
+      const key = [loc.address, loc.city, loc.state, loc.zip]
+        .map(value => String(value || "").trim().toLowerCase())
+        .join("|")
+      return key.replace(/\|/g, "") ? key : ""
+    })
+    .filter(Boolean)
+  return new Set(keys).size
+}
+
 function regButton(shoot) {
   const url = shoot.registrationUrl || shoot.registerUrl
   if (url) {
@@ -98,9 +111,9 @@ function venueTypeBadge(venue) {
   }
   const venueType = Object.keys(types).find(
     type => type.toLowerCase() === String(venue?.venueType || "").trim().toLowerCase()
-  ) || "Club"
+  )
 
-  return { label: venueType, ...types[venueType] }
+  return venueType ? { label: venueType, ...types[venueType] } : null
 }
 
 function hasVenueContact(contact) {
@@ -118,6 +131,7 @@ const ShootAccordionItem = ({
   variant,
 }) => {
   const shoots = Array.isArray(venueShoots) ? venueShoots : []
+  const [openDetails, setOpenDetails] = React.useState({})
   const first = shoots[0] || {}
 
   const loc = resolveLoc(first)
@@ -129,7 +143,8 @@ const ShootAccordionItem = ({
     first.isLeague === true ||
     first.isLeague === "true"
   const isDestinationGroup = variant === "destination"
-  const isSeriesGroup = variant === "series"
+  const isSeriesGroup = variant === "series" || variant === "group"
+  const isDestinationLayout = variant === "destination"
   const assocLabel = assocPrefix(first.associationType)
 
   const status = getStatusInfo?.(first) || {
@@ -145,6 +160,8 @@ const ShootAccordionItem = ({
     ? shoots.length > 1
       ? `${shoots.length} dates · Next: ${formatDateShort(first.date)}`
       : formatDateShort(first.date, first.endDate)
+    : isSeriesGroup && shoots.length > 1
+    ? `${dateRangeLabel(shoots)} · ${locationCount(shoots)} ${locationCount(shoots) === 1 ? "location" : "locations"}`
     : !isDestinationGroup && shoots.length > 1
     ? `${shoots.length} dates · Next: ${formatDateShort(first.date)}`
     : isDestinationGroup && shoots.length > 1
@@ -173,6 +190,7 @@ const ShootAccordionItem = ({
   ]
   const eventVenue = first.venue || {}
   const eventContact = eventVenue.contact || {}
+  const groupAssociation = first.shootGroup?.ownerAssociation || first.association || {}
   const eventVenueBadge = venueTypeBadge(eventVenue)
   const membershipRequirement = venueMembershipRequirement(
     eventVenue.isMembership
@@ -190,52 +208,22 @@ const ShootAccordionItem = ({
 
   const renderEventDetails = () => (
     <>
-      <section className="d-flex flex-column flex-md-row justify-content-between gap-2 border-bottom pb-3 mb-3">
-        <div>
-          <p className="mb-2 fw-semibold d-flex flex-wrap align-items-center gap-2">
-            <span className={`badge ${eventVenueBadge.className} text-white`}>
-              <i className={`bi ${eventVenueBadge.icon} me-1`} aria-hidden="true" />
-              {eventVenueBadge.label}
-            </span>
-            {hostHref ? (
-              <Link to={hostHref}>{venueLabel(first)}</Link>
-            ) : (
-              venueLabel(first)
-            )}
-          </p>
+      <section className="row g-3 border-bottom pb-3 mb-3">
+        <div className="col-12 col-md-7">
+          <div className="fw-semibold d-flex flex-wrap align-items-center gap-2 mb-2">
+            {eventVenueBadge && <span className={`badge ${eventVenueBadge.className} text-white`}>{eventVenueBadge.label}</span>}
+            {hostHref ? <Link to={hostHref}>{venueLabel(first)}</Link> : venueLabel(first)}
+          </div>
+          {first.description && <p className="mb-0 lh-lg">{first.description}</p>}
         </div>
-        <ul className="list-unstyled mb-0 small">
-          {eventContact.phone && (
-            <li>
-              <i className="bi bi-telephone me-2" aria-hidden="true" />
-              <a href={`tel:${eventContact.phone}`}>{eventContact.phone}</a>
-            </li>
-          )}
-          {eventContact.email && (
-            <li>
-              <i className="bi bi-envelope me-2" aria-hidden="true" />
-              <a href={`mailto:${eventContact.email}`}>{eventContact.email}</a>
-            </li>
-          )}
-          {eventContact.website && (
-            <li>
-              <i className="bi bi-globe me-2" aria-hidden="true" />
-              <a href={eventContact.website} target="_blank" rel="noopener noreferrer">
-                Website
-              </a>
-            </li>
-          )}
-          {!hasVenueContact(eventContact) && (
-            <li className="text-muted">Contact info has not been added.</li>
-          )}
-        </ul>
+        <div className="col-12 col-md-5">
+          <ul className="list-unstyled mb-0 small">
+            <li><i className="bi bi-telephone me-2" aria-hidden="true" />{eventContact.phone ? <a href={`tel:${eventContact.phone}`}>{eventContact.phone}</a> : <span className="text-muted">Not Listed</span>}</li>
+            <li><i className="bi bi-envelope me-2" aria-hidden="true" />{eventContact.email ? <a href={`mailto:${eventContact.email}`}>{eventContact.email}</a> : <span className="text-muted">Not Listed</span>}</li>
+            <li><i className="bi bi-globe me-2" aria-hidden="true" />{eventContact.website ? <a href={eventContact.website} target="_blank" rel="noopener noreferrer">Website</a> : <span className="text-muted">Not Listed</span>}</li>
+          </ul>
+        </div>
       </section>
-
-      {first.description && (
-        <section className="bg-light rounded p-3 mb-3">
-          <p className="mb-0 lh-lg">{first.description}</p>
-        </section>
-      )}
 
       <section>
         <h3 className="fs-5 fw-bold mb-2">Event details</h3>
@@ -284,6 +272,31 @@ const ShootAccordionItem = ({
                   {regButton(shoot)}
                 </div>
               </div>
+              <div className="mt-2 small">
+                <div className="fw-semibold">
+                  <i className="bi bi-geo-alt me-2" aria-hidden="true" />
+                  {[shootLocation.address, shootLocation.city, shootLocation.state, shootLocation.zip].filter(Boolean).join(", ") || "Location not listed"}
+                </div>
+                {hasMapCoordinates && (
+                  <div className="d-flex flex-wrap gap-2 mt-2">
+                    <button
+                      type="button"
+                      className="btn btn-sm btn-outline-secondary"
+                      onClick={() => onSelectShoot?.(shoot)}
+                    >
+                      <i className="bi bi-geo-alt-fill me-1" aria-hidden="true" />Show on map
+                    </button>
+                    <a
+                      className="btn btn-sm btn-outline-secondary"
+                      href={`https://www.google.com/maps/dir/?api=1&destination=${shootLocation.lat},${shootLocation.lng}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <i className="bi bi-sign-turn-right me-1" aria-hidden="true" />Directions
+                    </a>
+                  </div>
+                )}
+              </div>
               {fields.length > 0 && (
                 <div className="d-flex flex-wrap gap-2 mt-3">
                   {fields.map(([label, fieldValue]) => (
@@ -291,21 +304,6 @@ const ShootAccordionItem = ({
                       <span className="text-muted">{label}:</span> {fieldValue}
                     </span>
                   ))}
-                </div>
-              )}
-              {hasMapCoordinates && (
-                <div className="mt-3">
-                  <button
-                    type="button"
-                    className="btn btn-sm btn-outline-secondary"
-                    onClick={() => onSelectShoot?.(shoot)}
-                  >
-                    <i
-                      className="bi bi-geo-alt-fill me-1"
-                      aria-hidden="true"
-                    />
-                    Show on map
-                  </button>
                 </div>
               )}
             </div>
@@ -374,12 +372,14 @@ const ShootAccordionItem = ({
                 >
                   <div className="border rounded p-3 h-100">
                     <p className="mb-2 fw-semibold d-flex flex-wrap align-items-center gap-2">
-                      <span className={`badge ${venueBadge.className} text-white`}>
-                        <i className={`bi ${venueBadge.icon} me-1`} aria-hidden="true" />
-                        {venueBadge.label}
-                      </span>
-                      {venue.venueId && claimed ? (
-                        <Link to={`/venues/${venue.venueId}`}>
+                      {venueBadge && (
+                        <span className={`badge ${venueBadge.className} text-white`}>
+                          <i className={`bi ${venueBadge.icon} me-1`} aria-hidden="true" />
+                          {venueBadge.label}
+                        </span>
+                      )}
+                      {venue.venueId ? (
+                        <Link to={claimed ? `/venues/${venue.venueId}` : `/venues#venue-${venue.venueId}`}>
                           {venueLabel(shoot)}
                         </Link>
                       ) : (
@@ -623,22 +623,64 @@ const ShootAccordionItem = ({
         className={`accordion-collapse collapse${isOpen ? " show" : ""}`}
       >
         <div className="accordion-body bg-white border border-2 border-success-subtle">
-          {variant === "events" ? (
+          {shoots.length === 0 ? (
             renderEventDetails()
-          ) : variant === "series" || variant === "destination" ? (
+          ) : shoots.length < 0 ? (
             renderMultiShootDetails()
           ) : (
             <>
+              {isSeriesGroup || isDestinationGroup ? (
+                <section className="border-bottom pb-3 mb-3">
+                  <h3 className="fs-6 text-uppercase text-muted fw-bold mb-2">
+                    {isSeriesGroup ? "League / Series association" : "Group information"}
+                  </h3>
+                  <div className="fw-semibold">
+                    {groupAssociation.acronym && groupAssociation.assocName
+                      ? `${groupAssociation.acronym} - ${groupAssociation.assocName}`
+                      : groupAssociation.acronym || groupAssociation.assocName || title}
+                  </div>
+                  {groupAssociation.websiteUrl && (
+                    <div className="small">
+                      <i className="bi bi-globe me-2" aria-hidden="true" />
+                      <a href={groupAssociation.websiteUrl} target="_blank" rel="noopener noreferrer">
+                        Association website
+                      </a>
+                    </div>
+                  )}
+                  {!groupAssociation.websiteUrl && isDestinationGroup && (
+                    <ul className="list-unstyled mb-0 small mt-2">
+                      {eventContact.phone && <li><i className="bi bi-telephone me-2" aria-hidden="true" /><a href={`tel:${eventContact.phone}`}>{eventContact.phone}</a></li>}
+                      {eventContact.email && <li><i className="bi bi-envelope me-2" aria-hidden="true" /><a href={`mailto:${eventContact.email}`}>{eventContact.email}</a></li>}
+                      {eventContact.website && <li><i className="bi bi-globe me-2" aria-hidden="true" /><a href={eventContact.website} target="_blank" rel="noopener noreferrer">Venue website</a></li>}
+                      {!hasVenueContact(eventContact) && <li className="text-muted">Contact info has not been added.</li>}
+                    </ul>
+                  )}
+                </section>
+              ) : variant === "events" ? (
+                <section className="d-flex flex-column flex-md-row justify-content-between gap-2 border-bottom pb-3 mb-3">
+                  <div>
+                    <p className="mb-2 fw-semibold d-flex flex-wrap align-items-center gap-2">
+                      {eventVenueBadge && <span className={`badge ${eventVenueBadge.className} text-white`}>{eventVenueBadge.label}</span>}
+                      {hostHref ? <Link to={hostHref}>{venueLabel(first)}</Link> : venueLabel(first)}
+                    </p>
+                  </div>
+                  <ul className="list-unstyled mb-0 small">
+                    {eventContact.phone && <li><i className="bi bi-telephone me-2" aria-hidden="true" /><a href={`tel:${eventContact.phone}`}>{eventContact.phone}</a></li>}
+                    {eventContact.email && <li><i className="bi bi-envelope me-2" aria-hidden="true" /><a href={`mailto:${eventContact.email}`}>{eventContact.email}</a></li>}
+                    {eventContact.website && <li><i className="bi bi-globe me-2" aria-hidden="true" /><a href={eventContact.website} target="_blank" rel="noopener noreferrer">Website</a></li>}
+                    {!hasVenueContact(eventContact) && <li className="text-muted">Contact info has not been added.</li>}
+                  </ul>
+                </section>
+              ) : null}
               <div className="table-responsive">
-            <table className="table table-bordered table-striped table-sm align-middle mb-3">
+            <table className="table table-bordered table-striped table-sm align-top mb-3 shoot-details-table" style={{ width: "100%", tableLayout: "fixed" }}>
               <thead className="table-dark">
                 <tr>
-                  <th>Date</th>
-                  <th>Event name</th>
-                  <th>Rules association</th>
-                  <th>Venue</th>
-                  <th className="text-center">Reg</th>
-                  <th>Details</th>
+                  <th aria-label="Verification status" style={{ width: "14%" }}></th>
+                  <th style={{ width: "20%" }}>Date</th>
+                  <th style={{ width: "26%" }}>Event name</th>
+                  <th className="text-center" style={{ width: "20%" }}>Reg</th>
+                  <th style={{ width: "20%" }}>Details</th>
                 </tr>
               </thead>
               <tbody>
@@ -649,130 +691,77 @@ const ShootAccordionItem = ({
                   const shootPhone = shootVenue.contact?.phone || ""
                   const shootEmail = shootVenue.contact?.email || ""
                   const shootWebsite = shootVenue.contact?.website || ""
+                  const physicalLocation = resolveLoc(s)
+                  const showPhysicalAddress = s.useVenueLocation !== true && s.useVenueLocation !== "true"
+                  const physicalAddress = [physicalLocation.address, physicalLocation.city, physicalLocation.state, physicalLocation.zip].filter(Boolean).join(", ")
                   const generalRulesUrl = s.association?.ruleBooks?.find(
                     rulebook =>
                       /general/i.test(rulebook.ruleName || "") &&
                       rulebook.rulebookUrl
                   )?.rulebookUrl
 
+                  const detailsId = `shoot-details-${s.shootId || s.id || idx}`
+                  const hasDetails = Boolean(
+                    s.description || showPhysicalAddress && physicalAddress ||
+                    s.bowTypes?.length || s.skillLevel?.length || s.entryFee ||
+                    s.shootFormat?.length || s.shootClass?.length || s.amenities?.length ||
+                    shootPhone || shootEmail || shootWebsite
+                  )
+
                   return (
+                    <>
                     <tr key={s.shootId || s.id || idx}>
+                      <td className="align-top">
+                        <span className={`badge ${getStatusInfo(s).className}`}>{getStatusInfo(s).label}</span>
+                      </td>
                       <td>{formatDateShort(s.date, s.endDate)}</td>
                       <td className="fw-semibold">
                         {s.sname || s.seriesName || "Event"}
                       </td>
-                      <td>
-                        {generalRulesUrl ? (
-                          <a
-                            href={generalRulesUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="btn btn-sm btn-outline-info"
-                          >
-                            {associationAbbreviation
-                              ? `${associationAbbreviation} Rules`
-                              : "Rules"}
-                          </a>
-                        ) : (
-                          <span className="text-muted">—</span>
-                        )}
-                      </td>
-                      <td>
-                        {s.venue?.venueId &&
-                        (s.venue.isClaimed === true ||
-                          s.venue.isClaimed === "true" ||
-                          s.venue.isClaimed === 1 ||
-                          s.venue.isClaimed === "1") ? (
-                          <Link to={`/venues/${s.venue.venueId}`}>
-                            {venueLabel(s)}
-                          </Link>
-                        ) : (
-                          venueLabel(s)
-                        )}
-                      </td>
-                      <td className="text-center">
+                      <td className="text-center align-top">
                         {regButton(s) || (
                           <a href={`#${registrationInfoId}`} className="small">
                             Registration info
                           </a>
                         )}
                       </td>
-                      <td>
-                        <details>
-                          <summary className="btn btn-sm btn-outline-secondary">
-                            Details
-                          </summary>
-                          <div className="small mt-2">
-                            {s.description && (
-                              <p className="mb-2">
-                                <strong>Description:</strong> {s.description}
-                              </p>
-                            )}
-                            {s.entryFee && (
-                              <p className="mb-2">
-                                <strong>Entry fee:</strong> {s.entryFee}
-                              </p>
-                            )}
-                            {Array.isArray(s.shootFormat) &&
-                              s.shootFormat.length > 0 && (
-                                <p className="mb-2">
-                                  <strong>Format:</strong>{" "}
-                                  {s.shootFormat.join(", ")}
-                                </p>
-                              )}
-                            {Array.isArray(s.shootClass) &&
-                              s.shootClass.length > 0 && (
-                                <p className="mb-2">
-                                  <strong>Classes:</strong>{" "}
-                                  {s.shootClass.join(", ")}
-                                </p>
-                              )}
-                            {Array.isArray(s.amenities) &&
-                              s.amenities.length > 0 && (
-                                <p className="mb-0">
-                                  <strong>Amenities:</strong>{" "}
-                                  {s.amenities.join(", ")}
-                                </p>
-                              )}
-                            {shootPhone && (
-                              <p className="mb-2">
-                                <strong>Venue phone:</strong>{" "}
-                                <a href={`tel:${shootPhone}`}>{shootPhone}</a>
-                              </p>
-                            )}
-                            {shootEmail && (
-                              <p className="mb-2">
-                                <strong>Venue email:</strong>{" "}
-                                <a href={`mailto:${shootEmail}`}>{shootEmail}</a>
-                              </p>
-                            )}
-                            {shootWebsite && (
-                              <p className="mb-2">
-                                <a
-                                  href={shootWebsite}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                >
-                                  Venue website
-                                </a>
-                              </p>
-                            )}
-                            {!s.description &&
-                              !s.entryFee &&
-                              !s.shootFormat?.length &&
-                              !s.shootClass?.length &&
-                              !s.amenities?.length &&
-                              !shootPhone &&
-                              !shootEmail &&
-                              !shootWebsite && (
-                                <span className="text-muted">
-                                  No additional details listed.
-                                </span>
-                              )}
-                          </div>
-                        </details>
+                      <td className="align-top">
+                        {hasDetails ? (
+                          <button className="btn btn-sm btn-outline-secondary" type="button" onClick={() => setOpenDetails(current => ({ ...current, [detailsId]: !current[detailsId] }))} aria-expanded={Boolean(openDetails[detailsId])} aria-controls={detailsId}>
+                            {openDetails[detailsId] ? "Hide details" : "Details"}
+                          </button>
+                        ) : <span className="text-muted">—</span>}
                       </td>
                     </tr>
+                    {hasDetails && (
+                      <tr key={`${s.shootId || s.id || idx}-details`} id={detailsId} hidden={!openDetails[detailsId]}>
+                        <td colSpan="5" style={{ overflowWrap: "anywhere" }}>
+                          <div className="row g-3 small" style={{ minWidth: 0 }}> 
+                            <section className="col-12 col-lg-8" aria-label="Event details">
+                              <h4 className="h6 fw-bold border-bottom pb-2 mb-3">Event details</h4>
+                              <div className="row g-2">
+                                <div className="col-12"><strong>Description:</strong> {s.description || "Not Listed"}</div>
+                                <div className="col-12"><strong>Rules:</strong> {generalRulesUrl ? <a href={generalRulesUrl} target="_blank" rel="noopener noreferrer">{associationAbbreviation ? `${associationAbbreviation} Rules` : "Rules"}</a> : "Not Listed"}</div>
+                                <div className="col-12 col-md-6"><strong>Event address:</strong> {showPhysicalAddress && physicalAddress ? physicalAddress : "Not Listed"}</div>
+                                <div className="col-12 col-md-6"><strong>Bow type:</strong> {s.bowTypes?.length ? s.bowTypes.join(", ") : "Not Listed"}</div>
+                                <div className="col-12 col-md-6"><strong>Skill level:</strong> {s.skillLevel?.length ? s.skillLevel.join(", ") : "Not Listed"}</div>
+                                <div className="col-12 col-md-6"><strong>Entry fee:</strong> {s.entryFee || "Not Listed"}</div>
+                                <div className="col-12 col-md-6"><strong>Format:</strong> {s.shootFormat?.length ? s.shootFormat.join(", ") : "Not Listed"}</div>
+                                <div className="col-12 col-md-6"><strong>Classes:</strong> {s.shootClass?.length ? s.shootClass.join(", ") : "Not Listed"}</div>
+                                <div className="col-12"><strong>Amenities:</strong> {s.amenities?.length ? s.amenities.join(", ") : "Not Listed"}</div>
+                              </div>
+                            </section>
+                            <section className="col-12 col-lg-4 border-lg-start ps-lg-4" aria-label="Venue contact">
+                              <h4 className="h6 fw-bold border-bottom pb-2 mb-3">Venue contact</h4>
+                              <p className="mb-2"><strong>Phone:</strong> {shootPhone || "Not Listed"}</p>
+                              <p className="mb-2"><strong>Email:</strong> {shootEmail || "Not Listed"}</p>
+                              <p className="mb-0"><strong>Website:</strong> {shootWebsite || "Not Listed"}</p>
+                            </section>
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                    </>
                   )
                 })}
               </tbody>

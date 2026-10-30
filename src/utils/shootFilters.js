@@ -6,10 +6,12 @@ export const getEffectiveShootLocation = shoot => {
   if (!shoot) return null
   if (shoot.effectiveLocation) return shoot.effectiveLocation
 
-  const venueLocation = shoot.venue?.location
-  if (shoot.useVenueLocation !== false && venueLocation) return venueLocation
+  const shootLocation = shoot.shootLocation || shoot.location
+  if (shootLocation && Object.values(shootLocation).some(value => value != null && value !== "")) {
+    return shootLocation
+  }
 
-  return shoot.location || shoot.shootLocation || venueLocation || null
+  return shoot.venue?.location || null
 }
 
 /**

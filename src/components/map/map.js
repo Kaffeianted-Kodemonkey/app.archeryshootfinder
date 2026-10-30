@@ -347,13 +347,23 @@ const MapComponent = ({
                   <p className="mb-2 small">
                     <strong>Type:</strong> {selectedItem.venueType || "Venue"}
                   </p>
-                  {selectedItem.hours && (
+                  {Array.isArray(selectedItem.hours) &&
+                    selectedItem.hours.length > 0 && (
                     <p className="mb-2 small">
-                      <strong>Hours:</strong> Weekdays:{" "}
-                      {selectedItem.hours.weekday || "TBD"} | Weekends:{" "}
-                      {selectedItem.hours.weekend || "TBD"}
+                      <strong>Hours:</strong>{" "}
+                      {selectedItem.hours
+                        .map(hours => {
+                          const days = Array.isArray(hours.day)
+                            ? hours.day.join(", ")
+                            : "Hours"
+                          const schedule = [hours.open, hours.close]
+                            .filter(Boolean)
+                            .join("–")
+                          return `${days}: ${schedule || "TBD"}`
+                        })
+                        .join(" | ")}
                     </p>
-                  )}
+                    )}
 
                   {selectedItem.contact && (
                     <p className="mb-2 small text-muted">

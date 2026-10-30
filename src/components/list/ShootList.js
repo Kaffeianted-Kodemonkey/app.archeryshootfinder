@@ -53,50 +53,26 @@ const ShootList = ({
     setFilteredShoots(sortedShoots)
   }, [sortedShoots])
 
-  // Group league/series members together; keep standalone events grouped by venue and title.
+  // Only shoots with an explicit groupId share a group heading.
   const eventGroups = React.useMemo(() => {
     const grouped = filteredShoots.reduce((acc, shoot) => {
-      const groupType = String(shoot.group?.groupType || "").toLowerCase()
-      const isSeries =
-        groupType === "league" ||
-        groupType === "series" ||
-        Boolean(String(shoot.seriesName || "").trim()) ||
-        shoot.isLeague === true ||
-        shoot.isLeague === "true"
-
-      if (isSeries) {
-        const title = String(
-          shoot.group?.groupName || shoot.seriesName || shoot.sname || "Series"
-        )
-          .trim()
-          .replace(/\s+/g, " ")
-        const key = `series-${shoot.group?.groupId || title.toLowerCase()}`
+      const groupId = String(shoot.groupId || shoot.group?.groupId || "").trim()
+      if (groupId) {
+        const key = `group-${groupId}`
         if (!acc[key]) acc[key] = []
         acc[key].push(shoot)
         return acc
       }
 
-      const venueId = String(
-        shoot.venue?.venueId || shoot.venueId || "unknown"
-      ).toLowerCase()
-      const eventTitle = String(shoot.sname || "event")
-        .trim()
-        .replace(/\s+/g, " ")
-        .toLowerCase()
-      const groupKey = `event-${JSON.stringify([venueId, eventTitle])}`
-
-      if (!acc[groupKey]) acc[groupKey] = []
-      acc[groupKey].push(shoot)
+      const key = `shoot-${shoot.shootId || shoot.id}`
+      acc[key] = [shoot]
       return acc
     }, {})
-    return Object.entries(grouped).map(([key, group]) => {
-      const first = group[0] || {}
-      const groupType = String(first.group?.groupType || "").toLowerCase()
-      const isSeries = groupType === "league" || groupType === "series" ||
-        Boolean(String(first.seriesName || "").trim()) ||
-        first.isLeague === true || first.isLeague === "true"
-      return [key, group, isSeries ? "series" : "events"]
-    })
+    return Object.entries(grouped).map(([key, group]) => [
+      key,
+      group,
+      group[0]?.groupId || group[0]?.group?.groupId ? "group" : "events",
+    ])
   }, [filteredShoots])
 
   const handleFilteredChange = React.useCallback(

@@ -10,7 +10,7 @@ const VenueLayout = ({ venues = [], shoots = [], location, children }) => {
   const [displayedVenues, setDisplayedVenues] = useState(venues)
 
   useEffect(() => {
-    if (location.hash) setView("list")
+    if (location.hash) setView("map")
   }, [location.hash])
 
   useEffect(() => {
@@ -25,10 +25,16 @@ const VenueLayout = ({ venues = [], shoots = [], location, children }) => {
   }, [])
 
   useEffect(() => {
-    if (view !== "list" || !location.hash) return
+    if (view !== "map" || !location.hash) return
     const scrollTimeout = window.setTimeout(() => {
-      document.getElementById(location.hash.slice(1))?.scrollIntoView()
-    }, 100)
+      const target = document.getElementById(location.hash.slice(1))
+      const scrollContainer = target?.closest(".flex-grow-1.overflow-auto")
+      if (!target || !scrollContainer) return
+
+      const containerTop = scrollContainer.getBoundingClientRect().top
+      const targetTop = target.getBoundingClientRect().top
+      scrollContainer.scrollTop += targetTop - containerTop
+    }, 300)
 
     return () => window.clearTimeout(scrollTimeout)
   }, [view, location.hash])

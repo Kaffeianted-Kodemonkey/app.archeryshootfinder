@@ -32,7 +32,6 @@ const VenueSchema = new mongoose.Schema({
   alt: String,
   venueType: String,
   isMembership: String,
-  isLeague: String,
 
   amenities: [String],
   sanctioning: [String],
@@ -44,18 +43,20 @@ const VenueSchema = new mongoose.Schema({
     externalId: String,
   },
   services: [String],
-  hours: {
-    day: [String],
-    open: String,
-    close: String,
-  },
+  hours: [
+    {
+      day: [String],
+      open: String,
+      close: String,
+    },
+  ],
 
   behavioralRules: [String],
   gearControl: [String],
   safetyEtiquette: [String],
   bowTypes: [String],
-  tuningIndoors: Boolean,
-  tuningOutdoors: Boolean,
+  tuningIndoor: [String],
+  tuningOutdoor: [String],
   rangeType: [String],
   targetType: [String],
   laneCapIndoor: String,

@@ -21,9 +21,11 @@ const ShootFilters = ({
     skillLevel: "",
     association: "",
     distance: "",
+    leagueSeries: "",
   })
 
   const [sort, setSort] = React.useState({ field: "", direction: "asc" })
+  const [mobileFiltersOpen, setMobileFiltersOpen] = React.useState(false)
 
   const options = React.useMemo(() => {
     const bowTypes = new Set()
@@ -91,6 +93,13 @@ const ShootFilters = ({
         s =>
           (s.associationType || s.association?.acronym) === filters.association
       )
+    if (filters.leagueSeries) {
+      result = result.filter(s => {
+        const grouped = s.isLeague === true || s.isLeague === "true" ||
+          Boolean(String(s.seriesName || s.group?.groupName || "").trim())
+        return filters.leagueSeries === "grouped" ? grouped : !grouped
+      })
+    }
     if (filters.distance && userLocation) {
       result = filterByDistance(result, userLocation, Number(filters.distance))
     }
@@ -98,7 +107,10 @@ const ShootFilters = ({
     onFilteredChange(result)
   }, [filters, shoots, allShoots, userLocation, onFilteredChange])
 
-  const updateFilter = (key, value) => setFilters(p => ({ ...p, [key]: value }))
+  const updateFilter = (key, value) => {
+    setFilters(p => ({ ...p, [key]: value }))
+    setMobileFiltersOpen(false)
+  }
 
   const reset = () => {
     setFilters({
@@ -110,6 +122,7 @@ const ShootFilters = ({
       skillLevel: "",
       association: "",
       distance: "",
+      leagueSeries: "",
     })
     setSort({ field: "", direction: "asc" })
   }
@@ -121,12 +134,14 @@ const ShootFilters = ({
       className="border border-warning rounded bg-warning-subtle p-3 mb-3"
       aria-label="Refine event results"
     >
-      <div className="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
-        <div>
-          <h2 className="h6 mb-1">Refine results</h2>
-          <p className="small text-body-secondary mb-0">
-            Choose one or more filters to narrow the events.
-          </p>
+      <div className="d-flex align-items-center justify-content-between gap-2 mb-2">
+        <button className="btn btn-link link-dark p-0 text-decoration-none d-lg-none" type="button"
+          onClick={() => setMobileFiltersOpen(open => !open)} aria-expanded={mobileFiltersOpen}
+          aria-controls="event-filter-options">
+          <span className="fw-semibold">Filters{activeFilterCount > 0 ? ` (${activeFilterCount})` : ""}</span>
+        </button>
+        <div className="d-none d-lg-block">
+          <h2 className="h6 mb-0">Refine results</h2>
         </div>
         {activeFilterCount > 0 && (
           <button
@@ -134,14 +149,15 @@ const ShootFilters = ({
             className="btn btn-sm btn-outline-dark"
             onClick={reset}
           >
-            Clear {activeFilterCount} {activeFilterCount === 1 ? "filter" : "filters"}
+            Clear filters
           </button>
         )}
       </div>
-      <div className="d-flex flex-wrap align-items-center gap-2 small">
+      <div id="event-filter-options" className={`collapse ${mobileFiltersOpen ? "show" : ""} d-lg-block`}>
+      <div className="row g-2 small">
+        <div className="col-12 col-sm-6 col-lg-3">
         <select
-          className="form-select form-select-sm flex-grow-1"
-          style={{ minWidth: "10rem", maxWidth: "15rem" }}
+          className="form-select form-select-sm w-100"
           value={filters.distance}
           onChange={e => updateFilter("distance", e.target.value)}
           aria-label="Filter by distance"
@@ -154,10 +170,11 @@ const ShootFilters = ({
             Within 100 miles
           </option>
         </select>
+        </div>
 
+        <div className="col-12 col-sm-6 col-lg-3">
         <select
-          className="form-select form-select-sm flex-grow-1"
-          style={{ minWidth: "9rem", maxWidth: "14rem" }}
+          className="form-select form-select-sm w-100"
           value={filters.association}
           onChange={e => updateFilter("association", e.target.value)}
           aria-label="Filter by rules association"
@@ -169,10 +186,19 @@ const ShootFilters = ({
             </option>
           ))}
         </select>
+        </div>
 
-        <select
-          className="form-select form-select-sm flex-grow-1"
-          style={{ minWidth: "8rem", maxWidth: "12rem" }}
+        <div className="col-12 col-sm-6 col-lg-3">
+          <select className="form-select form-select-sm w-100" value={filters.leagueSeries}
+            onChange={e => updateFilter("leagueSeries", e.target.value)} aria-label="Filter by League or Series">
+            <option value="">Any event grouping</option>
+            <option value="grouped">League / Series</option>
+            <option value="standalone">Standalone events</option>
+          </select>
+        </div>
+
+        <div className="col-12 col-sm-6 col-lg-3"><select
+          className="form-select form-select-sm w-100"
           value={filters.state}
           onChange={e => updateFilter("state", e.target.value)}
           aria-label="Filter by state"
@@ -183,11 +209,10 @@ const ShootFilters = ({
               {st}
             </option>
           ))}
-        </select>
+        </select></div>
 
-        <select
-          className="form-select form-select-sm flex-grow-1"
-          style={{ minWidth: "9rem", maxWidth: "14rem" }}
+        <div className="col-12 col-sm-6 col-lg-3"><select
+          className="form-select form-select-sm w-100"
           value={filters.city}
           onChange={e => updateFilter("city", e.target.value)}
           aria-label="Filter by city"
@@ -198,11 +223,10 @@ const ShootFilters = ({
               {city}
             </option>
           ))}
-        </select>
+        </select></div>
 
-        <select
-          className="form-select form-select-sm flex-grow-1"
-          style={{ minWidth: "9rem", maxWidth: "14rem" }}
+        <div className="col-12 col-sm-6 col-lg-3"><select
+          className="form-select form-select-sm w-100"
           value={filters.bowType}
           onChange={e => updateFilter("bowType", e.target.value)}
           aria-label="Filter by bow type"
@@ -213,11 +237,10 @@ const ShootFilters = ({
               {b}
             </option>
           ))}
-        </select>
+        </select></div>
 
-        <select
-          className="form-select form-select-sm flex-grow-1"
-          style={{ minWidth: "9rem", maxWidth: "14rem" }}
+        <div className="col-12 col-sm-6 col-lg-3"><select
+          className="form-select form-select-sm w-100"
           value={filters.format}
           onChange={e => updateFilter("format", e.target.value)}
           aria-label="Filter by format"
@@ -228,11 +251,10 @@ const ShootFilters = ({
               {f}
             </option>
           ))}
-        </select>
+        </select></div>
 
-        <select
-          className="form-select form-select-sm flex-grow-1"
-          style={{ minWidth: "8rem", maxWidth: "12rem" }}
+        <div className="col-12 col-sm-6 col-lg-3"><select
+          className="form-select form-select-sm w-100"
           value={filters.shootClass}
           onChange={e => updateFilter("shootClass", e.target.value)}
           aria-label="Filter by class"
@@ -243,11 +265,10 @@ const ShootFilters = ({
               {c}
             </option>
           ))}
-        </select>
+        </select></div>
 
         <select
-          className="form-select form-select-sm flex-grow-1"
-          style={{ minWidth: "8rem", maxWidth: "12rem" }}
+          className="form-select form-select-sm col-12 col-sm-6 col-lg-3"
           value={filters.skillLevel}
           onChange={e => updateFilter("skillLevel", e.target.value)}
           aria-label="Filter by skill level"
@@ -259,6 +280,7 @@ const ShootFilters = ({
             </option>
           ))}
         </select>
+      </div>
       </div>
     </section>
   )

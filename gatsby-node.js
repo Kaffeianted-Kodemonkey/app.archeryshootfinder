@@ -192,13 +192,18 @@ exports.sourceNodes = async ({
         prefix: "mongo-venue",
         doc: venue,
         extra: {
+          venueId: venue.venueId || String(venue._id),
           vname: venue.vname || venue.name,
           isClaimed:
             venue.isClaimed === true ||
             venue.isClaimed === "true" ||
             venue.isClaimed === 1 ||
             venue.isClaimed === "1",
-          hours: Array.isArray(venue.hours) ? venue.hours : [],
+          hours: Array.isArray(venue.hours)
+            ? venue.hours
+            : venue.hours && typeof venue.hours === "object"
+            ? [venue.hours]
+            : [],
           safetyEtiquette: Array.isArray(venue.safetyEtiquette)
             ? venue.safetyEtiquette
             : Array.isArray(venue.safteyEtiquette)
@@ -209,13 +214,35 @@ exports.sourceNodes = async ({
     })
 
     shootsData.forEach(shoot => {
+      const shootId = shoot.shootId == null ? "" : String(shoot.shootId).trim()
+      const venueId = shoot.venueId == null ? "" : String(shoot.venueId).trim()
+
+      if (!shootId || !venueId) {
+        reporter.warn(
+          `Skipping shoot document ${String(shoot._id)} because it has no ${[
+            !shootId && "shootId",
+            !venueId && "venueId",
+          ]
+            .filter(Boolean)
+            .join(" or ")}.`
+        )
+        return
+      }
+
       createMongoNode(nodeApi, {
         type: "ShootsJson",
         prefix: "mongo-shoot",
         doc: shoot,
         extra: {
-          shootId: String(shoot.shootId),
+          shootId,
+          venueId,
           groupId: shoot.group?.groupId,
+          // ASFinder-Dev stores the physical shoot site in eventLocations.
+          // Keep the legacy array intact and expose its first site through the
+          // canonical single-location field consumed by event cards and maps.
+          shootLocation:
+            shoot.shootLocation ||
+            (Array.isArray(shoot.eventLocations) ? shoot.eventLocations[0] : null),
         },
       })
     })
@@ -229,6 +256,18 @@ exports.sourceNodes = async ({
     })
 
     shootGroupsData.forEach(group => {
+      if (
+        typeof group.groupId !== "string" ||
+        !group.groupId.trim() ||
+        typeof group.groupName !== "string" ||
+        !group.groupName.trim()
+      ) {
+        reporter.warn(
+          `Skipping shoot group document ${String(group._id)} because groupId or groupName is missing.`
+        )
+        return
+      }
+
       createMongoNode(nodeApi, {
         type: "ShootGroupsJson",
         prefix: "mongo-shoot-group",

@@ -4,9 +4,7 @@ import PropTypes from "prop-types"
 import ShootFilters from "./ShootFilters"
 import ShootAccordionItem from "./ShootAccordionItem"
 
-/**
- * Destination tab: group by seriesName (fallback sname), not per stop.
- */
+/** Destination mode groups only shoots with an explicit groupId. */
 const DestList = ({
   shoots = [],
   allShoots = shoots,
@@ -35,22 +33,15 @@ const DestList = ({
 
   const eventGroups = React.useMemo(() => {
     const grouped = filteredShoots.reduce((acc, s) => {
-      const series =
-        s.group?.groupName ||
-        s.seriesName ||
-        s.sname ||
-        `destination-${s.shootId || s.id || Math.random()}`
-      const groupKey = `dest-${s.group?.groupId || String(series)
-        .trim()
-        .toLowerCase()
-        .replace(/\s+/g, "-")}`
+      const groupId = String(s.groupId || s.group?.groupId || "").trim()
+      const groupKey = groupId ? `group-${groupId}` : `shoot-${s.shootId || s.id}`
 
       if (!acc[groupKey]) acc[groupKey] = []
       acc[groupKey].push(s)
       return acc
     }, {})
 
-    // Sort stops within each series by date
+    // Sort shoots within each explicit group by date.
     return Object.entries(grouped).map(([key, list]) => [
       key,
       [...list].sort((a, b) => new Date(a.date) - new Date(b.date)),

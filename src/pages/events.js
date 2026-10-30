@@ -51,6 +51,14 @@ export const query = graphql`
           groupId
           groupName
           groupType
+          ownerAssociationId
+        }
+        shootGroup {
+          ownerAssociation {
+            acronym
+            assocName
+            websiteUrl
+          }
         }
         associationType
         association {
